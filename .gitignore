@@ -1,0 +1,25 @@
+# target
+**/target/
+/target/
+*/target/*
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# logging
+**/logback.xml
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# IntelliJ
+.idea
+*.iml
+*.idea
+
+# virtual machine crash logs
+hs_err_pid*
