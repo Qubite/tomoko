@@ -1,0 +1,12 @@
+[
+  {
+    "op": "add",
+    "path": "/asdf",
+    "value": "qwer"
+  },
+  {
+    "op": "add",
+    "path": "/asdf33/2",
+    "value": "rewq"
+  }
+]

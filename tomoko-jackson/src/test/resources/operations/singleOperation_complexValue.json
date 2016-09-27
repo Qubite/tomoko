@@ -1,0 +1,10 @@
+[
+  {
+    "op": "add",
+    "path": "/asdf",
+    "value": {
+      "complexA": "rrr",
+      "complexB": "qqq"
+    }
+  }
+]
