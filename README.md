@@ -2,7 +2,7 @@
 
 How to make PATCH in REST easy to manage or in other words RFC 6902 made Java friendly.
 
-For detailed documentation and examples go to [GitHub pages](https://qubite.github.io/tomoko).
+For detailed documentation and examples go to [wiki](https://github.com/Qubite/tomoko/wiki).
 
 ## Beta version
 
