@@ -28,7 +28,7 @@ public class TreeTextFormatTest {
         root.path().text("asdf2").text("title").add().string().handle(consumer);
         root.path().text("asdf2").text("description").add().string().handle(consumer);
         root.path().text("asdf").integer().add().string().handle(biConsumer);
-        TreeSpecification tree = root.build();
+        TreeSpecification tree = root.toTree();
         TreeTextFormat underTest = new TreeTextFormat();
         String stringRepresentation = underTest.treeToString(tree);
         System.out.println(stringRepresentation);

@@ -2,7 +2,6 @@ package io.qubite.tomoko.direct.dsl;
 
 import io.qubite.tomoko.Patcher;
 import io.qubite.tomoko.PatcherFactory;
-import io.qubite.tomoko.json.OperationDto;
 import io.qubite.tomoko.json.Patch;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.dsl.TreeSpecificationDSL;
@@ -12,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -37,14 +34,12 @@ public class DSLTest {
     public void validSimpleTreeAndOperation() throws Exception {
         TreeSpecificationDSL root = TreeSpecificationDSL.root();
         UnaryAddDescriptor<Integer, String> biConsumerPath = root.path().text(TICKETS_NODE).integer().text(TITLE_NODE).add().string().handle(biConsumer);
-        TreeSpecification tree = root.build();
+        TreeSpecification tree = root.toTree();
         String providedValue = "asdf";
         int pathParameter = 1;
         Patcher patcher = PatcherFactory.instance().create(tree);
-        OperationDto biConsumerOperation = OperationsDSL.create(biConsumerPath, pathParameter, providedValue).build();
-        List<OperationDto> operations = new ArrayList<>();
-        operations.add(biConsumerOperation);
-        patcher.execute(Patch.of(operations));
+        Patch patch = PatchDSL.dsl().add(biConsumerPath, pathParameter, providedValue).toOperation().toPatch();
+        patcher.execute(patch);
         verify(biConsumer).accept(pathParameter, providedValue);
     }
 

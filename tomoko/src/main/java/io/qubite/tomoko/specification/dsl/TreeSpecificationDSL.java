@@ -1,5 +1,7 @@
 package io.qubite.tomoko.specification.dsl;
 
+import io.qubite.tomoko.Patcher;
+import io.qubite.tomoko.PatcherFactory;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
@@ -23,8 +25,12 @@ public class TreeSpecificationDSL {
         return new NullaryPath(builder, PathTemplate.empty());
     }
 
-    public TreeSpecification build() {
+    public TreeSpecification toTree() {
         return builder.build();
+    }
+
+    public Patcher toPatcher() {
+        return PatcherFactory.instance().create(builder.build());
     }
 
 }
