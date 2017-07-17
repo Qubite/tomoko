@@ -7,12 +7,8 @@ import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNode;
-import io.qubite.tomoko.tree.search.TreeSearch;
-import io.qubite.tomoko.tree.search.VisitorContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by edhendil on 30.08.16.
@@ -54,38 +50,40 @@ public class TreeTextFormat {
     }
 
     private List<AddEntry> findAllAddHandlers(TreeNode<AddHandler<?>> addTreeRoot) {
-        AddStringRepresentationContext context = AddStringRepresentationContext.of(PathTemplate.empty(), addTreeRoot);
         List<AddEntry> result = new ArrayList<>();
-        TreeSearch.deepSearch(context, result, this::visitAddNode);
+        Queue<AddStringRepresentationContext> queue = new LinkedList<>();
+        AddStringRepresentationContext context = AddStringRepresentationContext.of(PathTemplate.empty(), addTreeRoot);
+        queue.add(context);
+        while (!queue.isEmpty()) {
+            AddStringRepresentationContext current = queue.poll();
+            if (current.getNode().isLeaf()) {
+                result.add(new AddEntry(current.getPathTemplate(), current.getNode().getHandler()));
+            } else {
+                for (Map.Entry<PathNode, TreeNode<AddHandler<?>>> entry : current.getNode().getChildren().entrySet()) {
+                    queue.add(current.with(entry.getKey(), entry.getValue()));
+                }
+            }
+        }
         return result;
     }
 
     private List<PathTemplate> findAllRemoveHandlers(TreeNode<RemoveHandler> removeTreeRoot) {
-        RemoveStringRepresentationContext context = RemoveStringRepresentationContext.of(PathTemplate.empty(), removeTreeRoot);
         List<PathTemplate> result = new ArrayList<>();
-        TreeSearch.deepSearch(context, result, this::visitRemoveNode);
+        Queue<RemoveStringRepresentationContext> queue = new LinkedList<>();
+        RemoveStringRepresentationContext context = RemoveStringRepresentationContext.of(PathTemplate.empty(), removeTreeRoot);
+        queue.add(context);
+        while (!queue.isEmpty()) {
+            RemoveStringRepresentationContext current = queue.poll();
+            if (current.getNode().isHandlerRegistered()) {
+                result.add(current.getPathTemplate());
+            }
+            if (!current.getNode().isLeaf()) {
+                for (Map.Entry<PathNode, TreeNode<RemoveHandler>> entry : current.getNode().getChildren().entrySet()) {
+                    queue.add(current.with(entry.getKey(), entry.getValue()));
+                }
+            }
+        }
         return result;
-    }
-
-    private void visitAddNode(AddStringRepresentationContext current, VisitorContext<AddStringRepresentationContext, List<AddEntry>> context) {
-        if (current.getNode().isLeaf()) {
-            context.getResult().add(new AddEntry(current.getPathTemplate(), current.getNode().getHandler()));
-        } else {
-            for (Map.Entry<PathNode, TreeNode<AddHandler<?>>> entry : current.getNode().getChildren().entrySet()) {
-                context.addNode(current.with(entry.getKey(), entry.getValue()));
-            }
-        }
-    }
-
-    private void visitRemoveNode(RemoveStringRepresentationContext current, VisitorContext<RemoveStringRepresentationContext, List<PathTemplate>> context) {
-        if (current.getNode().isHandlerRegistered()) {
-            context.getResult().add(current.getPathTemplate());
-        }
-        if (!current.getNode().isLeaf()) {
-            for (Map.Entry<PathNode, TreeNode<RemoveHandler>> entry : current.getNode().getChildren().entrySet()) {
-                context.addNode(current.with(entry.getKey(), entry.getValue()));
-            }
-        }
     }
 
     private static class AddEntry {
