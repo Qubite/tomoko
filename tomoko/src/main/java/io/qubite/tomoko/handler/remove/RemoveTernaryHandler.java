@@ -1,6 +1,6 @@
-package io.qubite.tomoko.handler;
+package io.qubite.tomoko.handler.remove;
 
-import io.qubite.tomoko.handler.remove.RemoveHandler;
+import io.qubite.tomoko.handler.TriConsumer;
 import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.path.PathTemplate;
 

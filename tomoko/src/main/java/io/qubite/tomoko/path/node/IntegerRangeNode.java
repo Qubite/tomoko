@@ -1,17 +1,16 @@
 package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Created by edhendil on 03.09.16.
  */
 public class IntegerRangeNode implements ValueNode<Integer> {
 
-    private final Optional<Integer> minValue;
-    private final Optional<Integer> maxValue;
+    private final int minValue;
+    private final int maxValue;
 
-    IntegerRangeNode(Optional<Integer> minValue, Optional<Integer> maxValue) {
+    IntegerRangeNode(int minValue, int maxValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
@@ -20,10 +19,10 @@ public class IntegerRangeNode implements ValueNode<Integer> {
     public boolean doesMatch(String value) {
         try {
             int result = Integer.parseInt(value);
-            if (minValue.isPresent() && minValue.get() > result) {
+            if (minValue > result) {
                 return false;
             }
-            if (maxValue.isPresent() && maxValue.get() < result) {
+            if (maxValue < result) {
                 return false;
             }
         } catch (NumberFormatException e) {
@@ -42,10 +41,10 @@ public class IntegerRangeNode implements ValueNode<Integer> {
         if (value == null) {
             throw new IllegalArgumentException("Null not accepted.");
         }
-        if (minValue.isPresent() && minValue.get() > value) {
+        if (minValue > value) {
             throw new IllegalArgumentException("Value lower than specified minimum.");
         }
-        if (maxValue.isPresent() && maxValue.get() < value) {
+        if (maxValue < value) {
             throw new IllegalArgumentException("Value higher than specified maximum.");
         }
         return value.toString();
@@ -60,7 +59,7 @@ public class IntegerRangeNode implements ValueNode<Integer> {
             return false;
         }
         IntegerRangeNode that = (IntegerRangeNode) o;
-        return minValue.equals(that.minValue) && maxValue.equals(that.maxValue);
+        return minValue == that.minValue && maxValue == that.maxValue;
     }
 
     @Override
@@ -72,11 +71,11 @@ public class IntegerRangeNode implements ValueNode<Integer> {
     public String toString() {
         String min = "";
         String max = "";
-        if (minValue.isPresent()) {
-            min = minValue.get() + "<=";
+        if (minValue != Integer.MIN_VALUE) {
+            min = minValue + "<=";
         }
-        if (maxValue.isPresent()) {
-            max = ">=" + maxValue.get();
+        if (maxValue != Integer.MAX_VALUE) {
+            max = ">=" + maxValue;
         }
         return "/(" + min + "integer" + max + ")";
     }

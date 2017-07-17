@@ -1,0 +1,72 @@
+<@pp.dropOutputFile />
+<#list config.prefixes as prefix>
+<@pp.changeOutputFile name=prefix.name+"TypeSpec.java" />
+<#assign parameters = (prefix.size > 0)>
+package io.qubite.tomoko.specification.dsl;
+
+import io.qubite.tomoko.path.PathTemplate;
+import io.qubite.tomoko.specification.TreeSpecificationBuilder;
+import io.qubite.tomoko.type.Types;
+import io.qubite.tomoko.type.ValueType;
+
+import java.util.List;
+import java.util.Map;
+
+public class ${prefix.name}TypeSpec<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
+
+    private final TreeSpecificationBuilder builder;
+    <#if parameters><#list 1..prefix.size as index>
+    private final PathTemplate<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath;
+    </#list></#if>
+    private final PathTemplate<?> path;
+
+    ${prefix.name}TypeSpec(TreeSpecificationBuilder builder, <#if parameters><#list 1..prefix.size as index>PathTemplate<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath, </#list></#if>PathTemplate<?> path) {
+        this.builder = builder;
+        <#if parameters><#list 1..prefix.size as index>
+        this.${config.generics[index-1].parameter}ArgumentPath = ${config.generics[index-1].parameter}ArgumentPath;
+        </#list></#if>
+        this.path = path;
+    }
+
+    public <V> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> type(ValueType<V> valueType) {
+        return new ${prefix.name}HandlerSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path, valueType);
+    }
+
+    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>String> string() {
+        return type(Types.string());
+    }
+
+    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Integer> integer() {
+        return type(Types.integer());
+    }
+
+    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Boolean> bool() {
+        return type(Types.booleanValue());
+    }
+
+    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Double> real() {
+        return type(Types.doubleValue());
+    }
+
+    public <T> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>T> of(Class<T> valueClass) {
+        return type(Types.simple(valueClass));
+    }
+
+    public <T> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>List<T>> list(Class<T> elementClass) {
+        return type(Types.list(elementClass));
+    }
+
+    public <L extends List<E>, E> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>L> list(Class<L> listClass, Class<E> elementClass) {
+        return type(Types.list(listClass, elementClass));
+    }
+
+    public <K, V> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Map<K, V>> map(Class<K> keyClass, Class<V> valueClass) {
+        return type(Types.map(keyClass, valueClass));
+    }
+
+    public <M extends Map<K, V>, K, V> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>M> map(Class<M> mapClass, Class<K> keyClass, Class<V> valueClass) {
+        return type(Types.map(mapClass, keyClass, valueClass));
+    }
+
+}
+</#list>

@@ -1,10 +1,7 @@
 package io.qubite.tomoko.handler;
 
 import io.qubite.tomoko.handler.add.*;
-import io.qubite.tomoko.handler.remove.RemoveBinaryHandler;
-import io.qubite.tomoko.handler.remove.RemoveHandler;
-import io.qubite.tomoko.handler.remove.RemoveUnaryHandler;
-import io.qubite.tomoko.handler.remove.RemoveZeroHandler;
+import io.qubite.tomoko.handler.remove.*;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.type.ValueType;
 

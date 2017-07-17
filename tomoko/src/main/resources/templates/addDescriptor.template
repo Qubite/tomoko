@@ -1,0 +1,37 @@
+<@pp.dropOutputFile />
+<#list config.prefixes as prefix>
+<@pp.changeOutputFile name=prefix.name+"AddDescriptor.java" />
+<#assign parameters = (prefix.size > 0)>
+package io.qubite.tomoko.specification.dsl;
+
+import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.path.PathTemplate;
+import io.qubite.tomoko.path.PathTemplateParameters;
+import io.qubite.tomoko.type.ValueType;
+
+public class ${prefix.name}AddDescriptor<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> {
+
+    private final PathTemplate<?> path;
+    <#if parameters><#list 1..prefix.size as index>
+    private final PathTemplate<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath;
+    </#list></#if>
+    private final ValueType<V> valueType;
+
+    ${prefix.name}AddDescriptor(PathTemplate<?> path, <#if parameters><#list 1..prefix.size as index>PathTemplate<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath, </#list></#if>ValueType<V> valueType) {
+        this.path = path;
+        <#if parameters><#list 1..prefix.size as index>
+        this.${config.generics[index-1].parameter}ArgumentPath = ${config.generics[index-1].parameter}ArgumentPath;
+        </#list></#if>
+        this.valueType = valueType;
+    }
+
+    public Path createPath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
+        PathTemplateParameters parameters = PathTemplateParameters.empty();
+        <#if parameters><#list 1..prefix.size as index>
+        parameters.addParameter(${config.generics[index-1].parameter}ArgumentPath, ${config.generics[index-1].parameter}Parameter);
+        </#list></#if>
+        return path.generatePath(parameters);
+    }
+
+}
+</#list>

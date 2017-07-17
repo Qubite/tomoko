@@ -43,8 +43,12 @@ public class OperationExecutorImpl implements OperationExecutor {
     }
 
     public void execute(TreeSpecification patchSpecification, Patch operations) {
-        for (OperationDto operation : operations.getOperations()) {
-            execute(patchSpecification, operation);
+        try {
+            for (OperationDto operation : operations.getOperations()) {
+                execute(patchSpecification, operation);
+            }
+        } catch (PatcherException e) {
+            throw new PatcherException(String.format("Error handling a patch"), e);
         }
     }
 

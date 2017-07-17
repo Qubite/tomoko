@@ -33,7 +33,6 @@ public class TextNode implements ValueNode<String> {
         if (!(o instanceof TextNode)) {
             return false;
         }
-        TextNode that = (TextNode) o;
         return true;
     }
 
