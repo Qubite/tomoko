@@ -26,56 +26,56 @@ public class TreeSpecificationBuilder {
         this.removeRoot = removeRoot;
     }
 
-    public <T> TreeSpecificationBuilder add(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, Consumer<T> consumer) {
+    public <T> TreeSpecificationBuilder handleAdd(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, Consumer<T> consumer) {
         AddHandler<T> handler = Handlers.add(parameterClass, consumer);
-        return add(pathTemplate, handler);
+        return handleAdd(pathTemplate, handler);
     }
 
-    public <A, T> TreeSpecificationBuilder add(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, BiConsumer<A, T> consumer) {
+    public <A, T> TreeSpecificationBuilder handleAdd(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, BiConsumer<A, T> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         AddHandler<T> handler = Handlers.add(parameterClass, firstParameterNode, consumer);
-        return add(pathTemplate, handler);
+        return handleAdd(pathTemplate, handler);
     }
 
-    public <A, B, T> TreeSpecificationBuilder add(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, TriConsumer<A, B, T> consumer) {
+    public <A, B, T> TreeSpecificationBuilder handleAdd(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, TriConsumer<A, B, T> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         isParameterPathASubpath(pathTemplate, secondParameterNode);
         AddHandler<T> handler = Handlers.add(parameterClass, firstParameterNode, secondParameterNode, consumer);
-        return add(pathTemplate, handler);
+        return handleAdd(pathTemplate, handler);
     }
 
-    public <A, B, C, T> TreeSpecificationBuilder add(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, PathTemplate<C> thirdParameterNode, QuadConsumer<A, B, C, T> consumer) {
+    public <A, B, C, T> TreeSpecificationBuilder handleAdd(PathTemplate<?> pathTemplate, ValueType<T> parameterClass, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, PathTemplate<C> thirdParameterNode, QuadConsumer<A, B, C, T> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         isParameterPathASubpath(pathTemplate, secondParameterNode);
         isParameterPathASubpath(pathTemplate, thirdParameterNode);
         AddHandler<T> handler = Handlers.add(parameterClass, firstParameterNode, secondParameterNode, thirdParameterNode, consumer);
-        return add(pathTemplate, handler);
+        return handleAdd(pathTemplate, handler);
     }
 
-    public TreeSpecificationBuilder remove(PathTemplate<?> pathTemplate, Runnable runnable) {
+    public TreeSpecificationBuilder handleRemove(PathTemplate<?> pathTemplate, Runnable runnable) {
         RemoveHandler handler = Handlers.remove(runnable);
-        return remove(pathTemplate, handler);
+        return handleRemove(pathTemplate, handler);
     }
 
-    public <A> TreeSpecificationBuilder remove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, Consumer<A> consumer) {
+    public <A> TreeSpecificationBuilder handleRemove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, Consumer<A> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         RemoveHandler handler = Handlers.remove(firstParameterNode, consumer);
-        return remove(pathTemplate, handler);
+        return handleRemove(pathTemplate, handler);
     }
 
-    public <A, B> TreeSpecificationBuilder remove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, BiConsumer<A, B> consumer) {
+    public <A, B> TreeSpecificationBuilder handleRemove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, BiConsumer<A, B> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         isParameterPathASubpath(pathTemplate, secondParameterNode);
         RemoveHandler handler = Handlers.remove(firstParameterNode, secondParameterNode, consumer);
-        return remove(pathTemplate, handler);
+        return handleRemove(pathTemplate, handler);
     }
 
-    public <A, B, C> TreeSpecificationBuilder remove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, PathTemplate<C> thirdParameterNode, TriConsumer<A, B, C> consumer) {
+    public <A, B, C> TreeSpecificationBuilder handleRemove(PathTemplate<?> pathTemplate, PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, PathTemplate<C> thirdParameterNode, TriConsumer<A, B, C> consumer) {
         isParameterPathASubpath(pathTemplate, firstParameterNode);
         isParameterPathASubpath(pathTemplate, secondParameterNode);
         isParameterPathASubpath(pathTemplate, thirdParameterNode);
         RemoveHandler handler = Handlers.remove(firstParameterNode, secondParameterNode, thirdParameterNode, consumer);
-        return remove(pathTemplate, handler);
+        return handleRemove(pathTemplate, handler);
     }
 
     public TreeSpecification build() {
@@ -88,7 +88,7 @@ public class TreeSpecificationBuilder {
         }
     }
 
-    private <T> TreeSpecificationBuilder add(PathTemplate pathTemplate, AddHandler<T> handler) {
+    private <T> TreeSpecificationBuilder handleAdd(PathTemplate pathTemplate, AddHandler<T> handler) {
         TreeNode<AddHandler<?>> node = addRoot.extendUntilHandler(pathTemplate);
         if (!node.isLeaf()) {
             throw new PatcherException("Add operation handler must be registered on a leaf node.");
@@ -97,7 +97,7 @@ public class TreeSpecificationBuilder {
         return this;
     }
 
-    private TreeSpecificationBuilder remove(PathTemplate pathTemplate, RemoveHandler handler) {
+    private TreeSpecificationBuilder handleRemove(PathTemplate pathTemplate, RemoveHandler handler) {
         TreeNode<RemoveHandler> node = removeRoot.extend(pathTemplate);
         node.setHandler(handler);
         return this;

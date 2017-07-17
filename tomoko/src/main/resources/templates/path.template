@@ -88,7 +88,7 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return new ${prefix.name}TypeSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path.then(PathNodes.endIndexNode()));
     }
 
-    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> add() {
+    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> handleAdd() {
         return new ${prefix.name}TypeSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path);
     }
 
@@ -99,26 +99,26 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
      * @param <V>
      * @return
      */
-    public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> add(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
-        return add(path, consumer);
+    public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> handleAdd(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+        return handleAdd(path, consumer);
     }
 
     public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> endIndex(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
-        return add(path.then(PathNodes.endIndexNode()), consumer);
+        return handleAdd(path.then(PathNodes.endIndexNode()), consumer);
     }
 
-    public ${prefix.name}RemoveDescriptor<#if parameters><${genericList}></#if> remove(${prefix.removeConsumer.name}<#if parameters><${genericList}></#if> consumer) {
-        builder.remove(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
+    public ${prefix.name}RemoveDescriptor<#if parameters><${genericList}></#if> handleRemove(${prefix.removeConsumer.name}<#if parameters><${genericList}></#if> consumer) {
+        builder.handleRemove(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
         return new ${prefix.name}RemoveDescriptor(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path);
     }
 
-    private <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> add(PathTemplate<?> path, ${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+    private <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> handleAdd(PathTemplate<?> path, ${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
         Class<?>[] classes = TypeResolver.resolveRawArguments(${prefix.consumer.name}.class, consumer.getClass());
         Class<V> valueClass = (Class<V>) classes[${prefix?index}];
         DslPreconditions.checkNotUnknown(valueClass);
         DslPreconditions.checkNonGeneric(valueClass);
         SimpleType<V> type = Types.simple(valueClass);
-        builder.add(path, type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
+        builder.handleAdd(path, type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
         return new ${prefix.name}AddDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>type);
     }
 

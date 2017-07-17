@@ -24,16 +24,16 @@ public class DSLTest {
 
     public static final String TICKETS_NODE = "tickets";
     public static final String TITLE_NODE = "title";
+
     @Mock
     private Consumer<String> consumer;
-
     @Mock
     private BiConsumer<Integer, String> biConsumer;
 
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
         TreeSpecificationDSL root = TreeSpecificationDSL.root();
-        UnaryAddDescriptor<Integer, String> biConsumerPath = root.path().text(TICKETS_NODE).integer().text(TITLE_NODE).add().string().handle(biConsumer);
+        UnaryAddDescriptor<Integer, String> biConsumerPath = root.path().text(TICKETS_NODE).integer().text(TITLE_NODE).handleAdd().string().handle(biConsumer);
         TreeSpecification tree = root.toTree();
         String providedValue = "asdf";
         int pathParameter = 1;

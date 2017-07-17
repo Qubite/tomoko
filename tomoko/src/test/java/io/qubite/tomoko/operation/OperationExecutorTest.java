@@ -105,9 +105,9 @@ public class OperationExecutorTest {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate<Void> asdfPath = PathTemplate.empty().then(PathNodes.staticNode("asdf"));
         PathTemplate<Integer> integerNodePath = PathTemplate.empty().then(PathNodes.staticNode("asdf33")).then(PathNodes.integerNode());
-        builder.add(asdfPath, Types.simple(String.class), addHandler);
-        builder.add(integerNodePath, Types.simple(String.class), integerNodePath, addHandlerWithParameter);
-        builder.remove(asdfPath, removeHandler);
+        builder.handleAdd(asdfPath, Types.simple(String.class), addHandler);
+        builder.handleAdd(integerNodePath, Types.simple(String.class), integerNodePath, addHandlerWithParameter);
+        builder.handleRemove(asdfPath, removeHandler);
         return builder.build();
     }
 

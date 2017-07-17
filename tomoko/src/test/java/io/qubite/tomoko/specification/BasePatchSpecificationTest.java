@@ -28,7 +28,7 @@ public class BasePatchSpecificationTest {
     public void build_singleAddHandler() throws Exception {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().then(PathNodes.staticNode("none"));
-        builder.add(pathTemplate, Types.simple(String.class), noop);
+        builder.handleAdd(pathTemplate, Types.simple(String.class), noop);
         TreeSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }
@@ -38,8 +38,8 @@ public class BasePatchSpecificationTest {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().then(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.then(PathNodes.staticNode("title"));
-        builder.add(pathTemplate, Types.simple(String.class), noop);
-        builder.add(titlePath, Types.simple(String.class), noop);
+        builder.handleAdd(pathTemplate, Types.simple(String.class), noop);
+        builder.handleAdd(titlePath, Types.simple(String.class), noop);
     }
 
     @Test(expected = PatcherException.class)
@@ -47,15 +47,15 @@ public class BasePatchSpecificationTest {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().then(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.then(PathNodes.staticNode("title"));
-        builder.add(titlePath, Types.simple(String.class), noop);
-        builder.add(pathTemplate, Types.simple(String.class), noop);
+        builder.handleAdd(titlePath, Types.simple(String.class), noop);
+        builder.handleAdd(pathTemplate, Types.simple(String.class), noop);
     }
 
     @Test
     public void build_singleRemoveHandler() throws Exception {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().then(PathNodes.staticNode("none"));
-        builder.remove(pathTemplate, none);
+        builder.handleRemove(pathTemplate, none);
         TreeSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }
@@ -65,8 +65,8 @@ public class BasePatchSpecificationTest {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().then(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.then(PathNodes.staticNode("title"));
-        builder.remove(pathTemplate, none);
-        builder.remove(titlePath, none);
+        builder.handleRemove(pathTemplate, none);
+        builder.handleRemove(titlePath, none);
         TreeSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }

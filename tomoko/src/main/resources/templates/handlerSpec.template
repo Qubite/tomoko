@@ -30,7 +30,7 @@ public class ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as 
     }
 
     public ${prefix.name}AddDescriptor<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handle(${prefix.consumer.name}<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handler) {
-        builder.add(path, valueType, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>handler);
+        builder.handleAdd(path, valueType, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>handler);
         return new ${prefix.name}AddDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>valueType);
     }
 
