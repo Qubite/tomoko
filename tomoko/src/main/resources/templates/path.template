@@ -75,6 +75,10 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return path(PathNodes.regexNode(regex));
     }
 
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> urlEncoded() {
+        return path(PathNodes.urlEncodedNode());
+    }
+
 </#if>
     public ${prefix.name}Path<#if parameters><${genericList}></#if> text(String text) {
         return path(PathNodes.staticNode(text));

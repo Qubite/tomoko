@@ -1,7 +1,5 @@
 package io.qubite.tomoko.path.node;
 
-import java.util.Optional;
-
 public class PathNodes {
 
     private PathNodes() {
@@ -36,15 +34,19 @@ public class PathNodes {
     }
 
     public static IntegerRangeNode integerNode(int min, int max) {
-        return new IntegerRangeNode(Optional.of(min), Optional.of(max));
+        return new IntegerRangeNode(min, max);
     }
 
     public static IntegerRangeNode minIntegerNode(int min) {
-        return new IntegerRangeNode(Optional.of(min), Optional.empty());
+        return new IntegerRangeNode(min, Integer.MAX_VALUE);
     }
 
     public static IntegerRangeNode maxIntegerNode(int max) {
-        return new IntegerRangeNode(Optional.empty(), Optional.of(max));
+        return new IntegerRangeNode(Integer.MIN_VALUE, max);
+    }
+
+    public static URLEncodedNode urlEncodedNode() {
+        return new URLEncodedNode();
     }
 
 }
