@@ -47,7 +47,7 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return new ${nextPrefix.name}Path(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>argPath, argPath);
     }
 
-    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> text() {
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> string() {
         return path(PathNodes.textNode());
     }
 
@@ -67,7 +67,7 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return path(PathNodes.maxIntegerNode(max));
     }
 
-    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Long> longValue() {
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Long> longParameter() {
         return path(PathNodes.longNode());
     }
 
@@ -80,8 +80,16 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
     }
 
 </#if>
-    public ${prefix.name}Path<#if parameters><${genericList}></#if> text(String text) {
-        return path(PathNodes.staticNode(text));
+    public ${prefix.name}Path<#if parameters><${genericList}></#if> path(String text) {
+        String[] nodes = text.split("/", -1);
+        ${prefix.name}Path<#if parameters><${genericList}></#if> result = this;
+        for (String node : nodes) {
+            if (node.isEmpty()) {
+                throw new IllegalArgumentException("Path node name cannot be empty");
+            }
+            result = path(PathNodes.staticNode(node));
+        }
+        return result;
     }
 
     public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> endIndex() {
@@ -103,7 +111,7 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return handleAdd(path, consumer);
     }
 
-    public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> endIndex(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+    public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> handleEndIndex(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
         return handleAdd(path.then(PathNodes.endIndexNode()), consumer);
     }
 

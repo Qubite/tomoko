@@ -38,12 +38,11 @@ public class HandlerResolver {
             } else {
                 LOGGER.info("Moving to value tree children");
                 Iterator<Map.Entry<String, JsonTree>> fields = current.getValue().getFieldIterator();
-                boolean foundAny = false;
+                boolean foundAny = fields.hasNext();
                 while (fields.hasNext()) {
                     Map.Entry<String, JsonTree> field = fields.next();
                     LOGGER.info("Adding to queue: {}", field.getKey());
                     queue.add(createNewNodeToVisit(current, field.getKey(), field.getValue()));
-                    foundAny = true;
                 }
                 if (!foundAny) {
                     throw new PatcherException("No handler found on path " + current.getPathParameters());

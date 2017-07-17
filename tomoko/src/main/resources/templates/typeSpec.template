@@ -44,7 +44,7 @@ public class ${prefix.name}TypeSpec<#if parameters><<#list 1..prefix.size as ind
         return type(Types.booleanValue());
     }
 
-    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Double> real() {
+    public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Double> number() {
         return type(Types.doubleValue());
     }
 

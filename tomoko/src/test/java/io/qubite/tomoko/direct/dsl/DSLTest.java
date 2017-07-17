@@ -33,7 +33,7 @@ public class DSLTest {
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
         TreeSpecificationDSL root = TreeSpecificationDSL.root();
-        UnaryAddDescriptor<Integer, String> biConsumerPath = root.path().text(TICKETS_NODE).integer().text(TITLE_NODE).handleAdd().string().handle(biConsumer);
+        UnaryAddDescriptor<Integer, String> biConsumerPath = root.emptyPath().path(TICKETS_NODE).integer().path(TITLE_NODE).handleAdd().string().handle(biConsumer);
         TreeSpecification tree = root.toTree();
         String providedValue = "asdf";
         int pathParameter = 1;

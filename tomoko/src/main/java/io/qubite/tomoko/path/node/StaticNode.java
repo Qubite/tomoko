@@ -10,6 +10,9 @@ public class StaticNode implements ValuelessNode {
     private final String name;
 
     StaticNode(String name) {
+        if (name.contains("/")) {
+            throw new IllegalArgumentException("Static node cannot contain a slash character");
+        }
         this.name = name;
     }
 

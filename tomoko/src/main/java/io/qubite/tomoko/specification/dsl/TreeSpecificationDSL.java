@@ -21,7 +21,7 @@ public class TreeSpecificationDSL {
         return new TreeSpecificationDSL(TreeSpecification.builder());
     }
 
-    public NullaryPath path() {
+    public NullaryPath emptyPath() {
         return new NullaryPath(builder, PathTemplate.empty());
     }
 

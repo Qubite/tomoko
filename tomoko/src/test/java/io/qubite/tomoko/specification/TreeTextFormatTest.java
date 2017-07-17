@@ -25,9 +25,9 @@ public class TreeTextFormatTest {
     @Test
     public void name() throws Exception {
         TreeSpecificationDSL root = TreeSpecificationDSL.root();
-        root.path().text("asdf2").text("title").handleAdd().string().handle(consumer);
-        root.path().text("asdf2").text("description").handleAdd().string().handle(consumer);
-        root.path().text("asdf").integer().handleAdd().string().handle(biConsumer);
+        root.emptyPath().path("asdf2/title").handleAdd().string().handle(consumer);
+        root.emptyPath().path("asdf2/description").handleAdd().string().handle(consumer);
+        root.emptyPath().path("asdf").integer().handleAdd().string().handle(biConsumer);
         TreeSpecification tree = root.toTree();
         TreeTextFormat underTest = new TreeTextFormat();
         String stringRepresentation = underTest.treeToString(tree);

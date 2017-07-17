@@ -94,6 +94,14 @@ public class OperationExecutorTest {
         verify(addHandlerWithParameter).accept(2, "qerw");
     }
 
+    @Test(expected = PatcherException.class)
+    public void execute_stringValueInIntegerNode_exception() throws Exception {
+        TreeSpecification specification = createPatcher();
+        DirectTree value = DirectTree.builder().setValue("", "stringValue").build();
+        OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
+        operationExecutor.execute(specification, addOperation);
+    }
+
     private Patch createSingleComplexValueAsdf() {
         List<OperationDto> operations = new ArrayList<>();
         DirectTree valueTree = DirectTree.builder().setValue(Paths.of("asdf"), "qwer").setValue(Paths.of("asdf33", "2"), "qerw").build();

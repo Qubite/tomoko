@@ -97,6 +97,24 @@ public class DirectTree implements JsonTree {
         this.children.putAll(children);
     }
 
+    @Override
+    public String toString() {
+        if (isLeaf()) {
+            return value.toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{");
+            for (Map.Entry<String, DirectTree> entry : children.entrySet()) {
+                builder.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(", ");
+            }
+            if (children.entrySet().size() > 1) {
+                builder.setLength(builder.length() - 2);
+            }
+            builder.append("}");
+            return builder.toString();
+        }
+    }
+
     private static class ChildIterator implements Iterator<Map.Entry<String, JsonTree>> {
 
         private final Iterator<Map.Entry<String, DirectTree>> originalIterator;
