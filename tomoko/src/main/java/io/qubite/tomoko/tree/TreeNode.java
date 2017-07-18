@@ -9,9 +9,6 @@ import io.qubite.tomoko.path.node.PathNode;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by edhendil on 13.08.16.
- */
 public class TreeNode<H> implements Tree<H> {
 
     private final PathNode pathNode;

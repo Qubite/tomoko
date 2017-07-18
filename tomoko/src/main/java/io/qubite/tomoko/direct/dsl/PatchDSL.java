@@ -9,9 +9,6 @@ import io.qubite.tomoko.specification.dsl.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by edhendil on 03.10.16.
- */
 public class PatchDSL {
 
     private final List<OperationDto> operations;

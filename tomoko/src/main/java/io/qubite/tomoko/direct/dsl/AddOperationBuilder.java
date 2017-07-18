@@ -10,9 +10,6 @@ import io.qubite.tomoko.specification.dsl.NullaryAddDescriptor;
 import io.qubite.tomoko.specification.dsl.TernaryAddDescriptor;
 import io.qubite.tomoko.specification.dsl.UnaryAddDescriptor;
 
-/**
- * Created by edhendil on 30.08.16.
- */
 public class AddOperationBuilder {
 
     private final DirectTreeBuilder builder;

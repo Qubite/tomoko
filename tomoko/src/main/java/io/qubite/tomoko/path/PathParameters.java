@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by edhendil on 12.08.16.
- * <p>
  * Immutable.
  */
 public class PathParameters {

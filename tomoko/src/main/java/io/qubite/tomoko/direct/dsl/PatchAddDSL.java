@@ -8,9 +8,6 @@ import io.qubite.tomoko.specification.dsl.UnaryAddDescriptor;
 
 import java.util.List;
 
-/**
- * Created by edhendil on 03.10.16.
- */
 public class PatchAddDSL {
 
     private final List<OperationDto> operations;

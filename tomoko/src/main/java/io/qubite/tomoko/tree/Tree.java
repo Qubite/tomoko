@@ -6,9 +6,6 @@ import io.qubite.tomoko.path.node.PathNode;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by edhendil on 17.08.16.
- */
 public interface Tree<H> {
 
     PathNode getPathNode();

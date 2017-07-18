@@ -6,9 +6,6 @@ import io.qubite.tomoko.type.ValueType;
 
 import java.util.function.BiConsumer;
 
-/**
- * Created by edhendil on 11.08.16.
- */
 public class ValueUnaryHandler<A, T> implements ValueHandler<T> {
 
     private final ValueType parameterClass;

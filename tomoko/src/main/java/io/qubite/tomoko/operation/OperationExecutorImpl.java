@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by edhendil on 17.08.16.
- */
 public class OperationExecutorImpl implements OperationExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OperationExecutorImpl.class);

@@ -2,9 +2,6 @@ package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 public class IntegerNode implements ValueNode<Integer> {
 
     @Override

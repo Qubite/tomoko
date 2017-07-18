@@ -4,9 +4,6 @@ import io.qubite.tomoko.handler.TriConsumer;
 import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.path.PathTemplate;
 
-/**
- * Created by edhendil on 29.08.16.
- */
 public class ValuelessTernaryHandler<A, B, C> implements ValuelessHandler {
 
     private final PathTemplate<A> firstParameterNode;

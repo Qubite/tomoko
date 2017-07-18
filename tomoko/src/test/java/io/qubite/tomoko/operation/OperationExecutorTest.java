@@ -24,9 +24,6 @@ import java.util.function.Consumer;
 
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class OperationExecutorTest {
 

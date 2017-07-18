@@ -4,9 +4,6 @@ import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathParameters;
 
-/**
- * Created by edhendil on 13.08.16.
- */
 public class Operations {
 
     private Operations() {

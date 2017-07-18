@@ -5,9 +5,6 @@ import io.qubite.tomoko.json.JsonTree;
 import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.tree.TreeNode;
 
-/**
- * Created by edhendil on 15.08.16.
- */
 class HandlerResolutionContext {
 
     private final PathParameters pathParameters;

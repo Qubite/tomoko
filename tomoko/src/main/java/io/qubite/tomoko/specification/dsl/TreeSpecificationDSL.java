@@ -6,9 +6,6 @@ import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
 
-/**
- * Created by edhendil on 29.08.16.
- */
 public class TreeSpecificationDSL {
 
     private final TreeSpecificationBuilder builder;

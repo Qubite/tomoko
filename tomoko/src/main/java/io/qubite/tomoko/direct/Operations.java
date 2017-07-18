@@ -4,9 +4,6 @@ import io.qubite.tomoko.json.CommandType;
 import io.qubite.tomoko.json.OperationDto;
 import io.qubite.tomoko.path.Path;
 
-/**
- * Created by edhendil on 19.08.16.
- */
 public class Operations {
 
     private Operations() {

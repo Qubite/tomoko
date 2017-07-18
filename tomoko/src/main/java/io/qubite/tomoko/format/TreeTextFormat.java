@@ -10,9 +10,6 @@ import io.qubite.tomoko.tree.TreeNode;
 
 import java.util.*;
 
-/**
- * Created by edhendil on 30.08.16.
- */
 public class TreeTextFormat {
 
     public String treeToString(TreeSpecification treeSpecification) {

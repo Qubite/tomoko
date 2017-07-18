@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by edhendil on 11.08.16.
- * <p>
  * Immutable
  */
 public class Path {

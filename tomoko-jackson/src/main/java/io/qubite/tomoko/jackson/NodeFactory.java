@@ -8,9 +8,6 @@ import io.qubite.tomoko.json.JsonTree;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by edhendil on 19.08.16.
- */
 class NodeFactory {
 
     private final ObjectMapper objectMapper;

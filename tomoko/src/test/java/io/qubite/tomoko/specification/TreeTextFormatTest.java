@@ -10,9 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * Created by edhendil on 30.08.16.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class TreeTextFormatTest {
 

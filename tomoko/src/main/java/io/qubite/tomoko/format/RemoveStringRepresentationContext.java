@@ -5,9 +5,6 @@ import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.tree.TreeNode;
 
-/**
- * Created by edhendil on 30.08.16.
- */
 public class RemoveStringRepresentationContext {
 
     private final PathTemplate<?> pathTemplate;

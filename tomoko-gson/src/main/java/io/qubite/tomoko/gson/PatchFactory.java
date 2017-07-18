@@ -12,9 +12,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by edhendil on 03.09.16.
- */
 public class PatchFactory {
 
     private static final ValueType<List<GsonOperationDto>> TYPE = Types.list(GsonOperationDto.class);

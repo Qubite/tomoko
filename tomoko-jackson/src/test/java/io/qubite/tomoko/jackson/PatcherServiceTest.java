@@ -9,9 +9,6 @@ import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class PatcherServiceTest {
 

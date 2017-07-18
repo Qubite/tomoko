@@ -3,9 +3,6 @@ package io.qubite.tomoko.specification.dsl;
 import io.qubite.tomoko.PatcherException;
 import net.jodah.typetools.TypeResolver;
 
-/**
- * Created by edhendil on 03.09.16.
- */
 class DslPreconditions {
 
     private DslPreconditions() {

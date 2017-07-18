@@ -13,9 +13,6 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.assertNotNull;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class BasePatchSpecificationTest {
 

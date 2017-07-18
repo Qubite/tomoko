@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by edhendil on 28.08.16.
- */
 public class Paths {
 
     private Paths() {

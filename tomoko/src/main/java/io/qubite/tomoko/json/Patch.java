@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by edhendil on 03.09.16.
- */
 public class Patch {
 
     private final List<OperationDto> operations;

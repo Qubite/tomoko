@@ -5,9 +5,6 @@ import io.qubite.tomoko.json.Patch;
 import io.qubite.tomoko.operation.OperationExecutor;
 import io.qubite.tomoko.specification.TreeSpecification;
 
-/**
- * Created by edhendil on 29.08.16.
- */
 class PatcherImpl implements Patcher {
 
     private final TreeSpecification treeSpecification;

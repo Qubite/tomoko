@@ -5,9 +5,6 @@ import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.type.ValueType;
 
-/**
- * Created by edhendil on 29.08.16.
- */
 public class ValueTernaryHandler<A, B, C, T> implements ValueHandler<T> {
 
     private final ValueType parameterClass;

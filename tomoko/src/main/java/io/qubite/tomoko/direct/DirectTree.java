@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by edhendil on 28.08.16.
- */
 public class DirectTree implements JsonTree {
 
     private final Map<String, DirectTree> children;

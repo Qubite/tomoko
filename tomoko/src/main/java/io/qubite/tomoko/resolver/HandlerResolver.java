@@ -14,9 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-/**
- * Created by edhendil on 17.08.16.
- */
 public class HandlerResolver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HandlerResolver.class);

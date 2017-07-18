@@ -3,9 +3,6 @@ package io.qubite.tomoko.path;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by edhendil on 29.08.16.
- */
 public class PathTemplateParameters {
 
     private final Map<Integer, Object> parameters = new HashMap<>();

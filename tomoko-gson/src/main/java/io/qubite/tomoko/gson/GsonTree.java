@@ -12,9 +12,6 @@ import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by edhendil on 16.08.16.
- */
 class GsonTree implements JsonTree {
 
     private final JsonElement element;

@@ -3,9 +3,6 @@ package io.qubite.tomoko.direct;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.Paths;
 
-/**
- * Created by edhendil on 28.08.16.
- */
 public class DirectTreeBuilder {
 
     private DirectTree root;

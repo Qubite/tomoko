@@ -9,9 +9,6 @@ import net.jodah.typetools.TypeResolver;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * Created by edhendil on 18.07.17.
- */
 public class TypeExtractor {
 
     private TypeExtractor() {

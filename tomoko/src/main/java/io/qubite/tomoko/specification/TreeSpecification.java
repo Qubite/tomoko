@@ -5,9 +5,6 @@ import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNodes;
 
-/**
- * Created by edhendil on 17.08.16.
- */
 public class TreeSpecification {
 
     private final Tree<ValueHandler<?>> addHandlerTree;

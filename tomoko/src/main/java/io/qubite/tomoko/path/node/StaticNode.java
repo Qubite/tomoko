@@ -2,9 +2,6 @@ package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
 
-/**
- * Created by edhendil on 10.08.16.
- */
 public class StaticNode implements ValuelessNode {
 
     private final String name;

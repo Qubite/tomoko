@@ -8,9 +8,6 @@ import io.qubite.tomoko.type.ValueType;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 public class Handlers {
 
     private Handlers() {

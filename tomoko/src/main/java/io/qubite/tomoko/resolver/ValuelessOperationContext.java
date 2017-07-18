@@ -3,9 +3,6 @@ package io.qubite.tomoko.resolver;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathParameters;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 public class ValuelessOperationContext {
 
     private final PathParameters pathParameters;

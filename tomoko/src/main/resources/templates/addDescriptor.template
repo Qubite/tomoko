@@ -9,6 +9,15 @@ import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.PathTemplateParameters;
 import io.qubite.tomoko.type.ValueType;
 
+/**
+ * Holds information about a particular registered ADD handler including the path, order and type of path parameters and type of the expected value.
+ * Allows for type-safe patch creation.
+ *
+<#if parameters><#list 1..prefix.size as index>
+ * @param <${config.generics[index-1].code}> ${config.generics[index-1].parameter} path parameter type
+</#list></#if>
+ * @param <V> value object type
+ */
 public class ${prefix.name}AddDescriptor<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> {
 
     private final PathTemplate<?> path;
@@ -25,6 +34,14 @@ public class ${prefix.name}AddDescriptor<<#if parameters><#list 1..prefix.size a
         this.valueType = valueType;
     }
 
+    /**
+     * Creates a path to the handler represented by this descriptor in a type-safe way.
+     *
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @return
+     */
     public Path createPath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
         PathTemplateParameters parameters = PathTemplateParameters.empty();
         <#if parameters><#list 1..prefix.size as index>

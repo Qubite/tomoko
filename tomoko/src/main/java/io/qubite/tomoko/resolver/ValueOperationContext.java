@@ -4,9 +4,6 @@ import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.json.JsonTree;
 import io.qubite.tomoko.path.PathParameters;
 
-/**
- * Created by edhendil on 17.08.16.
- */
 public class ValueOperationContext<T> {
 
     private final PathParameters pathParameters;

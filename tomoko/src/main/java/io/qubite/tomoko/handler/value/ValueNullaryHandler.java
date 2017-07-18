@@ -5,9 +5,6 @@ import io.qubite.tomoko.type.ValueType;
 
 import java.util.function.Consumer;
 
-/**
- * Created by edhendil on 12.08.16.
- */
 public class ValueNullaryHandler<T> implements ValueHandler<T> {
 
     private final ValueType parameterClass;

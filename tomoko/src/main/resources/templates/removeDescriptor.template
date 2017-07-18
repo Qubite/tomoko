@@ -8,6 +8,14 @@ import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.PathTemplateParameters;
 
+/**
+ * Holds information about a particular registered REMOVE handler including the path, order and type of path parameters.
+ * Allows for type-safe patch creation.
+ *
+<#if parameters><#list 1..prefix.size as index>
+ * @param <${config.generics[index-1].code}> ${config.generics[index-1].parameter} path parameter type
+</#list></#if>
+ */
 public class ${prefix.name}RemoveDescriptor<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
 
     private final PathTemplate<?> pathTemplate;
@@ -22,6 +30,14 @@ public class ${prefix.name}RemoveDescriptor<#if parameters><<#list 1..prefix.siz
         </#list></#if>
     }
 
+    /**
+     * Creates a path to the handler represented by this descriptor in a type-safe way.
+     *
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @return
+     */
     public Path createPath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
         PathTemplateParameters parameters = PathTemplateParameters.empty();
         <#if parameters><#list 1..prefix.size as index>

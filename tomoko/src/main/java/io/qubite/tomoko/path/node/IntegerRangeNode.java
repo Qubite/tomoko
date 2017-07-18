@@ -2,9 +2,6 @@ package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
 
-/**
- * Created by edhendil on 03.09.16.
- */
 public class IntegerRangeNode implements ValueNode<Integer> {
 
     private final int minValue;

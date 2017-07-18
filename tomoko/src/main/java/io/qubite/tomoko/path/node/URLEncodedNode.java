@@ -6,9 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-/**
- * Created by edhendil on 17.07.17.
- */
 public class URLEncodedNode implements ValueNode<String> {
 
     @Override

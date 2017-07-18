@@ -10,9 +10,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by edhendil on 19.08.16.
- */
 class NodeFactory {
 
     private final Gson gson;

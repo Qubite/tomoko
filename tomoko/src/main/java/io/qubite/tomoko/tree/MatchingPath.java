@@ -2,9 +2,6 @@ package io.qubite.tomoko.tree;
 
 import io.qubite.tomoko.path.PathParameters;
 
-/**
- * Created by edhendil on 15.08.16.
- */
 public class MatchingPath<H> {
 
     private final PathParameters pathParameters;

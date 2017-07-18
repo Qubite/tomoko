@@ -1,8 +1,5 @@
 package io.qubite.tomoko;
 
-/**
- * Created by edhendil on 16.08.16.
- */
 public class PatcherException extends RuntimeException {
 
     public PatcherException() {

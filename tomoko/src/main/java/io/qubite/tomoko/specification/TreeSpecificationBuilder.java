@@ -13,9 +13,6 @@ import io.qubite.tomoko.type.ValueType;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * Created by edhendil on 15.08.16.
- */
 public class TreeSpecificationBuilder {
 
     private final TreeNode<ValueHandler<?>> addRoot;

@@ -14,9 +14,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by edhendil on 20.08.16.
- */
 public class JacksonTreeTest {
 
     private NodeFactory factory;
