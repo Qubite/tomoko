@@ -97,7 +97,7 @@ public class OperationExecutorTest {
     @Test(expected = PatcherException.class)
     public void execute_stringValueInIntegerNode_exception() throws Exception {
         TreeSpecification specification = createPatcher();
-        DirectTree value = DirectTree.builder().setValue("", "stringValue").build();
+        DirectTree value = DirectTree.of("stringValue");
         OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
         operationExecutor.execute(specification, addOperation);
     }
@@ -118,7 +118,7 @@ public class OperationExecutorTest {
         PathTemplate<Void> asdfDeepPath = PathTemplate.empty().then(PathNodes.staticNode("author")).then(PathNodes.staticNode("firstName"));
         builder.handleReplace(asdfDeepPath, Types.string(), valueHandler);
         TreeSpecification specification = builder.build();
-        DirectTree value = DirectTree.builder().setValue("", "stringValue").build();
+        DirectTree value = DirectTree.of("stringValue");
         OperationDto operation = Operations.replace("/author/firstName", value);
         operationExecutor.execute(specification, operation);
         verify(valueHandler).accept("stringValue");

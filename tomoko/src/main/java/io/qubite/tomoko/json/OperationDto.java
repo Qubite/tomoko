@@ -20,6 +20,10 @@ public class OperationDto {
         return new OperationDto(path, CommandType.ADD, value);
     }
 
+    public static OperationDto replace(String path, JsonTree value) {
+        return new OperationDto(path, CommandType.REPLACE, value);
+    }
+
     public static OperationDto remove(String path) {
         return new OperationDto(path, CommandType.REMOVE, null);
     }

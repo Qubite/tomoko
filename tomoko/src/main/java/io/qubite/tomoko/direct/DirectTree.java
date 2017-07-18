@@ -28,6 +28,10 @@ public class DirectTree implements JsonTree {
         return new DirectTreeBuilder(DirectTree.empty());
     }
 
+    public static <V> DirectTree of(V value) {
+        return builder().setValue("", value).build();
+    }
+
     static DirectTree empty() {
         return new DirectTree(new HashMap<>(), false, null);
     }

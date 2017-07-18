@@ -1,5 +1,6 @@
 package io.qubite.tomoko.direct.dsl;
 
+import io.qubite.tomoko.direct.DirectTree;
 import io.qubite.tomoko.json.OperationDto;
 import io.qubite.tomoko.json.Patch;
 import io.qubite.tomoko.path.Path;
@@ -35,15 +36,39 @@ public class PatchDSL {
         return this;
     }
 
-    public <A, B> PatchDSL remove(BinaryRemoveDescriptor descriptor, A firstParameter, B secondParameter) {
+    public <A, B> PatchDSL remove(BinaryRemoveDescriptor<A, B> descriptor, A firstParameter, B secondParameter) {
         Path path = descriptor.createPath(firstParameter, secondParameter);
         operations.add(OperationDto.remove(path.toString()));
         return this;
     }
 
-    public <A, B, C> PatchDSL remove(TernaryRemoveDescriptor descriptor, A firstParameter, B secondParameter, C thirdParameter) {
+    public <A, B, C> PatchDSL remove(TernaryRemoveDescriptor<A, B, C> descriptor, A firstParameter, B secondParameter, C thirdParameter) {
         Path path = descriptor.createPath(firstParameter, secondParameter, thirdParameter);
         operations.add(OperationDto.remove(path.toString()));
+        return this;
+    }
+
+    public <V> PatchDSL replace(NullaryReplaceDescriptor<V> descriptor, V value) {
+        Path path = descriptor.createPath();
+        operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
+        return this;
+    }
+
+    public <A, V> PatchDSL replace(UnaryReplaceDescriptor<A, V> descriptor, A firstParameter, V value) {
+        Path path = descriptor.createPath(firstParameter);
+        operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
+        return this;
+    }
+
+    public <A, B, V> PatchDSL replace(BinaryReplaceDescriptor<A, B, V> descriptor, A firstParameter, B secondParameter, V value) {
+        Path path = descriptor.createPath(firstParameter, secondParameter);
+        operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
+        return this;
+    }
+
+    public <A, B, C, V> PatchDSL replace(TernaryReplaceDescriptor<A, B, C, V> descriptor, A firstParameter, B secondParameter, C thirdParameter, V value) {
+        Path path = descriptor.createPath(firstParameter, secondParameter, thirdParameter);
+        operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
         return this;
     }
 
