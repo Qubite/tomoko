@@ -1,4 +1,4 @@
-package io.qubite.tomoko.handler.remove;
+package io.qubite.tomoko.handler.valueless;
 
 import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.path.PathTemplate;
@@ -8,13 +8,13 @@ import java.util.function.BiConsumer;
 /**
  * Created by edhendil on 13.08.16.
  */
-public class RemoveBinaryHandler<A, B> implements RemoveHandler {
+public class ValuelessBinaryHandler<A, B> implements ValuelessHandler {
 
     private final PathTemplate<A> firstParameterNode;
     private final PathTemplate<B> secondParameterNode;
     private final BiConsumer<A, B> consumer;
 
-    public RemoveBinaryHandler(PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, BiConsumer<A, B> consumer) {
+    public ValuelessBinaryHandler(PathTemplate<A> firstParameterNode, PathTemplate<B> secondParameterNode, BiConsumer<A, B> consumer) {
         this.firstParameterNode = firstParameterNode;
         this.secondParameterNode = secondParameterNode;
         this.consumer = consumer;

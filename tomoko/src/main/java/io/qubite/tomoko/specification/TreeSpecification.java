@@ -1,7 +1,7 @@
 package io.qubite.tomoko.specification;
 
-import io.qubite.tomoko.handler.add.AddHandler;
-import io.qubite.tomoko.handler.remove.RemoveHandler;
+import io.qubite.tomoko.handler.value.ValueHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNodes;
 
@@ -10,24 +10,29 @@ import io.qubite.tomoko.tree.TreeNodes;
  */
 public class TreeSpecification {
 
-    private final Tree<AddHandler<?>> addHandlerTree;
-    private final Tree<RemoveHandler> removeHandlerTree;
+    private final Tree<ValueHandler<?>> addHandlerTree;
+    private final Tree<ValuelessHandler> removeHandlerTree;
+    private final Tree<ValueHandler<?>> replaceHandlerTree;
 
-    TreeSpecification(Tree<AddHandler<?>> addHandlerTree, Tree<RemoveHandler> removeHandlerTree) {
+    TreeSpecification(Tree<ValueHandler<?>> addHandlerTree, Tree<ValuelessHandler> removeHandlerTree, Tree<ValueHandler<?>> replaceHandlerTree) {
         this.addHandlerTree = addHandlerTree;
         this.removeHandlerTree = removeHandlerTree;
+        this.replaceHandlerTree = replaceHandlerTree;
     }
 
     public static TreeSpecificationBuilder builder() {
-        return new TreeSpecificationBuilder(TreeNodes.root(), TreeNodes.root());
+        return new TreeSpecificationBuilder(TreeNodes.root(), TreeNodes.root(), TreeNodes.root());
     }
 
-    public Tree<AddHandler<?>> getAddHandlerTree() {
+    public Tree<ValueHandler<?>> getAddHandlerTree() {
         return addHandlerTree;
     }
 
-    public Tree<RemoveHandler> getRemoveHandlerTree() {
+    public Tree<ValuelessHandler> getRemoveHandlerTree() {
         return removeHandlerTree;
     }
 
+    public Tree<ValueHandler<?>> getReplaceHandlerTree() {
+        return replaceHandlerTree;
+    }
 }

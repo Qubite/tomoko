@@ -1,6 +1,6 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.handler.remove.RemoveHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathParameters;
 
 /**
@@ -9,9 +9,9 @@ import io.qubite.tomoko.path.PathParameters;
 public class RemoveOperation implements Operation {
 
     private final PathParameters pathParameters;
-    private final RemoveHandler handler;
+    private final ValuelessHandler handler;
 
-    public RemoveOperation(PathParameters pathParameters, RemoveHandler handler) {
+    public RemoveOperation(PathParameters pathParameters, ValuelessHandler handler) {
         this.pathParameters = pathParameters;
         this.handler = handler;
     }

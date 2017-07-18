@@ -33,18 +33,18 @@ public class OperationExecutorTest {
     private OperationExecutorImpl operationExecutor = new OperationExecutorImpl(new HandlerResolver());
 
     @Mock
-    private Consumer<String> addHandler;
+    private Consumer<String> valueHandler;
     @Mock
-    private BiConsumer<Integer, String> addHandlerWithParameter;
+    private BiConsumer<Integer, String> valueHandlerWithParameter;
     @Mock
-    private Runnable removeHandler;
+    private Runnable valuelessHandler;
 
     @Test
     public void execute_validAddOperations() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createMultipleOperation());
-        verify(addHandler).accept("qwer");
-        verify(addHandlerWithParameter).accept(2, "rewq");
+        verify(valueHandler).accept("qwer");
+        verify(valueHandlerWithParameter).accept(2, "rewq");
     }
 
     private Patch createMultipleOperation() {
@@ -77,7 +77,7 @@ public class OperationExecutorTest {
     public void execute_validRemoveOperation() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createSingleRemoveOperation());
-        verify(removeHandler).run();
+        verify(valuelessHandler).run();
     }
 
     private Patch createSingleRemoveOperation() {
@@ -90,8 +90,8 @@ public class OperationExecutorTest {
     public void execute_deepHandlerForComplexValue() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createSingleComplexValueAsdf());
-        verify(addHandler).accept("qwer");
-        verify(addHandlerWithParameter).accept(2, "qerw");
+        verify(valueHandler).accept("qwer");
+        verify(valueHandlerWithParameter).accept(2, "qerw");
     }
 
     @Test(expected = PatcherException.class)
@@ -100,6 +100,28 @@ public class OperationExecutorTest {
         DirectTree value = DirectTree.builder().setValue("", "stringValue").build();
         OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
         operationExecutor.execute(specification, addOperation);
+    }
+
+    @Test(expected = PatcherException.class)
+    public void execute_removeOperationWithoutHandler_exception() throws Exception {
+        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PathTemplate<Void> asdfDeepPath = PathTemplate.empty().then(PathNodes.staticNode("author")).then(PathNodes.staticNode("firstName"));
+        builder.handleRemove(asdfDeepPath, valuelessHandler);
+        TreeSpecification specification = builder.build();
+        OperationDto operation = Operations.remove("/author");
+        operationExecutor.execute(specification, operation);
+    }
+
+    @Test
+    public void execute_replaceOperation() throws Exception {
+        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PathTemplate<Void> asdfDeepPath = PathTemplate.empty().then(PathNodes.staticNode("author")).then(PathNodes.staticNode("firstName"));
+        builder.handleReplace(asdfDeepPath, Types.string(), valueHandler);
+        TreeSpecification specification = builder.build();
+        DirectTree value = DirectTree.builder().setValue("", "stringValue").build();
+        OperationDto operation = Operations.replace("/author/firstName", value);
+        operationExecutor.execute(specification, operation);
+        verify(valueHandler).accept("stringValue");
     }
 
     private Patch createSingleComplexValueAsdf() {
@@ -113,9 +135,9 @@ public class OperationExecutorTest {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
         PathTemplate<Void> asdfPath = PathTemplate.empty().then(PathNodes.staticNode("asdf"));
         PathTemplate<Integer> integerNodePath = PathTemplate.empty().then(PathNodes.staticNode("asdf33")).then(PathNodes.integerNode());
-        builder.handleAdd(asdfPath, Types.simple(String.class), addHandler);
-        builder.handleAdd(integerNodePath, Types.simple(String.class), integerNodePath, addHandlerWithParameter);
-        builder.handleRemove(asdfPath, removeHandler);
+        builder.handleAdd(asdfPath, Types.simple(String.class), valueHandler);
+        builder.handleAdd(integerNodePath, Types.simple(String.class), integerNodePath, valueHandlerWithParameter);
+        builder.handleRemove(asdfPath, valuelessHandler);
         return builder.build();
     }
 

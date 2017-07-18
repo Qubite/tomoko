@@ -1,7 +1,7 @@
 package io.qubite.tomoko.format;
 
-import io.qubite.tomoko.handler.add.AddHandler;
-import io.qubite.tomoko.handler.remove.RemoveHandler;
+import io.qubite.tomoko.handler.value.ValueHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.specification.TreeSpecification;
@@ -21,11 +21,11 @@ public class TreeTextFormat {
 
     public String addHandlersToString(TreeSpecification treeSpecification) {
         StringBuilder builder = new StringBuilder();
-        Tree<AddHandler<?>> addTree = treeSpecification.getAddHandlerTree();
+        Tree<ValueHandler<?>> addTree = treeSpecification.getAddHandlerTree();
         if (addTree.isLeaf() && !addTree.isHandlerRegistered()) {
             builder.append("No ADD handlers");
         } else {
-            List<AddEntry> allHandlers = findAllAddHandlers((TreeNode<AddHandler<?>>) addTree);
+            List<AddEntry> allHandlers = findAllAddHandlers((TreeNode<ValueHandler<?>>) addTree);
             for (AddEntry entry : allHandlers) {
                 builder.append(entry.toString());
                 builder.append("\n");
@@ -36,11 +36,11 @@ public class TreeTextFormat {
 
     public String removeHandlersToString(TreeSpecification treeSpecification) {
         StringBuilder builder = new StringBuilder();
-        Tree<RemoveHandler> removeTree = treeSpecification.getRemoveHandlerTree();
+        Tree<ValuelessHandler> removeTree = treeSpecification.getRemoveHandlerTree();
         if (removeTree.isLeaf() && !removeTree.isHandlerRegistered()) {
             builder.append("No REMOVE handlers");
         } else {
-            List<PathTemplate> allHandlers = findAllRemoveHandlers((TreeNode<RemoveHandler>) removeTree);
+            List<PathTemplate> allHandlers = findAllRemoveHandlers((TreeNode<ValuelessHandler>) removeTree);
             for (PathTemplate path : allHandlers) {
                 builder.append(path.toString());
                 builder.append("\n");
@@ -49,7 +49,7 @@ public class TreeTextFormat {
         return builder.toString();
     }
 
-    private List<AddEntry> findAllAddHandlers(TreeNode<AddHandler<?>> addTreeRoot) {
+    private List<AddEntry> findAllAddHandlers(TreeNode<ValueHandler<?>> addTreeRoot) {
         List<AddEntry> result = new ArrayList<>();
         Queue<AddStringRepresentationContext> queue = new LinkedList<>();
         AddStringRepresentationContext context = AddStringRepresentationContext.of(PathTemplate.empty(), addTreeRoot);
@@ -59,7 +59,7 @@ public class TreeTextFormat {
             if (current.getNode().isLeaf()) {
                 result.add(new AddEntry(current.getPathTemplate(), current.getNode().getHandler()));
             } else {
-                for (Map.Entry<PathNode, TreeNode<AddHandler<?>>> entry : current.getNode().getChildren().entrySet()) {
+                for (Map.Entry<PathNode, TreeNode<ValueHandler<?>>> entry : current.getNode().getChildren().entrySet()) {
                     queue.add(current.with(entry.getKey(), entry.getValue()));
                 }
             }
@@ -67,7 +67,7 @@ public class TreeTextFormat {
         return result;
     }
 
-    private List<PathTemplate> findAllRemoveHandlers(TreeNode<RemoveHandler> removeTreeRoot) {
+    private List<PathTemplate> findAllRemoveHandlers(TreeNode<ValuelessHandler> removeTreeRoot) {
         List<PathTemplate> result = new ArrayList<>();
         Queue<RemoveStringRepresentationContext> queue = new LinkedList<>();
         RemoveStringRepresentationContext context = RemoveStringRepresentationContext.of(PathTemplate.empty(), removeTreeRoot);
@@ -78,7 +78,7 @@ public class TreeTextFormat {
                 result.add(current.getPathTemplate());
             }
             if (!current.getNode().isLeaf()) {
-                for (Map.Entry<PathNode, TreeNode<RemoveHandler>> entry : current.getNode().getChildren().entrySet()) {
+                for (Map.Entry<PathNode, TreeNode<ValuelessHandler>> entry : current.getNode().getChildren().entrySet()) {
                     queue.add(current.with(entry.getKey(), entry.getValue()));
                 }
             }
@@ -89,9 +89,9 @@ public class TreeTextFormat {
     private static class AddEntry {
 
         private final PathTemplate pathTemplate;
-        private final AddHandler<?> handler;
+        private final ValueHandler<?> handler;
 
-        private AddEntry(PathTemplate pathTemplate, AddHandler<?> handler) {
+        private AddEntry(PathTemplate pathTemplate, ValueHandler<?> handler) {
             this.pathTemplate = pathTemplate;
             this.handler = handler;
         }
@@ -100,7 +100,7 @@ public class TreeTextFormat {
             return pathTemplate;
         }
 
-        public AddHandler<?> getHandler() {
+        public ValueHandler<?> getHandler() {
             return handler;
         }
 

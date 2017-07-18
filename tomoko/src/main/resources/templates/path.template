@@ -35,59 +35,59 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         this.path = path;
     }
 
-    public ${prefix.name}Path<#if parameters><${genericList}></#if> path(ValuelessNode node) {
+    public ${prefix.name}Path<#if parameters><${genericList}></#if> node(ValuelessNode node) {
         return new ${prefix.name}Path(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path.then(node));
     }
 
 <#if prefix?has_next>
     <#assign nextCode = config.generics[prefix?index].code>
     <#assign nextPrefix = config.prefixes[prefix?index+1]>
-    public <${nextCode}> ${config.prefixes[prefix?index+1].name}Path<${genericList}<#if parameters>, </#if>${nextCode}> path(ValueNode<${nextCode}> node) {
+    public <${nextCode}> ${config.prefixes[prefix?index+1].name}Path<${genericList}<#if parameters>, </#if>${nextCode}> node(ValueNode<${nextCode}> node) {
         PathTemplate<${nextCode}> argPath = path.then(node);
         return new ${nextPrefix.name}Path(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>argPath, argPath);
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> string() {
-        return path(PathNodes.textNode());
+        return node(PathNodes.textNode());
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Integer> integer() {
-        return path(PathNodes.integerNode());
+        return node(PathNodes.integerNode());
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Integer> integer(int min, int max) {
-        return path(PathNodes.integerNode(min, max));
+        return node(PathNodes.integerNode(min, max));
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Integer> minInteger(int min) {
-        return path(PathNodes.minIntegerNode(min));
+        return node(PathNodes.minIntegerNode(min));
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Integer> maxInteger(int max) {
-        return path(PathNodes.maxIntegerNode(max));
+        return node(PathNodes.maxIntegerNode(max));
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Long> longParameter() {
-        return path(PathNodes.longNode());
+        return node(PathNodes.longNode());
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> regex(String regex) {
-        return path(PathNodes.regexNode(regex));
+        return node(PathNodes.regexNode(regex));
     }
 
     public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> urlEncoded() {
-        return path(PathNodes.urlEncodedNode());
+        return node(PathNodes.urlEncodedNode());
     }
 
 </#if>
-    public ${prefix.name}Path<#if parameters><${genericList}></#if> path(String text) {
+    public ${prefix.name}Path<#if parameters><${genericList}></#if> node(String text) {
         String[] nodes = text.split("/", -1);
         ${prefix.name}Path<#if parameters><${genericList}></#if> result = this;
         for (String node : nodes) {
             if (node.isEmpty()) {
                 throw new IllegalArgumentException("Path node name cannot be empty");
             }
-            result = path(PathNodes.staticNode(node));
+            result = node(PathNodes.staticNode(node));
         }
         return result;
     }
@@ -96,7 +96,7 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return new ${prefix.name}TypeSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path.then(PathNodes.endIndexNode()));
     }
 
-    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> handleAdd() {
+    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> value() {
         return new ${prefix.name}TypeSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path);
     }
 
@@ -111,21 +111,19 @@ public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>$
         return handleAdd(path, consumer);
     }
 
-    public <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> handleEndIndex(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
-        return handleAdd(path.then(PathNodes.endIndexNode()), consumer);
-    }
-
     public ${prefix.name}RemoveDescriptor<#if parameters><${genericList}></#if> handleRemove(${prefix.removeConsumer.name}<#if parameters><${genericList}></#if> consumer) {
         builder.handleRemove(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
         return new ${prefix.name}RemoveDescriptor(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path);
     }
 
+    public <V> ${prefix.name}ReplaceDescriptor<${genericList}<#if parameters>, </#if>V> handleReplace(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+        SimpleType<V> type = TypeExtractor.extractSimpleType(consumer);
+        builder.handleReplace(path, type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
+        return new ${prefix.name}ReplaceDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>type);
+    }
+
     private <V> ${prefix.name}AddDescriptor<${genericList}<#if parameters>, </#if>V> handleAdd(PathTemplate<?> path, ${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
-        Class<?>[] classes = TypeResolver.resolveRawArguments(${prefix.consumer.name}.class, consumer.getClass());
-        Class<V> valueClass = (Class<V>) classes[${prefix?index}];
-        DslPreconditions.checkNotUnknown(valueClass);
-        DslPreconditions.checkNonGeneric(valueClass);
-        SimpleType<V> type = Types.simple(valueClass);
+        SimpleType<V> type = TypeExtractor.extractSimpleType(consumer);
         builder.handleAdd(path, type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer);
         return new ${prefix.name}AddDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>type);
     }

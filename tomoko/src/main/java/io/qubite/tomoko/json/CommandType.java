@@ -2,7 +2,7 @@ package io.qubite.tomoko.json;
 
 public enum CommandType {
 
-    ADD("add"), REMOVE("remove");
+    ADD("add"), REMOVE("remove"), REPLACE("replace");
 
     private final String name;
 

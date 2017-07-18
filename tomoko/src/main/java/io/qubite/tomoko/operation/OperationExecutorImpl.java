@@ -2,15 +2,15 @@ package io.qubite.tomoko.operation;
 
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.format.TreeTextFormat;
-import io.qubite.tomoko.handler.add.AddHandler;
-import io.qubite.tomoko.handler.remove.RemoveHandler;
+import io.qubite.tomoko.handler.value.ValueHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.json.JsonTree;
 import io.qubite.tomoko.json.OperationDto;
 import io.qubite.tomoko.json.Patch;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.resolver.AddOperationContext;
 import io.qubite.tomoko.resolver.HandlerResolver;
-import io.qubite.tomoko.resolver.RemoveOperationContext;
+import io.qubite.tomoko.resolver.ValueOperationContext;
+import io.qubite.tomoko.resolver.ValuelessOperationContext;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.type.ValueType;
@@ -67,25 +67,33 @@ public class OperationExecutorImpl implements OperationExecutor {
                 }
                 parseRemoveOperation(specification.getRemoveHandlerTree(), path).execute();
                 break;
+            case REPLACE:
+                parseReplaceOperation(specification.getReplaceHandlerTree(), path, operation.getValue()).execute();
+                break;
             default:
                 throw new PatcherException("Unsupported operation type.");
         }
     }
 
-    private List<AddOperation<?>> parseAddOperation(Tree<AddHandler<?>> addHandlerTree, Path path, JsonTree value) {
-        return handlerResolver.findAddHandlers(addHandlerTree, path, value).stream().map(this::toAddOperation).collect(Collectors.toList());
+    private List<AddOperation<?>> parseAddOperation(Tree<ValueHandler<?>> addHandlerTree, Path path, JsonTree value) {
+        return handlerResolver.findValueHandlers(addHandlerTree, path, value).stream().map(this::toAddOperation).collect(Collectors.toList());
     }
 
-    private <T> AddOperation<T> toAddOperation(AddOperationContext<T> context) {
+    private <T> AddOperation<T> toAddOperation(ValueOperationContext<T> context) {
         ValueType<T> parameterClass = context.getHandler().getParameterClass();
         T parsedParameter = context.getValue().getAs(parameterClass);
         return Operations.add(context.getPathParameters(), parsedParameter, context.getHandler());
     }
 
-    private RemoveOperation parseRemoveOperation(Tree<RemoveHandler> removeHandlerTree, Path path) {
-        RemoveOperationContext matchingPath = handlerResolver
-                .findRemoveHandler(removeHandlerTree, path);
+    private RemoveOperation parseRemoveOperation(Tree<ValuelessHandler> removeHandlerTree, Path path) {
+        ValuelessOperationContext matchingPath = handlerResolver
+                .findValuelessHandler(removeHandlerTree, path);
         return Operations.remove(matchingPath.getPathParameters(), matchingPath.getHandler());
+    }
+
+    private AddOperation<?> parseReplaceOperation(Tree<ValueHandler<?>> replaceHandlerTree, Path path, JsonTree value) {
+        ValueOperationContext<?> matchingPath = handlerResolver.findValueHandler(replaceHandlerTree, path, value);
+        return toAddOperation(matchingPath);
     }
 
 }

@@ -17,11 +17,11 @@ public class TreeSpecificationDSL {
         this.builder = builder;
     }
 
-    public static TreeSpecificationDSL root() {
+    public static TreeSpecificationDSL dsl() {
         return new TreeSpecificationDSL(TreeSpecification.builder());
     }
 
-    public NullaryPath emptyPath() {
+    public NullaryPath path() {
         return new NullaryPath(builder, PathTemplate.empty());
     }
 

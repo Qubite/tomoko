@@ -28,4 +28,12 @@ public class Operations {
         return OperationDto.of(path, CommandType.REMOVE, null);
     }
 
+    public static OperationDto replace(String path, DirectTree valueTree) {
+        return OperationDto.of(path, CommandType.REPLACE, valueTree);
+    }
+
+    public static OperationDto replace(Path path, DirectTree valueTree) {
+        return OperationDto.of(path.toString(), CommandType.REPLACE, valueTree);
+    }
+
 }

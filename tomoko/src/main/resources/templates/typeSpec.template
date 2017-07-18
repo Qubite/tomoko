@@ -6,8 +6,11 @@ package io.qubite.tomoko.specification.dsl;
 
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
+import io.qubite.tomoko.type.SimpleType;
 import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
+
+import ${prefix.consumer.fullName};
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +31,24 @@ public class ${prefix.name}TypeSpec<#if parameters><<#list 1..prefix.size as ind
         this.path = path;
     }
 
+    public <V> ${prefix.name}AddDescriptor<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handleAdd(${prefix.consumer.name}<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handler) {
+        SimpleType<V> valueType = TypeExtractor.extractSimpleType(handler);
+        builder.handleAdd(path, valueType, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>handler);
+        return new ${prefix.name}AddDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>valueType);
+    }
+
+    public <V> ${prefix.name}ReplaceDescriptor<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handleReplace(${prefix.consumer.name}<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> handler) {
+        SimpleType<V> valueType = TypeExtractor.extractSimpleType(handler);
+        builder.handleReplace(path, valueType, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>handler);
+        return new ${prefix.name}ReplaceDescriptor(path, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>valueType);
+    }
+
     public <V> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> type(ValueType<V> valueType) {
         return new ${prefix.name}HandlerSpec(builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path, valueType);
+    }
+
+    public <T> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>T> type(Class<T> valueClass) {
+        return type(Types.simple(valueClass));
     }
 
     public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>String> string() {
@@ -46,10 +65,6 @@ public class ${prefix.name}TypeSpec<#if parameters><<#list 1..prefix.size as ind
 
     public ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>Double> number() {
         return type(Types.doubleValue());
-    }
-
-    public <T> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>T> of(Class<T> valueClass) {
-        return type(Types.simple(valueClass));
     }
 
     public <T> ${prefix.name}HandlerSpec<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>List<T>> list(Class<T> elementClass) {

@@ -1,9 +1,7 @@
 package io.qubite.tomoko.direct.dsl;
 
 import io.qubite.tomoko.Patcher;
-import io.qubite.tomoko.PatcherFactory;
 import io.qubite.tomoko.json.Patch;
-import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.dsl.TreeSpecificationDSL;
 import io.qubite.tomoko.specification.dsl.UnaryAddDescriptor;
 import org.junit.Test;
@@ -32,12 +30,11 @@ public class DSLTest {
 
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
-        TreeSpecificationDSL root = TreeSpecificationDSL.root();
-        UnaryAddDescriptor<Integer, String> biConsumerPath = root.emptyPath().path(TICKETS_NODE).integer().path(TITLE_NODE).handleAdd().string().handle(biConsumer);
-        TreeSpecification tree = root.toTree();
+        TreeSpecificationDSL dsl = TreeSpecificationDSL.dsl();
+        UnaryAddDescriptor<Integer, String> biConsumerPath = dsl.path().node(TICKETS_NODE).integer().node(TITLE_NODE).value().string().handleAdd(biConsumer);
         String providedValue = "asdf";
         int pathParameter = 1;
-        Patcher patcher = PatcherFactory.instance().create(tree);
+        Patcher patcher = dsl.toPatcher();
         Patch patch = PatchDSL.dsl().add(biConsumerPath, pathParameter, providedValue).toOperation().toPatch();
         patcher.execute(patch);
         verify(biConsumer).accept(pathParameter, providedValue);

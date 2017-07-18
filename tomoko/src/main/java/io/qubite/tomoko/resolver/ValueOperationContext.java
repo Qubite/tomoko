@@ -1,33 +1,33 @@
 package io.qubite.tomoko.resolver;
 
-import io.qubite.tomoko.handler.add.AddHandler;
+import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.json.JsonTree;
 import io.qubite.tomoko.path.PathParameters;
 
 /**
  * Created by edhendil on 17.08.16.
  */
-public class AddOperationContext<T> {
+public class ValueOperationContext<T> {
 
     private final PathParameters pathParameters;
-    private final AddHandler<T> handler;
+    private final ValueHandler<T> handler;
     private final JsonTree value;
 
-    AddOperationContext(PathParameters pathParameters, AddHandler<T> handler, JsonTree value) {
+    ValueOperationContext(PathParameters pathParameters, ValueHandler<T> handler, JsonTree value) {
         this.pathParameters = pathParameters;
         this.handler = handler;
         this.value = value;
     }
 
-    public static <T> AddOperationContext of(PathParameters pathParameters, AddHandler<T> handler, JsonTree value) {
-        return new AddOperationContext(pathParameters, handler, value);
+    public static <T> ValueOperationContext of(PathParameters pathParameters, ValueHandler<T> handler, JsonTree value) {
+        return new ValueOperationContext(pathParameters, handler, value);
     }
 
     public PathParameters getPathParameters() {
         return pathParameters;
     }
 
-    public AddHandler<T> getHandler() {
+    public ValueHandler<T> getHandler() {
         return handler;
     }
 
