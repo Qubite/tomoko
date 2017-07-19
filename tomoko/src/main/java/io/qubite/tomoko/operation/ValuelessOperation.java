@@ -3,12 +3,12 @@ package io.qubite.tomoko.operation;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathParameters;
 
-public class RemoveOperation implements Operation {
+public class ValuelessOperation implements Operation {
 
     private final PathParameters pathParameters;
     private final ValuelessHandler handler;
 
-    public RemoveOperation(PathParameters pathParameters, ValuelessHandler handler) {
+    public ValuelessOperation(PathParameters pathParameters, ValuelessHandler handler) {
         this.pathParameters = pathParameters;
         this.handler = handler;
     }

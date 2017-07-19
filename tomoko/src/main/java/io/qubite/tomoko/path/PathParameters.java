@@ -45,16 +45,6 @@ public class PathParameters {
         return new PathParameters(newEntries);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (Entry<?> entry : valueByPathNode) {
-            builder.append("/");
-            builder.append(entry.getValue());
-        }
-        return builder.toString();
-    }
-
     public static class Builder {
 
         private final List<Entry<?>> valuesByNode = new ArrayList<>();

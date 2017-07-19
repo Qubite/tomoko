@@ -72,25 +72,25 @@ public class OperationExecutorImpl implements OperationExecutor {
         }
     }
 
-    private List<AddOperation<?>> parseAddOperation(Tree<ValueHandler<?>> addHandlerTree, Path path, JsonTree value) {
-        return handlerResolver.findValueHandlers(addHandlerTree, path, value).stream().map(this::toAddOperation).collect(Collectors.toList());
+    private List<ValueOperation<?>> parseAddOperation(Tree<ValueHandler<?>> addHandlerTree, Path path, JsonTree value) {
+        return handlerResolver.findValueHandlers(addHandlerTree, path, value).stream().map(this::toValueOperation).collect(Collectors.toList());
     }
 
-    private <T> AddOperation<T> toAddOperation(ValueOperationContext<T> context) {
+    private <T> ValueOperation<T> toValueOperation(ValueOperationContext<T> context) {
         ValueType<T> parameterClass = context.getHandler().getParameterClass();
-        T parsedParameter = context.getValue().getAs(parameterClass);
-        return Operations.add(context.getPathParameters(), parsedParameter, context.getHandler());
+        T parsedValue = context.getValue().getAs(parameterClass);
+        return Operations.value(context.getPathParameters(), parsedValue, context.getHandler());
     }
 
-    private RemoveOperation parseRemoveOperation(Tree<ValuelessHandler> removeHandlerTree, Path path) {
+    private ValuelessOperation parseRemoveOperation(Tree<ValuelessHandler> removeHandlerTree, Path path) {
         ValuelessOperationContext matchingPath = handlerResolver
                 .findValuelessHandler(removeHandlerTree, path);
-        return Operations.remove(matchingPath.getPathParameters(), matchingPath.getHandler());
+        return Operations.valueless(matchingPath.getPathParameters(), matchingPath.getHandler());
     }
 
-    private AddOperation<?> parseReplaceOperation(Tree<ValueHandler<?>> replaceHandlerTree, Path path, JsonTree value) {
+    private ValueOperation<?> parseReplaceOperation(Tree<ValueHandler<?>> replaceHandlerTree, Path path, JsonTree value) {
         ValueOperationContext<?> matchingPath = handlerResolver.findValueHandler(replaceHandlerTree, path, value);
-        return toAddOperation(matchingPath);
+        return toValueOperation(matchingPath);
     }
 
 }

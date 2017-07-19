@@ -9,12 +9,12 @@ public class Operations {
     private Operations() {
     }
 
-    public static <T> AddOperation<T> add(PathParameters pathParameters, T value, ValueHandler<T> handler) {
-        return new AddOperation(pathParameters, value, handler);
+    public static <T> ValueOperation<T> value(PathParameters pathParameters, T value, ValueHandler<T> handler) {
+        return new ValueOperation(pathParameters, value, handler);
     }
 
-    public static RemoveOperation remove(PathParameters pathParameters, ValuelessHandler handler) {
-        return new RemoveOperation(pathParameters, handler);
+    public static ValuelessOperation valueless(PathParameters pathParameters, ValuelessHandler handler) {
+        return new ValuelessOperation(pathParameters, handler);
     }
 
 }
