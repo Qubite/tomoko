@@ -53,7 +53,7 @@
             <plugin>
                 <configuration>
                     <config>src/main/resources/freemarker/config.fmpp</config>
-                    <output>target/generated-sources/io/qubite/tomoko/specification/dsl/</output>
+                    <output>target/generated-sources/</output>
                     <templates>src/main/resources/templates/</templates>
                 </configuration>
                 <groupId>org.apache.drill.tools</groupId>

@@ -1,12 +1,13 @@
 package io.qubite.tomoko.handler.value;
 
-import io.qubite.tomoko.path.PathParameters;
-import io.qubite.tomoko.type.ValueType;
+import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.path.Path;
 
-public interface ValueHandler<T> {
+/**
+ * Created by edhendil on 19.07.17.
+ */
+public interface ValueHandler {
 
-    ValueType<T> getParameterClass();
-
-    void execute(PathParameters pathParameters, T parameter);
+    void execute(Path path, ValueTree value);
 
 }

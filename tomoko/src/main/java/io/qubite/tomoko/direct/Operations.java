@@ -1,7 +1,7 @@
 package io.qubite.tomoko.direct;
 
-import io.qubite.tomoko.json.CommandType;
-import io.qubite.tomoko.json.OperationDto;
+import io.qubite.tomoko.patch.CommandType;
+import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.path.Path;
 
 public class Operations {

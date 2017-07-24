@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
+import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.*;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 
-class JacksonTree implements JsonTree {
+class JacksonTree implements ValueTree {
 
     private final JsonNode node;
     private final ObjectMapper mapper;
@@ -38,7 +38,7 @@ class JacksonTree implements JsonTree {
         }
     }
 
-    public Iterator<Map.Entry<String, JsonTree>> getFieldIterator() {
+    public Iterator<Map.Entry<String, ValueTree>> getFieldIterator() {
         return new JacksonIterator(node.fields());
     }
 
@@ -71,7 +71,7 @@ class JacksonTree implements JsonTree {
         return mapper.readValue(node.traverse(), javaType);
     }
 
-    private class JacksonIterator implements Iterator<Map.Entry<String, JsonTree>> {
+    private class JacksonIterator implements Iterator<Map.Entry<String, ValueTree>> {
 
         private final Iterator<Map.Entry<String, JsonNode>> originalIterator;
 
@@ -85,7 +85,7 @@ class JacksonTree implements JsonTree {
         }
 
         @Override
-        public Map.Entry<String, JsonTree> next() {
+        public Map.Entry<String, ValueTree> next() {
             Map.Entry<String, JsonNode> next = originalIterator.next();
             return new AbstractMap.SimpleEntry(next.getKey(), JacksonTree.of(next.getValue(), mapper));
         }

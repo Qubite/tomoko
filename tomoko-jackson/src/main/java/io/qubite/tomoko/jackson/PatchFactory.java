@@ -2,9 +2,9 @@ package io.qubite.tomoko.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.qubite.tomoko.json.CommandType;
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.patch.CommandType;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
 

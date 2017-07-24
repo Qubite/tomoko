@@ -1,9 +1,10 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.handler.QuadConsumer;
-import io.qubite.tomoko.handler.TriConsumer;
 import io.qubite.tomoko.type.SimpleType;
 import io.qubite.tomoko.type.Types;
+import io.qubite.tomoko.util.Preconditions;
+import io.qubite.tomoko.util.QuadConsumer;
+import io.qubite.tomoko.util.TriConsumer;
 import net.jodah.typetools.TypeResolver;
 
 import java.util.function.BiConsumer;
@@ -35,8 +36,8 @@ public class TypeExtractor {
     }
 
     private static <V> SimpleType<V> toSimpleType(Class<V> clazz) {
-        DslPreconditions.checkNotUnknown(clazz);
-        DslPreconditions.checkNonGeneric(clazz);
+        Preconditions.checkNotUnknown(clazz);
+        Preconditions.checkNonGeneric(clazz);
         return Types.simple(clazz);
     }
 

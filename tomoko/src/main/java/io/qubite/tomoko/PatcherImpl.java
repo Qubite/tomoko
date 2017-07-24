@@ -1,8 +1,8 @@
 package io.qubite.tomoko;
 
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
 import io.qubite.tomoko.operation.OperationExecutor;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.specification.TreeSpecification;
 
 class PatcherImpl implements Patcher {

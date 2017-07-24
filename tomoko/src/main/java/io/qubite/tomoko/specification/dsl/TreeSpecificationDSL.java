@@ -2,6 +2,7 @@ package io.qubite.tomoko.specification.dsl;
 
 import io.qubite.tomoko.Patcher;
 import io.qubite.tomoko.PatcherFactory;
+import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
@@ -19,7 +20,7 @@ public class TreeSpecificationDSL {
     }
 
     public NullaryPath path() {
-        return new NullaryPath(builder, PathTemplate.empty());
+        return new NullaryPath(HandlerFactory.instance(), builder, PathTemplate.empty());
     }
 
     public TreeSpecification toTree() {

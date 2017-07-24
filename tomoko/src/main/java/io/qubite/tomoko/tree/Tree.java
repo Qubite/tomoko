@@ -22,6 +22,6 @@ public interface Tree<H> {
 
     boolean isLeaf();
 
-    MatchingPath<H> resolve(Path path);
+    TreeNode<H> resolve(Path path);
 
 }

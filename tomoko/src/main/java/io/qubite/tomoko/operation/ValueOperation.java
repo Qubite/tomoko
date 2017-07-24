@@ -1,22 +1,28 @@
 package io.qubite.tomoko.operation;
 
 import io.qubite.tomoko.handler.value.ValueHandler;
-import io.qubite.tomoko.path.PathParameters;
+import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.path.Path;
 
-public class ValueOperation<T> implements Operation {
+public class ValueOperation implements Operation {
 
-    private final PathParameters pathParameters;
-    private final T value;
-    private final ValueHandler<T> handler;
+    private final Path path;
+    private final ValueHandler handler;
+    private final ValueTree value;
 
-    ValueOperation(PathParameters pathParameters, T value, ValueHandler<T> handler) {
-        this.pathParameters = pathParameters;
-        this.value = value;
+    ValueOperation(Path path, ValueHandler handler, ValueTree value) {
+        this.path = path;
         this.handler = handler;
+        this.value = value;
     }
 
+    public static ValueOperation of(Path path, ValueHandler handler, ValueTree value) {
+        return new ValueOperation(path, handler, value);
+    }
+
+    @Override
     public void execute() {
-        handler.execute(pathParameters, value);
+        handler.execute(path, value);
     }
 
 }

@@ -22,6 +22,10 @@ public class Path {
         return new Path(nodes);
     }
 
+    public static Path of(String... nodes) {
+        return new Path(Arrays.asList(nodes));
+    }
+
     public static Path empty() {
         return new Path(new ArrayList<>());
     }

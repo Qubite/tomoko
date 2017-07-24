@@ -2,7 +2,7 @@ package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
 
-public class TextNode implements ValueNode<String> {
+public class TextNode implements PathNode {
 
     TextNode() {
     }
@@ -10,16 +10,6 @@ public class TextNode implements ValueNode<String> {
     @Override
     public boolean doesMatch(String value) {
         return true;
-    }
-
-    @Override
-    public String toObject(String value) {
-        return value;
-    }
-
-    @Override
-    public String toPathString(String value) {
-        return value;
     }
 
     @Override

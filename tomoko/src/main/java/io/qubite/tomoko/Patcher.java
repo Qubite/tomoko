@@ -1,7 +1,7 @@
 package io.qubite.tomoko;
 
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
 
 public interface Patcher {
 

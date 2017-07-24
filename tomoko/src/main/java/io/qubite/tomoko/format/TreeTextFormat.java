@@ -18,11 +18,11 @@ public class TreeTextFormat {
 
     public String addHandlersToString(TreeSpecification treeSpecification) {
         StringBuilder builder = new StringBuilder();
-        Tree<ValueHandler<?>> addTree = treeSpecification.getAddHandlerTree();
+        Tree<ValueHandler> addTree = treeSpecification.getAddHandlerTree();
         if (addTree.isLeaf() && !addTree.isHandlerRegistered()) {
             builder.append("No ADD handlers");
         } else {
-            List<AddEntry> allHandlers = findAllAddHandlers((TreeNode<ValueHandler<?>>) addTree);
+            List<AddEntry> allHandlers = findAllAddHandlers((TreeNode<ValueHandler>) addTree);
             for (AddEntry entry : allHandlers) {
                 builder.append(entry.toString());
                 builder.append("\n");
@@ -46,7 +46,7 @@ public class TreeTextFormat {
         return builder.toString();
     }
 
-    private List<AddEntry> findAllAddHandlers(TreeNode<ValueHandler<?>> addTreeRoot) {
+    private List<AddEntry> findAllAddHandlers(TreeNode<ValueHandler> addTreeRoot) {
         List<AddEntry> result = new ArrayList<>();
         Queue<AddStringRepresentationContext> queue = new LinkedList<>();
         AddStringRepresentationContext context = AddStringRepresentationContext.of(PathTemplate.empty(), addTreeRoot);
@@ -56,7 +56,7 @@ public class TreeTextFormat {
             if (current.getNode().isLeaf()) {
                 result.add(new AddEntry(current.getPathTemplate(), current.getNode().getHandler()));
             } else {
-                for (Map.Entry<PathNode, TreeNode<ValueHandler<?>>> entry : current.getNode().getChildren().entrySet()) {
+                for (Map.Entry<PathNode, TreeNode<ValueHandler>> entry : current.getNode().getChildren().entrySet()) {
                     queue.add(current.with(entry.getKey(), entry.getValue()));
                 }
             }
@@ -86,9 +86,9 @@ public class TreeTextFormat {
     private static class AddEntry {
 
         private final PathTemplate pathTemplate;
-        private final ValueHandler<?> handler;
+        private final ValueHandler handler;
 
-        private AddEntry(PathTemplate pathTemplate, ValueHandler<?> handler) {
+        private AddEntry(PathTemplate pathTemplate, ValueHandler handler) {
             this.pathTemplate = pathTemplate;
             this.handler = handler;
         }
@@ -97,13 +97,13 @@ public class TreeTextFormat {
             return pathTemplate;
         }
 
-        public ValueHandler<?> getHandler() {
+        public ValueHandler getHandler() {
             return handler;
         }
 
         @Override
         public String toString() {
-            return String.format("%s -> %s", pathTemplate, handler.getParameterClass());
+            return String.format("%s -> %s", pathTemplate, handler);
         }
 
     }

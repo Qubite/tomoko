@@ -1,6 +1,6 @@
 package io.qubite.tomoko.jackson;
 
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.patch.Patch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

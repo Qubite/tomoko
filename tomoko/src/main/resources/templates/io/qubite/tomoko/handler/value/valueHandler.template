@@ -1,0 +1,47 @@
+<@pp.dropOutputFile />
+<#list config.prefixes as prefix>
+<@pp.changeOutputFile name=prefix.name+"ValueHandler.java" />
+<#assign parameters = (prefix.size > 0)>
+package io.qubite.tomoko.handler.value;
+
+import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.path.PathParameter;
+
+import ${prefix.consumer.fullName};
+
+/**
+ * Contains whole information about the path, path parameters and the value type. Allows registering an ADD or REPLACE handler.
+ *
+<#if parameters><#list 1..prefix.size as index>
+ * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} path parameter
+</#list></#if>
+ * @param <V> type of the value object
+ */
+public class ${prefix.name}ValueHandler<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> implements ValueHandler {
+
+    private final ${prefix.consumer.name}<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> consumer;
+    <#if parameters><#list 1..prefix.size as index>
+    private final PathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}Parameter;
+    </#list></#if>
+    private final ValueConverter<V> valueConverter;
+
+    public ${prefix.name}ValueHandler(${prefix.consumer.name}<<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}, </#list></#if>V> consumer, <#if parameters><#list 1..prefix.size as index>PathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}Parameter, </#list></#if>ValueConverter<V> valueConverter) {
+        this.consumer = consumer;
+        <#if parameters><#list 1..prefix.size as index>
+        this.${config.generics[index-1].parameter}Parameter = ${config.generics[index-1].parameter}Parameter;
+        </#list></#if>
+        this.valueConverter = valueConverter;
+    }
+
+    @Override
+    public void execute(Path path, ValueTree valueTree) {
+        <#if parameters><#list 1..prefix.size as index>
+        ${config.generics[index-1].code} ${config.generics[index-1].parameter}ParameterValue = ${config.generics[index-1].parameter}Parameter.extractValue(path);
+        </#list></#if>
+        V value = valueConverter.parse(valueTree);
+        consumer.accept(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ParameterValue, </#list></#if>value);
+    }
+
+}
+</#list>

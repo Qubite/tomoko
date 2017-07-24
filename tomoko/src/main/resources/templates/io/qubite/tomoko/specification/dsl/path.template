@@ -1,0 +1,197 @@
+<@pp.dropOutputFile />
+<#list config.prefixes as prefix>
+<@pp.changeOutputFile name=prefix.name+"Path.java" />
+<#assign parameters = (prefix.size > 0)>
+<#assign genericList><#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list></#if></#assign>
+package io.qubite.tomoko.specification.dsl;
+
+<#if !prefix?is_first>
+import ${prefix.removeConsumer.fullName};
+</#if>
+import io.qubite.tomoko.handler.HandlerFactory;
+import io.qubite.tomoko.path.PathTemplate;
+import io.qubite.tomoko.path.converter.Converters;
+import io.qubite.tomoko.path.node.PathNode;
+import io.qubite.tomoko.path.node.PathNodes;
+import io.qubite.tomoko.path.StringPathParameter;
+import io.qubite.tomoko.path.TypedPathParameter;
+import io.qubite.tomoko.specification.TreeSpecificationBuilder;
+import io.qubite.tomoko.type.SimpleType;
+import io.qubite.tomoko.type.Types;
+import net.jodah.typetools.TypeResolver;
+
+import ${prefix.consumer.fullName};
+
+/**
+ * Ongoing path definition. Used to specify path static structure together with path parameters.
+ *
+<#if parameters><#list 1..prefix.size as index>
+ * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} path parameter
+</#list></#if>
+ */
+public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
+
+    private final HandlerFactory handlerFactory;
+    private final TreeSpecificationBuilder builder;
+    <#if parameters><#list 1..prefix.size as index>
+    private final TypedPathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath;
+    </#list></#if>
+    private final PathTemplate path;
+
+    ${prefix.name}Path(HandlerFactory handlerFactory, TreeSpecificationBuilder builder, <#if parameters><#list 1..prefix.size as index>TypedPathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath, </#list></#if>PathTemplate path) {
+        this.handlerFactory = handlerFactory;
+        this.builder = builder;
+        <#if parameters><#list 1..prefix.size as index>
+        this.${config.generics[index-1].parameter}ArgumentPath = ${config.generics[index-1].parameter}ArgumentPath;
+        </#list></#if>
+        this.path = path;
+    }
+    /**
+     * Adds a valueless node to the path as described by the provided object.<br/><br/>
+     * Should be used only if other DSL methods do not support the desired scenario.
+     *
+     * @param node
+     * @return
+     */
+    public ${prefix.name}Path<#if parameters><${genericList}></#if> node(PathNode node) {
+        return new ${prefix.name}Path(handlerFactory, builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path.append(node));
+    }
+
+<#if prefix?has_next>
+    <#assign nextCode = config.generics[prefix?index].code>
+    <#assign nextPrefix = config.prefixes[prefix?index+1]>
+    /**
+     * Adds a parameter to the path as described by the provided object.<br/><br/>
+     * Should be used only if other DSL methods do not support the desired scenario.
+     *
+     * @param node
+     * @param <${nextCode}> new path parameter type
+     * @return
+     */
+    public <${nextCode}> ${config.prefixes[prefix?index+1].name}Path<${genericList}<#if parameters>, </#if>${nextCode}> node(PathNode node, TypedPathParameter<${nextCode}> parameter) {
+        PathTemplate argPath = path.append(node);
+        return new ${nextPrefix.name}Path(handlerFactory, builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>parameter, argPath);
+    }
+
+    /**
+     * Adds a string parameter to the path.
+     *
+     * @return
+     */
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> string() {
+        return node(PathNodes.textNode(), TypedPathParameter.of(StringPathParameter.of(path.length()), Converters.identity()));
+    }
+
+    /**
+     * Adds an integer parameter to the path.
+     *
+     * @return
+     */
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Integer> integer() {
+        return node(PathNodes.integerNode(), TypedPathParameter.of(StringPathParameter.of(path.length()), Converters.integer()));
+    }
+
+    /**
+     * Adds a long parameter to the path.
+     *
+     * @return
+     */
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>Long> longParameter() {
+        return node(PathNodes.integerNode(), TypedPathParameter.of(StringPathParameter.of(path.length()), Converters.longConverter()));
+    }
+
+    /**
+     * Adds a string parameter restricted by a regular expression to the path.
+     *
+     * @return
+     */
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> regex(String regex) {
+        return node(PathNodes.regexNode(regex), TypedPathParameter.of(StringPathParameter.of(path.length()), Converters.identity()));
+    }
+
+    /**
+     * Adds a string parameter interpreted as an encoded URL to the path.
+     *
+     * @return
+     */
+    public ${nextPrefix.name}Path<${genericList}<#if parameters>, </#if>String> urlEncoded() {
+        return node(PathNodes.textNode(), TypedPathParameter.of(StringPathParameter.of(path.length()), Converters.urlEncoded()));
+    }
+
+</#if>
+    /**
+     * Adds a static string to the path e.g. "author/firstName".<br/><br/>
+     * Splits the parameter into separate tokens by the "/" character and adds each token as a separate node.
+     * The "/" character is prohibited at the start and at the end of the provided parameter.
+     *
+     * @param text
+     * @return
+     */
+    public ${prefix.name}Path<#if parameters><${genericList}></#if> node(String text) {
+        String[] nodes = text.split("/", -1);
+        ${prefix.name}Path<#if parameters><${genericList}></#if> result = this;
+        for (String node : nodes) {
+            if (node.isEmpty()) {
+                throw new IllegalArgumentException("Path node name cannot be empty");
+            }
+            result = node(PathNodes.staticNode(node));
+        }
+        return result;
+    }
+
+    /**
+     * Adds the end index static token ("-") to the path.
+     *
+     * @return
+     */
+    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> endIndex() {
+        return new ${prefix.name}TypeSpec(handlerFactory, builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path.append(PathNodes.endIndexNode()));
+    }
+
+    /**
+     * Completes the path template definition and allows to directly specify the type of the value object.
+     *
+     * @return
+     */
+    public ${prefix.name}TypeSpec<#if parameters><${genericList}></#if> value() {
+        return new ${prefix.name}TypeSpec(handlerFactory, builder, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>path);
+    }
+
+    /**
+     * Completes the path template definition and registers a handler for the ADD operation.<br/><br/>
+     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
+     * In that case the type should be specified through the value() method.
+     *
+     * @param consumer
+     * @param <V> value object type
+     */
+    public <V> void handleAdd(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+        SimpleType<V> type = TypeExtractor.extractSimpleType(consumer);
+        builder.handleAdd(path, handlerFactory.handler(type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer));
+    }
+
+    /**
+     * Completes the path template definition and registers a handler for the REMOVE operation.
+     *
+     * @param consumer
+     * @param <V> value object type
+     */
+    public void handleRemove(${prefix.removeConsumer.name}<#if parameters><${genericList}></#if> consumer) {
+        builder.handleRemove(path, handlerFactory.handler(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer));
+    }
+
+    /**
+     * Completes the path template definition and registers a handler for the REPLACE operation.<br/><br/>
+     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
+     * In that case the type should be specified through the value() method.
+     *
+     * @param handler
+     * @param <V> value object type
+     */
+    public <V> void handleReplace(${prefix.consumer.name}<${genericList}<#if parameters>, </#if>V> consumer) {
+        SimpleType<V> type = TypeExtractor.extractSimpleType(consumer);
+        builder.handleReplace(path, handlerFactory.handler(type, <#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ArgumentPath, </#list></#if>consumer));
+    }
+
+}
+</#list>

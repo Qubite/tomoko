@@ -1,30 +1,19 @@
 package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-public class RegexNode implements ValueNode<String> {
+public class RegexNode implements PathNode {
 
-    private final String regex;
+    private final Pattern regex;
 
-    RegexNode(String regex) {
+    RegexNode(Pattern regex) {
         this.regex = regex;
     }
 
     @Override
     public boolean doesMatch(String value) {
-        return value.matches(regex);
-    }
-
-    @Override
-    public String toObject(String value) {
-        return value;
-    }
-
-    public String toPathString(String value) {
-        if (!doesMatch(value)) {
-            throw new IllegalArgumentException("Provided value does not match regex.");
-        }
-        return value;
+        return regex.matcher(value).find();
     }
 
     @Override

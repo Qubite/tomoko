@@ -3,24 +3,24 @@ package io.qubite.tomoko.operation;
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.direct.DirectTree;
 import io.qubite.tomoko.direct.Operations;
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.handler.value.ValueHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.PathTemplate;
-import io.qubite.tomoko.path.Paths;
 import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.resolver.HandlerResolver;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
-import io.qubite.tomoko.type.Types;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static org.mockito.Mockito.verify;
 
@@ -30,24 +30,24 @@ public class OperationExecutorTest {
     private OperationExecutorImpl operationExecutor = new OperationExecutorImpl(new HandlerResolver());
 
     @Mock
-    private Consumer<String> valueHandler;
+    private ValueHandler valueHandler;
     @Mock
-    private BiConsumer<Integer, String> valueHandlerWithParameter;
+    private ValueHandler valueHandlerWithParameter;
     @Mock
-    private Runnable valuelessHandler;
+    private ValuelessHandler valuelessHandler;
 
     @Test
     public void execute_validAddOperations() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createMultipleOperation());
-        verify(valueHandler).accept("qwer");
-        verify(valueHandlerWithParameter).accept(2, "rewq");
+        verify(valueHandler).execute(Matchers.any(), Matchers.any());
+        verify(valueHandlerWithParameter).execute(Matchers.any(), Matchers.any());
     }
 
     private Patch createMultipleOperation() {
         List<OperationDto> operations = new ArrayList<>();
-        operations.add(Operations.add(Paths.of("asdf"), DirectTree.builder().setValue(Paths.empty(), "qwer").build()));
-        operations.add(Operations.add(Paths.of("asdf33", "2"), DirectTree.builder().setValue(Paths.empty(), "rewq").build()));
+        operations.add(Operations.add(Path.of("asdf"), DirectTree.builder().setValue(Path.empty(), "qwer").build()));
+        operations.add(Operations.add(Path.of("asdf33", "2"), DirectTree.builder().setValue(Path.empty(), "rewq").build()));
         return Patch.of(operations);
     }
 
@@ -57,29 +57,16 @@ public class OperationExecutorTest {
         operationExecutor.execute(specification, createMultipleOperation());
     }
 
-    @Test(expected = PatcherException.class)
-    public void execute_mismatchedValueType_exception() throws Exception {
-        TreeSpecification specification = createPatcher();
-        operationExecutor.execute(specification, createSingleOperationComplexValue());
-    }
-
-    private Patch createSingleOperationComplexValue() {
-        List<OperationDto> operations = new ArrayList<>();
-        DirectTree valueTree = DirectTree.builder().setValue(Paths.of("complexA"), "rrr").setValue(Paths.of("complexB"), "qqq").build();
-        operations.add(Operations.add(Paths.of("asdf"), valueTree));
-        return Patch.of(operations);
-    }
-
     @Test
     public void execute_validRemoveOperation() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createSingleRemoveOperation());
-        verify(valuelessHandler).run();
+        verify(valuelessHandler).execute(Matchers.any());
     }
 
     private Patch createSingleRemoveOperation() {
         List<OperationDto> operations = new ArrayList<>();
-        operations.add(Operations.remove(Paths.of("asdf")));
+        operations.add(Operations.remove(Path.of("asdf")));
         return Patch.of(operations);
     }
 
@@ -87,8 +74,8 @@ public class OperationExecutorTest {
     public void execute_deepHandlerForComplexValue() throws Exception {
         TreeSpecification specification = createPatcher();
         operationExecutor.execute(specification, createSingleComplexValueAsdf());
-        verify(valueHandler).accept("qwer");
-        verify(valueHandlerWithParameter).accept(2, "qerw");
+        verify(valueHandler).execute(Matchers.any(), Matchers.any());
+        verify(valueHandlerWithParameter).execute(Matchers.any(), Matchers.any());
     }
 
     @Test(expected = PatcherException.class)
@@ -102,7 +89,7 @@ public class OperationExecutorTest {
     @Test(expected = PatcherException.class)
     public void execute_removeOperationWithoutHandler_exception() throws Exception {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
-        PathTemplate<Void> asdfDeepPath = PathTemplate.empty().then(PathNodes.staticNode("author")).then(PathNodes.staticNode("firstName"));
+        PathTemplate asdfDeepPath = PathTemplate.empty().append(PathNodes.staticNode("author")).append(PathNodes.staticNode("firstName"));
         builder.handleRemove(asdfDeepPath, valuelessHandler);
         TreeSpecification specification = builder.build();
         OperationDto operation = Operations.remove("/author");
@@ -112,28 +99,28 @@ public class OperationExecutorTest {
     @Test
     public void execute_replaceOperation() throws Exception {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
-        PathTemplate<Void> asdfDeepPath = PathTemplate.empty().then(PathNodes.staticNode("author")).then(PathNodes.staticNode("firstName"));
-        builder.handleReplace(asdfDeepPath, Types.string(), valueHandler);
+        PathTemplate asdfDeepPath = PathTemplate.empty().append(PathNodes.staticNode("author")).append(PathNodes.staticNode("firstName"));
+        builder.handleReplace(asdfDeepPath, valueHandler);
         TreeSpecification specification = builder.build();
         DirectTree value = DirectTree.of("stringValue");
         OperationDto operation = Operations.replace("/author/firstName", value);
         operationExecutor.execute(specification, operation);
-        verify(valueHandler).accept("stringValue");
+        verify(valueHandler).execute(Matchers.any(), Matchers.any());
     }
 
     private Patch createSingleComplexValueAsdf() {
         List<OperationDto> operations = new ArrayList<>();
-        DirectTree valueTree = DirectTree.builder().setValue(Paths.of("asdf"), "qwer").setValue(Paths.of("asdf33", "2"), "qerw").build();
-        operations.add(Operations.add(Paths.empty(), valueTree));
+        DirectTree valueTree = DirectTree.builder().setValue(Path.of("asdf"), "qwer").setValue(Path.of("asdf33", "2"), "qerw").build();
+        operations.add(Operations.add(Path.empty(), valueTree));
         return Patch.of(operations);
     }
 
     private TreeSpecification createPatcher() {
         TreeSpecificationBuilder builder = TreeSpecification.builder();
-        PathTemplate<Void> asdfPath = PathTemplate.empty().then(PathNodes.staticNode("asdf"));
-        PathTemplate<Integer> integerNodePath = PathTemplate.empty().then(PathNodes.staticNode("asdf33")).then(PathNodes.integerNode());
-        builder.handleAdd(asdfPath, Types.simple(String.class), valueHandler);
-        builder.handleAdd(integerNodePath, Types.simple(String.class), integerNodePath, valueHandlerWithParameter);
+        PathTemplate asdfPath = PathTemplate.empty().append(PathNodes.staticNode("asdf"));
+        PathTemplate integerNodePath = PathTemplate.empty().append(PathNodes.staticNode("asdf33")).append(PathNodes.integerNode());
+        builder.handleAdd(asdfPath, valueHandler);
+        builder.handleAdd(integerNodePath, valueHandlerWithParameter);
         builder.handleRemove(asdfPath, valuelessHandler);
         return builder.build();
     }

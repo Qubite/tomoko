@@ -3,7 +3,7 @@ package io.qubite.tomoko.jackson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
+import io.qubite.tomoko.patch.ValueTree;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +16,7 @@ class NodeFactory {
         this.objectMapper = objectMapper;
     }
 
-    public JsonTree toTree(String json) {
+    public ValueTree toTree(String json) {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             return JacksonTree.of(jsonNode, objectMapper);
@@ -25,7 +25,7 @@ class NodeFactory {
         }
     }
 
-    public JsonTree toTree(InputStream stream) {
+    public ValueTree toTree(InputStream stream) {
         try {
             JsonNode jsonNode = objectMapper.readTree(stream);
             return JacksonTree.of(jsonNode, objectMapper);
@@ -34,7 +34,7 @@ class NodeFactory {
         }
     }
 
-    public JsonTree toTree(JsonNode node) {
+    public ValueTree toTree(JsonNode node) {
         return JacksonTree.of(node, objectMapper);
     }
 

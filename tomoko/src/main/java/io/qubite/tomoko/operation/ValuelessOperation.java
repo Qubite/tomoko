@@ -1,21 +1,25 @@
 package io.qubite.tomoko.operation;
 
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
-import io.qubite.tomoko.path.PathParameters;
+import io.qubite.tomoko.path.Path;
 
 public class ValuelessOperation implements Operation {
 
-    private final PathParameters pathParameters;
+    private final Path path;
     private final ValuelessHandler handler;
 
-    public ValuelessOperation(PathParameters pathParameters, ValuelessHandler handler) {
-        this.pathParameters = pathParameters;
+    ValuelessOperation(Path path, ValuelessHandler handler) {
+        this.path = path;
         this.handler = handler;
+    }
+
+    public static ValuelessOperation of(Path path, ValuelessHandler handler) {
+        return new ValuelessOperation(path, handler);
     }
 
     @Override
     public void execute() {
-        handler.execute(pathParameters);
+        handler.execute(path);
     }
 
 }

@@ -1,7 +1,7 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.specification.TreeSpecification;
 
 public interface OperationExecutor {

@@ -3,7 +3,7 @@ package io.qubite.tomoko.gson;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
+import io.qubite.tomoko.patch.ValueTree;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,11 +18,11 @@ class NodeFactory {
         this.gson = gson;
     }
 
-    public JsonTree toTree(String json) {
+    public ValueTree toTree(String json) {
         return GsonTree.of(gson.fromJson(json, JsonElement.class), gson);
     }
 
-    public JsonTree toTree(InputStream inputStream) {
+    public ValueTree toTree(InputStream inputStream) {
         try {
             Reader reader = new InputStreamReader(inputStream, "UTF-8");
             return GsonTree.of(gson.fromJson(reader, JsonElement.class), gson);
@@ -31,7 +31,7 @@ class NodeFactory {
         }
     }
 
-    public JsonTree toTree(JsonElement element) {
+    public ValueTree toTree(JsonElement element) {
         return GsonTree.of(element, gson);
     }
 

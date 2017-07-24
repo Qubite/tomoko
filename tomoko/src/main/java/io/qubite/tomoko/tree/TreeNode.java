@@ -2,7 +2,6 @@ package io.qubite.tomoko.tree;
 
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.path.PathParameters;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
 
@@ -59,9 +58,9 @@ public class TreeNode<H> implements Tree<H> {
         return children.isEmpty();
     }
 
-    public TreeNode<H> extend(PathTemplate<?> pathTemplate) {
+    public TreeNode<H> extend(PathTemplate pathTemplate) {
         TreeNode<H> parent = this;
-        for (PathNode<?> pathNode : pathTemplate.getNodes()) {
+        for (PathNode pathNode : pathTemplate.getNodes()) {
             Optional<TreeNode<H>> current = parent.getChild(pathNode);
             if (current.isPresent()) {
                 parent = current.get();
@@ -74,9 +73,9 @@ public class TreeNode<H> implements Tree<H> {
         return parent;
     }
 
-    public TreeNode<H> extendUntilHandler(PathTemplate<?> pathTemplate) {
+    public TreeNode<H> extendUntilHandler(PathTemplate pathTemplate) {
         TreeNode<H> parent = this;
-        for (PathNode<?> pathNode : pathTemplate.getNodes()) {
+        for (PathNode pathNode : pathTemplate.getNodes()) {
             if (parent.isHandlerRegistered()) {
                 throw new PatcherException("Cannot extend the path as there is a handler registered on the way.");
             }
@@ -92,19 +91,17 @@ public class TreeNode<H> implements Tree<H> {
         return parent;
     }
 
-    public MatchingPath<H> resolve(Path path) {
+    public TreeNode<H> resolve(Path path) {
         TreeNode<H> parent = this;
-        PathParameters.Builder builder = PathParameters.builder();
         for (String nodeValue : path.getNodes()) {
             Optional<TreeNode<H>> optionalMatchingChild = parent.findMatchingChild(nodeValue);
             if (optionalMatchingChild.isPresent()) {
                 parent = optionalMatchingChild.get();
-                builder.addMapping(parent.getPathNode(), nodeValue);
             } else {
                 throw new PatcherException("Cannot resolve a given path. No matching node found.");
             }
         }
-        return MatchingPath.of(builder.build(), parent);
+        return parent;
     }
 
     private void checkIfCanAdd(PathNode pathNode) {

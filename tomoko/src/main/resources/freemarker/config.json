@@ -29,7 +29,7 @@
       "size": 2,
       "consumer": {
         "name": "TriConsumer",
-        "fullName": "io.qubite.tomoko.handler.TriConsumer"
+        "fullName": "io.qubite.tomoko.util.TriConsumer"
       },
       "removeConsumer": {
         "name": "BiConsumer",
@@ -41,11 +41,11 @@
       "size": 3,
       "consumer": {
         "name": "QuadConsumer",
-        "fullName": "io.qubite.tomoko.handler.QuadConsumer"
+        "fullName": "io.qubite.tomoko.util.QuadConsumer"
       },
       "removeConsumer": {
         "name": "TriConsumer",
-        "fullName": "io.qubite.tomoko.handler.TriConsumer"
+        "fullName": "io.qubite.tomoko.util.TriConsumer"
       }
     }
   ],

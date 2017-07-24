@@ -4,21 +4,17 @@ import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.format.TreeTextFormat;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
-import io.qubite.tomoko.json.JsonTree;
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.resolver.HandlerResolver;
-import io.qubite.tomoko.resolver.ValueOperationContext;
-import io.qubite.tomoko.resolver.ValuelessOperationContext;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.tree.Tree;
-import io.qubite.tomoko.type.ValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OperationExecutorImpl implements OperationExecutor {
 
@@ -72,25 +68,17 @@ public class OperationExecutorImpl implements OperationExecutor {
         }
     }
 
-    private List<ValueOperation<?>> parseAddOperation(Tree<ValueHandler<?>> addHandlerTree, Path path, JsonTree value) {
-        return handlerResolver.findValueHandlers(addHandlerTree, path, value).stream().map(this::toValueOperation).collect(Collectors.toList());
-    }
-
-    private <T> ValueOperation<T> toValueOperation(ValueOperationContext<T> context) {
-        ValueType<T> parameterClass = context.getHandler().getParameterClass();
-        T parsedValue = context.getValue().getAs(parameterClass);
-        return Operations.value(context.getPathParameters(), parsedValue, context.getHandler());
+    private List<ValueOperation> parseAddOperation(Tree<ValueHandler> addHandlerTree, Path path, ValueTree value) {
+        return handlerResolver.findValueHandlers(addHandlerTree, path, value);
     }
 
     private ValuelessOperation parseRemoveOperation(Tree<ValuelessHandler> removeHandlerTree, Path path) {
-        ValuelessOperationContext matchingPath = handlerResolver
+        return handlerResolver
                 .findValuelessHandler(removeHandlerTree, path);
-        return Operations.valueless(matchingPath.getPathParameters(), matchingPath.getHandler());
     }
 
-    private ValueOperation<?> parseReplaceOperation(Tree<ValueHandler<?>> replaceHandlerTree, Path path, JsonTree value) {
-        ValueOperationContext<?> matchingPath = handlerResolver.findValueHandler(replaceHandlerTree, path, value);
-        return toValueOperation(matchingPath);
+    private ValueOperation parseReplaceOperation(Tree<ValueHandler> replaceHandlerTree, Path path, ValueTree value) {
+        return handlerResolver.findValueHandler(replaceHandlerTree, path, value);
     }
 
 }

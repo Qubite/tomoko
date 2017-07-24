@@ -1,7 +1,7 @@
 package io.qubite.tomoko.direct;
 
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
+import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.ValueType;
 
 import java.util.AbstractMap;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class DirectTree implements JsonTree {
+public class DirectTree implements ValueTree {
 
     private final Map<String, DirectTree> children;
     private boolean valueSet;
@@ -38,7 +38,7 @@ public class DirectTree implements JsonTree {
     }
 
     @Override
-    public Iterator<Map.Entry<String, JsonTree>> getFieldIterator() {
+    public Iterator<Map.Entry<String, ValueTree>> getFieldIterator() {
         return new ChildIterator(children.entrySet().iterator());
     }
 
@@ -116,7 +116,7 @@ public class DirectTree implements JsonTree {
         }
     }
 
-    private static class ChildIterator implements Iterator<Map.Entry<String, JsonTree>> {
+    private static class ChildIterator implements Iterator<Map.Entry<String, ValueTree>> {
 
         private final Iterator<Map.Entry<String, DirectTree>> originalIterator;
 
@@ -130,7 +130,7 @@ public class DirectTree implements JsonTree {
         }
 
         @Override
-        public Map.Entry<String, JsonTree> next() {
+        public Map.Entry<String, ValueTree> next() {
             Map.Entry<String, DirectTree> next = originalIterator.next();
             return new AbstractMap.SimpleEntry<>(next.getKey(), next.getValue());
         }

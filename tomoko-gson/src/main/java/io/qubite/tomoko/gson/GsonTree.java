@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
+import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.*;
 
 import java.lang.reflect.Type;
@@ -12,7 +12,7 @@ import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 
-class GsonTree implements JsonTree {
+class GsonTree implements ValueTree {
 
     private final JsonElement element;
     private final Gson gson;
@@ -27,7 +27,7 @@ class GsonTree implements JsonTree {
     }
 
     @Override
-    public Iterator<Map.Entry<String, JsonTree>> getFieldIterator() {
+    public Iterator<Map.Entry<String, ValueTree>> getFieldIterator() {
         return new GsonFieldIterator(element.getAsJsonObject().entrySet().iterator());
     }
 
@@ -65,7 +65,7 @@ class GsonTree implements JsonTree {
         return gson.fromJson(element, type);
     }
 
-    private class GsonFieldIterator implements Iterator<Map.Entry<String, JsonTree>> {
+    private class GsonFieldIterator implements Iterator<Map.Entry<String, ValueTree>> {
 
         private final Iterator<Map.Entry<String, JsonElement>> originalIterator;
 
@@ -79,7 +79,7 @@ class GsonTree implements JsonTree {
         }
 
         @Override
-        public Map.Entry<String, JsonTree> next() {
+        public Map.Entry<String, ValueTree> next() {
             Map.Entry<String, JsonElement> next = originalIterator.next();
             return new AbstractMap.SimpleEntry(next.getKey(), GsonTree.of(next.getValue(), gson));
         }

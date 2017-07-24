@@ -1,3 +1,4 @@
+dataRoot: ./
 data: {
-    config: json(../freemarker/config.json)
+    config: json(./config.json)
 }
