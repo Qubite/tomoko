@@ -15,7 +15,6 @@ import ${prefix.removeConsumer.fullName};
 <#if parameters><#list 1..prefix.size as index>
  * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} path parameter
 </#list></#if>
- * @param <V> type of the value object
  */
 public class ${prefix.name}ValuelessHandler<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> implements ValuelessHandler {
 
