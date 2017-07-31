@@ -24,6 +24,10 @@ public class PatchAddDSL {
         return new PatchAddDSL(operations, addBuilder);
     }
 
+    public <V> PatchAddDSL add(String path, V value) {
+        return add(Path.parse(path), value);
+    }
+
     public PatchDSL toOperation() {
         operations.add(addBuilder.build());
         return new PatchDSL(operations);

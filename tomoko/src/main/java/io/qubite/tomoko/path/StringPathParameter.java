@@ -1,8 +1,5 @@
 package io.qubite.tomoko.path;
 
-/**
- * Created by edhendil on 19.07.17.
- */
 public class StringPathParameter implements PathParameter<String> {
 
     private final int parameterIndex;

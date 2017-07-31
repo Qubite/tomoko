@@ -1,20 +1,18 @@
 package io.qubite.tomoko.path.converter;
 
-/**
- * Created by edhendil on 19.07.17.
- */
+import io.qubite.tomoko.util.Preconditions;
+
 public class LongConverter implements PathParameterConverter<Long> {
 
     @Override
     public Long toObject(String value) {
+        Preconditions.checkNotNull(value);
         return Long.parseLong(value);
     }
 
     @Override
     public String toPathString(Long value) {
-        if (value == null) {
-            throw new IllegalArgumentException("Null not accepted.");
-        }
+        Preconditions.checkNotNull(value);
         return value.toString();
     }
 

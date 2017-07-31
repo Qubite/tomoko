@@ -1,20 +1,18 @@
 package io.qubite.tomoko.path.converter;
 
-/**
- * Created by edhendil on 19.07.17.
- */
+import io.qubite.tomoko.util.Preconditions;
+
 public class IntegerConverter implements PathParameterConverter<Integer> {
 
     @Override
     public Integer toObject(String value) {
+        Preconditions.checkNotNull(value);
         return Integer.parseInt(value);
     }
 
     @Override
     public String toPathString(Integer value) {
-        if (value == null) {
-            throw new IllegalArgumentException("Null not accepted.");
-        }
+        Preconditions.checkNotNull(value);
         return value.toString();
     }
 

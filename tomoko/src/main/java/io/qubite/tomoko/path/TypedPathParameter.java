@@ -2,9 +2,6 @@ package io.qubite.tomoko.path;
 
 import io.qubite.tomoko.path.converter.PathParameterConverter;
 
-/**
- * Created by edhendil on 19.07.17.
- */
 public class TypedPathParameter<T> implements PathParameter<T> {
 
     private final PathParameter<String> originalParameter;

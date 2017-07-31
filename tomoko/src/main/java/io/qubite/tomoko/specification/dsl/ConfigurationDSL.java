@@ -7,16 +7,16 @@ import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.specification.TreeSpecification;
 import io.qubite.tomoko.specification.TreeSpecificationBuilder;
 
-public class TreeSpecificationDSL {
+public class ConfigurationDSL {
 
     private final TreeSpecificationBuilder builder;
 
-    TreeSpecificationDSL(TreeSpecificationBuilder builder) {
+    ConfigurationDSL(TreeSpecificationBuilder builder) {
         this.builder = builder;
     }
 
-    public static TreeSpecificationDSL dsl() {
-        return new TreeSpecificationDSL(TreeSpecification.builder());
+    public static ConfigurationDSL dsl() {
+        return new ConfigurationDSL(TreeSpecification.builder());
     }
 
     public NullaryPath path() {

@@ -25,12 +25,26 @@ public class PatchDSL {
         return this;
     }
 
+    public PatchDSL remove(String path) {
+        operations.add(OperationDto.remove(path));
+        return this;
+    }
+
     public <V> PatchDSL replace(Path path, V value) {
         operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
         return this;
     }
 
+    public <V> PatchDSL replace(String path, V value) {
+        operations.add(OperationDto.replace(path, DirectTree.of(value)));
+        return this;
+    }
+
     public <V> PatchAddDSL add(Path path, V value) {
+        return PatchAddDSL.create(operations).add(path, value);
+    }
+
+    public <V> PatchAddDSL add(String path, V value) {
         return PatchAddDSL.create(operations).add(path, value);
     }
 

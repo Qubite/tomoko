@@ -1,8 +1,5 @@
 package io.qubite.tomoko.type;
 
-/**
- * Created by edhendil on 18.08.16.
- */
 public class SimpleType<T> implements ValueType<T> {
 
     private final Class<T> clazz;

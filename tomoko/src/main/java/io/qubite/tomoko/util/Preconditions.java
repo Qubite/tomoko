@@ -3,14 +3,17 @@ package io.qubite.tomoko.util;
 import io.qubite.tomoko.PatcherException;
 import net.jodah.typetools.TypeResolver;
 
-/**
- * Created by edhendil on 20.07.17.
- */
 public class Preconditions {
 
     public static void checkNotNull(Object toCheck) {
         if (toCheck == null) {
             throw new NullPointerException();
+        }
+    }
+
+    public static void checkArgument(boolean test, String message) {
+        if (!test) {
+            throw new IllegalArgumentException(message);
         }
     }
 

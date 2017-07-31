@@ -24,4 +24,7 @@ public enum CommandType {
         return name;
     }
 
+    public boolean isValueless() {
+        return this.equals(REMOVE);
+    }
 }

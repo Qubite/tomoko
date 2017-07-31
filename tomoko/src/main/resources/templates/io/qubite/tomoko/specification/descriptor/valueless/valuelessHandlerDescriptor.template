@@ -1,0 +1,60 @@
+<@pp.dropOutputFile />
+<#list config.prefixes as prefix>
+<@pp.changeOutputFile name=prefix.name+"RemoveHandlerDescriptor.java" />
+<#assign parameters = (prefix.size > 0)>
+package io.qubite.tomoko.specification.descriptor.valueless;
+
+import io.qubite.tomoko.direct.DirectTree;
+import io.qubite.tomoko.direct.Operations;
+import io.qubite.tomoko.patch.CommandType;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.specification.descriptor.ParameterDescriptor;
+import io.qubite.tomoko.specification.scanner.PathPattern;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Contains whole information about the path, path parameters and the value type. Used to generate operations in a type safe way.
+ *
+<#if parameters><#list 1..prefix.size as index>
+ * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} parameter
+</#list></#if>
+ */
+public class ${prefix.name}RemoveHandlerDescriptor<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
+
+    private final PathPattern path;
+    <#if parameters><#list 1..prefix.size as index>
+    private final ParameterDescriptor<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ParameterDescriptor;
+    </#list></#if>
+
+    public ${prefix.name}RemoveHandlerDescriptor(PathPattern path<#if parameters>, <#list 1..prefix.size as index>ParameterDescriptor<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ParameterDescriptor<#sep>, </#list></#if>) {
+        this.path = path;
+        <#if parameters><#list 1..prefix.size as index>
+        this.${config.generics[index-1].parameter}ParameterDescriptor = ${config.generics[index-1].parameter}ParameterDescriptor;
+        </#list></#if>
+    }
+
+    public OperationDto generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
+        return generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>new HashMap<>());
+    }
+
+    public OperationDto generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter, </#list></#if>Map<String, String> parameterMap) {
+        return Operations.remove(generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>parameterMap));
+    }
+
+    public Path generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter, </#list></#if>Map<String, String> parameterMap) {
+        Map<String, String> copiedMap = new HashMap<>(parameterMap);
+        <#if parameters><#list 1..prefix.size as index>
+        copiedMap.put(${config.generics[index-1].parameter}ParameterDescriptor.getName(), ${config.generics[index-1].parameter}ParameterDescriptor.getParameterValue(${config.generics[index-1].parameter}Parameter));
+        </#list></#if>
+        return path.toPath(copiedMap);
+    }
+
+    public Path generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
+        return generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>new HashMap<>());
+    }
+
+}
+</#list>

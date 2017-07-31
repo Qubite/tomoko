@@ -33,4 +33,20 @@ public class Operations {
         return OperationDto.of(path.toString(), CommandType.REPLACE, valueTree);
     }
 
+    public static OperationDto value(CommandType type, String path, DirectTree valueTree) {
+        checkValueType(type);
+        return OperationDto.of(path, type, valueTree);
+    }
+
+    public static OperationDto value(CommandType type, Path path, DirectTree valueTree) {
+        checkValueType(type);
+        return OperationDto.of(path.toString(), type, valueTree);
+    }
+
+    private static void checkValueType(CommandType type) {
+        if (type.isValueless()) {
+            throw new IllegalArgumentException("Command type must not be valueless");
+        }
+    }
+
 }

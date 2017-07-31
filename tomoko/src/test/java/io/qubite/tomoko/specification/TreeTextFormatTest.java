@@ -1,7 +1,7 @@
 package io.qubite.tomoko.specification;
 
 import io.qubite.tomoko.format.TreeTextFormat;
-import io.qubite.tomoko.specification.dsl.TreeSpecificationDSL;
+import io.qubite.tomoko.specification.dsl.ConfigurationDSL;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,7 +21,7 @@ public class TreeTextFormatTest {
 
     @Test
     public void name() throws Exception {
-        TreeSpecificationDSL root = TreeSpecificationDSL.dsl();
+        ConfigurationDSL root = ConfigurationDSL.dsl();
         root.path().node("asdf2/title").value().string().handleAdd(consumer);
         root.path().node("asdf2/description").value().string().handleAdd(consumer);
         root.path().node("asdf").integer().value().string().handleAdd(biConsumer);

@@ -1,8 +1,5 @@
 package io.qubite.tomoko.path.converter;
 
-/**
- * Created by edhendil on 19.07.17.
- */
 public class Converters {
 
     private Converters() {

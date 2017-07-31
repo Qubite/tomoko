@@ -31,7 +31,7 @@ public class TypeExtractor {
     }
 
     public static <A, B, C, V> SimpleType<V> extractSimpleType(QuadConsumer<A, B, C, V> consumer) {
-        Class<?>[] classes = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
+        Class<?>[] classes = TypeResolver.resolveRawArguments(QuadConsumer.class, consumer.getClass());
         return toSimpleType((Class<V>) classes[3]);
     }
 

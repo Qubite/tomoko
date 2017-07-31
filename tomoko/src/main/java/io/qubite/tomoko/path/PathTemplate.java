@@ -40,6 +40,20 @@ public class PathTemplate {
         return new PathTemplate(newNodeChain);
     }
 
+    private List<PathNode> createNewChain(PathNode chained) {
+        List<PathNode> newNodes = new ArrayList<>();
+        newNodes.addAll(nodes);
+        newNodes.add(chained);
+        return newNodes;
+    }
+
+    private List<PathNode> createNewChain(PathTemplate chained) {
+        List<PathNode> newNodes = new ArrayList<>();
+        newNodes.addAll(nodes);
+        newNodes.addAll(chained.getNodes());
+        return newNodes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -64,20 +78,6 @@ public class PathTemplate {
             builder.append(node.toString());
         }
         return builder.toString();
-    }
-
-    private List<PathNode> createNewChain(PathNode chained) {
-        List<PathNode> newNodes = new ArrayList<>();
-        newNodes.addAll(nodes);
-        newNodes.add(chained);
-        return newNodes;
-    }
-
-    private List<PathNode> createNewChain(PathTemplate chained) {
-        List<PathNode> newNodes = new ArrayList<>();
-        newNodes.addAll(nodes);
-        newNodes.addAll(chained.getNodes());
-        return newNodes;
     }
 
 }

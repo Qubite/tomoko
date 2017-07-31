@@ -2,9 +2,6 @@ package io.qubite.tomoko.type;
 
 import java.util.Map;
 
-/**
- * Created by edhendil on 18.08.16.
- */
 public class MapType<M extends Map<K, V>, K, V> implements ValueType<M> {
 
     private final Class<M> baseClass;

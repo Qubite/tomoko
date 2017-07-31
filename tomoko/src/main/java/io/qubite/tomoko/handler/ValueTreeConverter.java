@@ -4,9 +4,6 @@ import io.qubite.tomoko.handler.value.ValueConverter;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.ValueType;
 
-/**
- * Created by edhendil on 24.07.17.
- */
 public class ValueTreeConverter<T> implements ValueConverter<T> {
 
     private final ValueType<T> valueType;
