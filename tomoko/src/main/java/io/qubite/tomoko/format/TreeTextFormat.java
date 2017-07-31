@@ -4,7 +4,7 @@ import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
-import io.qubite.tomoko.specification.TreeSpecification;
+import io.qubite.tomoko.specification.PatcherSpecification;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNode;
 
@@ -12,70 +12,59 @@ import java.util.*;
 
 public class TreeTextFormat {
 
-    public String treeToString(TreeSpecification treeSpecification) {
-        return addHandlersToString(treeSpecification) + removeHandlersToString(treeSpecification);
+    public String treeToString(PatcherSpecification patcherSpecification) {
+        String handlerDescription = addHandlersToString(patcherSpecification) + removeHandlersToString(patcherSpecification) + replaceHandlersToString(patcherSpecification);
+        return handlerDescription.isEmpty() ? "No handlers registered" : "List of registered handlers\n" + handlerDescription;
     }
 
-    public String addHandlersToString(TreeSpecification treeSpecification) {
+    public String addHandlersToString(PatcherSpecification patcherSpecification) {
         StringBuilder builder = new StringBuilder();
-        Tree<ValueHandler> addTree = treeSpecification.getAddHandlerTree();
-        if (addTree.isLeaf() && !addTree.isHandlerRegistered()) {
-            builder.append("No ADD handlers");
-        } else {
-            List<AddEntry> allHandlers = findAllAddHandlers((TreeNode<ValueHandler>) addTree);
-            for (AddEntry entry : allHandlers) {
-                builder.append(entry.toString());
-                builder.append("\n");
-            }
+        Tree<ValueHandler> addTree = patcherSpecification.getAddHandlerTree();
+        List<HandlerEntry<ValueHandler>> allHandlers = findAllHandlers((TreeNode<ValueHandler>) addTree);
+        for (HandlerEntry<ValueHandler> entry : allHandlers) {
+            builder.append("ADD ");
+            builder.append(entry.toString());
+            builder.append("\n");
         }
         return builder.toString();
     }
 
-    public String removeHandlersToString(TreeSpecification treeSpecification) {
+    public String removeHandlersToString(PatcherSpecification patcherSpecification) {
         StringBuilder builder = new StringBuilder();
-        Tree<ValuelessHandler> removeTree = treeSpecification.getRemoveHandlerTree();
-        if (removeTree.isLeaf() && !removeTree.isHandlerRegistered()) {
-            builder.append("No REMOVE handlers");
-        } else {
-            List<PathTemplate> allHandlers = findAllRemoveHandlers((TreeNode<ValuelessHandler>) removeTree);
-            for (PathTemplate path : allHandlers) {
-                builder.append(path.toString());
-                builder.append("\n");
-            }
+        Tree<ValuelessHandler> removeTree = patcherSpecification.getRemoveHandlerTree();
+        List<HandlerEntry<ValuelessHandler>> allHandlers = findAllHandlers((TreeNode<ValuelessHandler>) removeTree);
+        for (HandlerEntry<ValuelessHandler> entry : allHandlers) {
+            builder.append("REMOVE ");
+            builder.append(entry.getPathTemplate().toString());
+            builder.append("\n");
         }
         return builder.toString();
     }
 
-    private List<AddEntry> findAllAddHandlers(TreeNode<ValueHandler> addTreeRoot) {
-        List<AddEntry> result = new ArrayList<>();
-        Queue<AddStringRepresentationContext> queue = new LinkedList<>();
-        AddStringRepresentationContext context = AddStringRepresentationContext.of(PathTemplate.empty(), addTreeRoot);
-        queue.add(context);
-        while (!queue.isEmpty()) {
-            AddStringRepresentationContext current = queue.poll();
-            if (current.getNode().isLeaf()) {
-                result.add(new AddEntry(current.getPathTemplate(), current.getNode().getHandler()));
-            } else {
-                for (Map.Entry<PathNode, TreeNode<ValueHandler>> entry : current.getNode().getChildren().entrySet()) {
-                    queue.add(current.with(entry.getKey(), entry.getValue()));
-                }
-            }
+    public String replaceHandlersToString(PatcherSpecification patcherSpecification) {
+        StringBuilder builder = new StringBuilder();
+        Tree<ValueHandler> replaceTree = patcherSpecification.getReplaceHandlerTree();
+        List<HandlerEntry<ValueHandler>> allHandlers = findAllHandlers((TreeNode<ValueHandler>) replaceTree);
+        for (HandlerEntry<ValueHandler> entry : allHandlers) {
+            builder.append("REPLACE ");
+            builder.append(entry.toString());
+            builder.append("\n");
         }
-        return result;
+        return builder.toString();
     }
 
-    private List<PathTemplate> findAllRemoveHandlers(TreeNode<ValuelessHandler> removeTreeRoot) {
-        List<PathTemplate> result = new ArrayList<>();
-        Queue<RemoveStringRepresentationContext> queue = new LinkedList<>();
-        RemoveStringRepresentationContext context = RemoveStringRepresentationContext.of(PathTemplate.empty(), removeTreeRoot);
+    private <T> List<HandlerEntry<T>> findAllHandlers(TreeNode<T> handlerRoot) {
+        List<HandlerEntry<T>> result = new ArrayList<>();
+        Queue<StringRepresentationContext<T>> queue = new LinkedList<>();
+        StringRepresentationContext<T> context = StringRepresentationContext.of(PathTemplate.empty(), handlerRoot);
         queue.add(context);
         while (!queue.isEmpty()) {
-            RemoveStringRepresentationContext current = queue.poll();
+            StringRepresentationContext<T> current = queue.poll();
             if (current.getNode().isHandlerRegistered()) {
-                result.add(current.getPathTemplate());
+                result.add(new HandlerEntry(current.getPathTemplate(), current.getNode().getHandler()));
             }
             if (!current.getNode().isLeaf()) {
-                for (Map.Entry<PathNode, TreeNode<ValuelessHandler>> entry : current.getNode().getChildren().entrySet()) {
+                for (Map.Entry<PathNode, TreeNode<T>> entry : current.getNode().getChildren().entrySet()) {
                     queue.add(current.with(entry.getKey(), entry.getValue()));
                 }
             }
@@ -83,12 +72,12 @@ public class TreeTextFormat {
         return result;
     }
 
-    private static class AddEntry {
+    private static class HandlerEntry<T> {
 
         private final PathTemplate pathTemplate;
-        private final ValueHandler handler;
+        private final T handler;
 
-        private AddEntry(PathTemplate pathTemplate, ValueHandler handler) {
+        private HandlerEntry(PathTemplate pathTemplate, T handler) {
             this.pathTemplate = pathTemplate;
             this.handler = handler;
         }
@@ -97,7 +86,7 @@ public class TreeTextFormat {
             return pathTemplate;
         }
 
-        public ValueHandler getHandler() {
+        public T getHandler() {
             return handler;
         }
 

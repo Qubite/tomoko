@@ -9,7 +9,7 @@ import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.resolver.HandlerResolver;
-import io.qubite.tomoko.specification.TreeSpecification;
+import io.qubite.tomoko.specification.PatcherSpecification;
 import io.qubite.tomoko.tree.Tree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class OperationExecutorImpl implements OperationExecutor {
         this.handlerResolver = handlerResolver;
     }
 
-    public void execute(TreeSpecification patchSpecification, OperationDto operation) {
+    public void execute(PatcherSpecification patchSpecification, OperationDto operation) {
         LOGGER.debug("Executing operation {}", operation);
         try {
             handleOperation(patchSpecification, operation);
@@ -35,7 +35,7 @@ public class OperationExecutorImpl implements OperationExecutor {
         }
     }
 
-    public void execute(TreeSpecification patchSpecification, Patch operations) {
+    public void execute(PatcherSpecification patchSpecification, Patch operations) {
         try {
             for (OperationDto operation : operations.getOperations()) {
                 execute(patchSpecification, operation);
@@ -45,7 +45,7 @@ public class OperationExecutorImpl implements OperationExecutor {
         }
     }
 
-    private void handleOperation(TreeSpecification specification, OperationDto operation) {
+    private void handleOperation(PatcherSpecification specification, OperationDto operation) {
         Path path = Path.parse(operation.getPath());
         switch (operation.getType()) {
             case ADD:

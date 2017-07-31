@@ -1,17 +1,23 @@
-package io.qubite.tomoko.specification;
+package io.qubite.tomoko.format;
 
-import io.qubite.tomoko.format.TreeTextFormat;
+import io.qubite.tomoko.specification.PatcherSpecification;
 import io.qubite.tomoko.specification.dsl.ConfigurationDSL;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static junit.framework.TestCase.assertFalse;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TreeTextFormatTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreeTextFormatTest.class);
 
     @Mock
     private Consumer<String> consumer;
@@ -25,9 +31,10 @@ public class TreeTextFormatTest {
         root.path().node("asdf2/title").value().string().handleAdd(consumer);
         root.path().node("asdf2/description").value().string().handleAdd(consumer);
         root.path().node("asdf").integer().value().string().handleAdd(biConsumer);
-        TreeSpecification tree = root.toTree();
+        PatcherSpecification tree = root.toTree();
         TreeTextFormat underTest = new TreeTextFormat();
         String stringRepresentation = underTest.treeToString(tree);
-        System.out.println(stringRepresentation);
+        assertFalse(stringRepresentation.isEmpty());
+        LOGGER.debug(stringRepresentation);
     }
 }

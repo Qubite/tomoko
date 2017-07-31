@@ -4,26 +4,26 @@ import io.qubite.tomoko.Patcher;
 import io.qubite.tomoko.PatcherFactory;
 import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.path.PathTemplate;
-import io.qubite.tomoko.specification.TreeSpecification;
-import io.qubite.tomoko.specification.TreeSpecificationBuilder;
+import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
 
 public class ConfigurationDSL {
 
-    private final TreeSpecificationBuilder builder;
+    private final PatcherSpecificationBuilder builder;
 
-    ConfigurationDSL(TreeSpecificationBuilder builder) {
+    ConfigurationDSL(PatcherSpecificationBuilder builder) {
         this.builder = builder;
     }
 
     public static ConfigurationDSL dsl() {
-        return new ConfigurationDSL(TreeSpecification.builder());
+        return new ConfigurationDSL(PatcherSpecification.builder());
     }
 
     public NullaryPath path() {
         return new NullaryPath(HandlerFactory.instance(), builder, PathTemplate.empty());
     }
 
-    public TreeSpecification toTree() {
+    public PatcherSpecification toTree() {
         return builder.build();
     }
 

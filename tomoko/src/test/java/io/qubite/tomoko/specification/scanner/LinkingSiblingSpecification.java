@@ -1,5 +1,7 @@
 package io.qubite.tomoko.specification.scanner;
 
+import io.qubite.tomoko.specification.annotation.LinkedConfiguration;
+
 public class LinkingSiblingSpecification {
 
     private final TestSpecification linked;

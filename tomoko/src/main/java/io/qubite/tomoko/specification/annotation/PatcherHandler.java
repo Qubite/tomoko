@@ -1,4 +1,4 @@
-package io.qubite.tomoko.specification.scanner;
+package io.qubite.tomoko.specification.annotation;
 
 import io.qubite.tomoko.patch.CommandType;
 

@@ -1,9 +1,9 @@
 package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.handler.ValueTreeConverter;
 import io.qubite.tomoko.handler.value.ReflectionValueHandler;
 import io.qubite.tomoko.handler.value.ValueConverter;
+import io.qubite.tomoko.handler.value.ValueTreeConverter;
 import io.qubite.tomoko.handler.valueless.ReflectionValuelessHandler;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.PathParameter;
@@ -12,8 +12,9 @@ import io.qubite.tomoko.path.StringPathParameter;
 import io.qubite.tomoko.path.TypedPathParameter;
 import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.path.node.PathNodes;
-import io.qubite.tomoko.specification.TreeSpecification;
-import io.qubite.tomoko.specification.TreeSpecificationBuilder;
+import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
+import io.qubite.tomoko.specification.annotation.*;
 import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
 import org.slf4j.Logger;
@@ -31,13 +32,13 @@ public class ClassScanner {
 
     private final ConfigurationExtractor configurationExtractor = ConfigurationExtractor.instance();
 
-    public TreeSpecification build(Object specification) {
+    public PatcherSpecification build(Object specification) {
         LOGGER.info("Patch specification started");
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         return scanClass(builder, PathPattern.empty(), specification).build();
     }
 
-    private TreeSpecificationBuilder scanClass(TreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherSpecificationBuilder scanClass(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
         if (specification == null) {
             throw new PatcherException("Object to be scanned is null");
         }
@@ -50,7 +51,7 @@ public class ClassScanner {
         return builder;
     }
 
-    private TreeSpecificationBuilder registerMethods(TreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherSpecificationBuilder registerMethods(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
         Class<?> specificationClass = specification.getClass();
         Method[] publicMethods = specificationClass.getDeclaredMethods();
         for (Method method : publicMethods) {
@@ -61,7 +62,7 @@ public class ClassScanner {
         return builder;
     }
 
-    private TreeSpecificationBuilder registerLinkedSpecifications(TreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherSpecificationBuilder registerLinkedSpecifications(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
         Class<?> specificationClass = specification.getClass();
         Method[] publicMethods = specificationClass.getDeclaredMethods();
         for (Method method : publicMethods) {
@@ -112,7 +113,7 @@ public class ClassScanner {
         }
     }
 
-    private TreeSpecificationBuilder registerMethod(TreeSpecificationBuilder builder, PathPattern prefix, Object specification, Method method) {
+    private PatcherSpecificationBuilder registerMethod(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification, Method method) {
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         PathPattern handlerPath = prefix.append(PathPattern.parse(handlerConfiguration.getPath()));
         LOGGER.info("Registering {} handler {}::{} at {}", handlerConfiguration.getCommandType(), method.getDeclaringClass().getSimpleName(), method.getName(), handlerPath);

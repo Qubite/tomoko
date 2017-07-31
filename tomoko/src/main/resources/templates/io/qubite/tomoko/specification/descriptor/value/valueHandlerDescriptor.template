@@ -9,7 +9,7 @@ import io.qubite.tomoko.direct.Operations;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.specification.descriptor.ParameterDescriptor;
+import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 
 import java.util.HashMap;

@@ -1,6 +1,5 @@
-package io.qubite.tomoko.handler;
+package io.qubite.tomoko.handler.value;
 
-import io.qubite.tomoko.handler.value.ValueConverter;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.ValueType;
 
@@ -21,4 +20,8 @@ public class ValueTreeConverter<T> implements ValueConverter<T> {
         return valueTree.getAs(valueType);
     }
 
+    @Override
+    public String toString() {
+        return valueType.toString();
+    }
 }

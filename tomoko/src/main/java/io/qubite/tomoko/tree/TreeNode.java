@@ -65,7 +65,7 @@ public class TreeNode<H> implements Tree<H> {
             if (current.isPresent()) {
                 parent = current.get();
             } else {
-                TreeNode created = TreeNodes.full(pathNode);
+                TreeNode created = TreeNodes.empty(pathNode);
                 parent.addChild(created);
                 parent = created;
             }
@@ -83,7 +83,7 @@ public class TreeNode<H> implements Tree<H> {
             if (current.isPresent()) {
                 parent = current.get();
             } else {
-                TreeNode created = TreeNodes.full(pathNode);
+                TreeNode created = TreeNodes.empty(pathNode);
                 parent.addChild(created);
                 parent = created;
             }

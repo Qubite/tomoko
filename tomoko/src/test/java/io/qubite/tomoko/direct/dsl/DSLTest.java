@@ -32,7 +32,7 @@ public class DSLTest {
         String providedValue = "asdf";
         int pathParameter = 1;
         Patcher patcher = dsl.toPatcher();
-        Patch patch = PatchDSL.dsl().add(Path.of(TICKETS_NODE, "1", TITLE_NODE), providedValue).toOperation().toPatch();
+        Patch patch = PatchBuilder.dsl().add(Path.of(TICKETS_NODE, "1", TITLE_NODE), providedValue).toOperation().toPatch();
         patcher.execute(patch);
         verify(biConsumer).accept(pathParameter, providedValue);
     }

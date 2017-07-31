@@ -1,6 +1,7 @@
 package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.patch.CommandType;
+import io.qubite.tomoko.specification.annotation.*;
 
 @PatcherConfiguration("/books")
 public class TestSpecification {

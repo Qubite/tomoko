@@ -43,5 +43,10 @@ public class ${prefix.name}ValueHandler<<#if parameters><#list 1..prefix.size as
         consumer.accept(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ParameterValue, </#list></#if>value);
     }
 
+    @Override
+    public String toString() {
+        return valueConverter.toString();
+    }
+
 }
 </#list>

@@ -2,6 +2,7 @@ package io.qubite.tomoko.specification.descriptor;
 
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.CommandType;
+import io.qubite.tomoko.specification.annotation.LinkedConfiguration;
 import io.qubite.tomoko.specification.descriptor.value.BinaryValueHandlerDescriptor;
 import io.qubite.tomoko.specification.descriptor.value.NullaryValueHandlerDescriptor;
 import io.qubite.tomoko.specification.descriptor.value.TernaryValueHandlerDescriptor;
@@ -12,7 +13,7 @@ import io.qubite.tomoko.specification.descriptor.valueless.TernaryRemoveHandlerD
 import io.qubite.tomoko.specification.descriptor.valueless.UnaryRemoveHandlerDescriptor;
 import io.qubite.tomoko.specification.scanner.ConfigurationExtractor;
 import io.qubite.tomoko.specification.scanner.HandlerConfiguration;
-import io.qubite.tomoko.specification.scanner.LinkedConfiguration;
+import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 import io.qubite.tomoko.util.Preconditions;
 import io.qubite.tomoko.util.QuadConsumer;

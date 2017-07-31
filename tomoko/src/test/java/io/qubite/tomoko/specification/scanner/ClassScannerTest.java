@@ -2,9 +2,9 @@ package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.Patcher;
 import io.qubite.tomoko.PatcherFactory;
-import io.qubite.tomoko.direct.dsl.PatchDSL;
+import io.qubite.tomoko.direct.dsl.PatchBuilder;
 import io.qubite.tomoko.patch.Patch;
-import io.qubite.tomoko.specification.TreeSpecification;
+import io.qubite.tomoko.specification.PatcherSpecification;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -18,9 +18,9 @@ public class ClassScannerTest {
     public void scanClass_simple() throws Exception {
         ClassScanner scanner = new ClassScanner();
         TestSpecification toScan = new TestSpecification();
-        TreeSpecification handlerTree = scanner.build(toScan);
+        PatcherSpecification handlerTree = scanner.build(toScan);
         Patcher patcher = PatcherFactory.instance().create(handlerTree);
-        Patch patch = PatchDSL.dsl().add("/books/asdf/title", "new title").toOperation().toPatch();
+        Patch patch = PatchBuilder.dsl().add("/books/asdf/title", "new title").toOperation().toPatch();
         patcher.execute(patch);
         assertEquals("asdf", toScan.getLastBookId());
         assertEquals("new title", toScan.getLastTitle());
@@ -31,9 +31,9 @@ public class ClassScannerTest {
         ClassScanner scanner = new ClassScanner();
         TestSpecification simpleSpecification = new TestSpecification();
         LinkingSpecification toScan = new LinkingSpecification(simpleSpecification);
-        TreeSpecification handlerTree = scanner.build(toScan);
+        PatcherSpecification handlerTree = scanner.build(toScan);
         Patcher patcher = PatcherFactory.instance().create(handlerTree);
-        Patch patch = PatchDSL.dsl().add("/bookstore/books/asdf/title", "new title").toOperation().toPatch();
+        Patch patch = PatchBuilder.dsl().add("/bookstore/books/asdf/title", "new title").toOperation().toPatch();
         patcher.execute(patch);
         assertEquals("asdf", simpleSpecification.getLastBookId());
         assertEquals("new title", simpleSpecification.getLastTitle());
@@ -44,9 +44,9 @@ public class ClassScannerTest {
         ClassScanner scanner = new ClassScanner();
         TestSpecification simpleSpecification = new TestSpecification();
         LinkingFieldConfiguration toScan = new LinkingFieldConfiguration(simpleSpecification);
-        TreeSpecification handlerTree = scanner.build(toScan);
+        PatcherSpecification handlerTree = scanner.build(toScan);
         Patcher patcher = PatcherFactory.instance().create(handlerTree);
-        Patch patch = PatchDSL.dsl().add("/bookstore/books/asdf/title", "new title").toOperation().toPatch();
+        Patch patch = PatchBuilder.dsl().add("/bookstore/books/asdf/title", "new title").toOperation().toPatch();
         patcher.execute(patch);
         assertEquals("asdf", simpleSpecification.getLastBookId());
         assertEquals("new title", simpleSpecification.getLastTitle());
@@ -57,9 +57,9 @@ public class ClassScannerTest {
         ClassScanner scanner = new ClassScanner();
         TestSpecification simpleSpecification = new TestSpecification();
         LinkingSiblingSpecification toScan = new LinkingSiblingSpecification(simpleSpecification);
-        TreeSpecification handlerTree = scanner.build(toScan);
+        PatcherSpecification handlerTree = scanner.build(toScan);
         Patcher patcher = PatcherFactory.instance().create(handlerTree);
-        Patch patch = PatchDSL.dsl().add("/books/asdf/title", "new title").toOperation().toPatch();
+        Patch patch = PatchBuilder.dsl().add("/books/asdf/title", "new title").toOperation().toPatch();
         patcher.execute(patch);
         assertEquals("asdf", simpleSpecification.getLastBookId());
         assertEquals("new title", simpleSpecification.getLastTitle());

@@ -1,4 +1,4 @@
-package io.qubite.tomoko.specification.descriptor;
+package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.path.converter.Converters;
 import io.qubite.tomoko.path.converter.PathParameterConverter;

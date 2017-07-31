@@ -4,7 +4,7 @@ import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.converter.Converters;
 import io.qubite.tomoko.path.converter.PathParameterConverter;
-import io.qubite.tomoko.specification.descriptor.ParameterDescriptor;
+import io.qubite.tomoko.specification.annotation.*;
 
 import java.lang.reflect.Method;
 

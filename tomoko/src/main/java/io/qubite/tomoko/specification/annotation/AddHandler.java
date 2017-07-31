@@ -1,11 +1,11 @@
-package io.qubite.tomoko.specification.scanner;
+package io.qubite.tomoko.specification.annotation;
 
 import java.lang.annotation.*;
 
 @Documented
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ReplaceHandler {
+public @interface AddHandler {
 
     String value();
 

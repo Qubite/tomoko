@@ -35,6 +35,6 @@ public class RegexNode implements PathNode {
 
     @Override
     public String toString() {
-        return "/(regex:" + regex + ")";
+        return "/{arg:" + regex + "}";
     }
 }

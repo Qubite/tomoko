@@ -22,16 +22,16 @@ public class BasePatchSpecificationTest {
 
     @Test
     public void build_singleAddHandler() throws Exception {
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("none"));
         builder.handleAdd(pathTemplate, noop);
-        TreeSpecification patchSpecification = builder.build();
+        PatcherSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }
 
     @Test(expected = PatcherException.class)
     public void build_registerAddHandlerAfterExistingHandler_exception() throws Exception {
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(pathTemplate, noop);
@@ -40,7 +40,7 @@ public class BasePatchSpecificationTest {
 
     @Test(expected = PatcherException.class)
     public void build_registerAddHandlerNotOnLeaf_exception() throws Exception {
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(titlePath, noop);
@@ -49,21 +49,21 @@ public class BasePatchSpecificationTest {
 
     @Test
     public void build_singleRemoveHandler() throws Exception {
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("none"));
         builder.handleRemove(pathTemplate, none);
-        TreeSpecification patchSpecification = builder.build();
+        PatcherSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }
 
     @Test
     public void build_multipleRemoveHandlersAlongSamePath() throws Exception {
-        TreeSpecificationBuilder builder = TreeSpecification.builder();
+        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleRemove(pathTemplate, none);
         builder.handleRemove(titlePath, none);
-        TreeSpecification patchSpecification = builder.build();
+        PatcherSpecification patchSpecification = builder.build();
         assertNotNull(patchSpecification);
     }
 

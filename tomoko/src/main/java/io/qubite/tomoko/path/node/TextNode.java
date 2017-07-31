@@ -30,7 +30,7 @@ public class TextNode implements PathNode {
 
     @Override
     public String toString() {
-        return "/(string)";
+        return "/{arg}";
     }
 
 }

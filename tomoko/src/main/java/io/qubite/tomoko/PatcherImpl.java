@@ -3,24 +3,24 @@ package io.qubite.tomoko;
 import io.qubite.tomoko.operation.OperationExecutor;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
-import io.qubite.tomoko.specification.TreeSpecification;
+import io.qubite.tomoko.specification.PatcherSpecification;
 
 class PatcherImpl implements Patcher {
 
-    private final TreeSpecification treeSpecification;
+    private final PatcherSpecification patcherSpecification;
     private final OperationExecutor operationExecutor;
 
-    PatcherImpl(TreeSpecification treeSpecification, OperationExecutor operationExecutor) {
-        this.treeSpecification = treeSpecification;
+    PatcherImpl(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
+        this.patcherSpecification = patcherSpecification;
         this.operationExecutor = operationExecutor;
     }
 
     public void execute(Patch patch) {
-        operationExecutor.execute(treeSpecification, patch);
+        operationExecutor.execute(patcherSpecification, patch);
     }
 
     public void execute(OperationDto operation) {
-        operationExecutor.execute(treeSpecification, operation);
+        operationExecutor.execute(patcherSpecification, operation);
     }
 
 }

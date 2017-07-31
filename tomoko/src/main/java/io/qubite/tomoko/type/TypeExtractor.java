@@ -1,7 +1,5 @@
-package io.qubite.tomoko.specification.dsl;
+package io.qubite.tomoko.type;
 
-import io.qubite.tomoko.type.SimpleType;
-import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.util.Preconditions;
 import io.qubite.tomoko.util.QuadConsumer;
 import io.qubite.tomoko.util.TriConsumer;

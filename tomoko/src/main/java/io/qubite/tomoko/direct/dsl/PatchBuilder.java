@@ -8,44 +8,44 @@ import io.qubite.tomoko.path.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatchDSL {
+public class PatchBuilder {
 
     private final List<OperationDto> operations;
 
-    PatchDSL(List<OperationDto> operations) {
+    PatchBuilder(List<OperationDto> operations) {
         this.operations = operations;
     }
 
-    public static PatchDSL dsl() {
-        return new PatchDSL(new ArrayList<>());
+    public static PatchBuilder dsl() {
+        return new PatchBuilder(new ArrayList<>());
     }
 
-    public PatchDSL remove(Path path) {
+    public PatchBuilder remove(Path path) {
         operations.add(OperationDto.remove(path.toString()));
         return this;
     }
 
-    public PatchDSL remove(String path) {
+    public PatchBuilder remove(String path) {
         operations.add(OperationDto.remove(path));
         return this;
     }
 
-    public <V> PatchDSL replace(Path path, V value) {
+    public <V> PatchBuilder replace(Path path, V value) {
         operations.add(OperationDto.replace(path.toString(), DirectTree.of(value)));
         return this;
     }
 
-    public <V> PatchDSL replace(String path, V value) {
+    public <V> PatchBuilder replace(String path, V value) {
         operations.add(OperationDto.replace(path, DirectTree.of(value)));
         return this;
     }
 
-    public <V> PatchAddDSL add(Path path, V value) {
-        return PatchAddDSL.create(operations).add(path, value);
+    public <V> PatchAddOperationBuilder add(Path path, V value) {
+        return PatchAddOperationBuilder.create(operations).add(path, value);
     }
 
-    public <V> PatchAddDSL add(String path, V value) {
-        return PatchAddDSL.create(operations).add(path, value);
+    public <V> PatchAddOperationBuilder add(String path, V value) {
+        return PatchAddOperationBuilder.create(operations).add(path, value);
     }
 
     public Patch toPatch() {
