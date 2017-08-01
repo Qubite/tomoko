@@ -6,7 +6,7 @@ package io.qubite.tomoko.specification.dsl;
 
 import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.path.PathTemplate;
-import io.qubite.tomoko.path.TypedPathParameter;
+import io.qubite.tomoko.path.parameter.TypedPathParameter;
 import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
 import io.qubite.tomoko.type.SimpleType;
 import io.qubite.tomoko.type.TypeExtractor;

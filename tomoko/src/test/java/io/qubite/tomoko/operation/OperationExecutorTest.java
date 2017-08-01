@@ -13,7 +13,9 @@ import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.resolver.HandlerResolver;
 import io.qubite.tomoko.specification.PatcherSpecification;
 import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -26,6 +28,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OperationExecutorTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private OperationExecutorImpl operationExecutor = new OperationExecutorImpl(new HandlerResolver());
 
@@ -51,9 +56,10 @@ public class OperationExecutorTest {
         return Patch.of(operations);
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void execute_missingHandlers_exception() throws Exception {
         PatcherSpecification specification = createEmptyPatcher();
+        thrown.expect(PatcherException.class);
         operationExecutor.execute(specification, createMultipleOperation());
     }
 
@@ -78,21 +84,23 @@ public class OperationExecutorTest {
         verify(valueHandlerWithParameter).execute(Matchers.any(), Matchers.any());
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void execute_stringValueInIntegerNode_exception() throws Exception {
         PatcherSpecification specification = createPatcher();
         DirectTree value = DirectTree.of("stringValue");
         OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
+        thrown.expect(PatcherException.class);
         operationExecutor.execute(specification, addOperation);
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void execute_removeOperationWithoutHandler_exception() throws Exception {
         PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate asdfDeepPath = PathTemplate.empty().append(PathNodes.staticNode("author")).append(PathNodes.staticNode("firstName"));
         builder.handleRemove(asdfDeepPath, valuelessHandler);
         PatcherSpecification specification = builder.build();
         OperationDto operation = Operations.remove("/author");
+        thrown.expect(PatcherException.class);
         operationExecutor.execute(specification, operation);
     }
 

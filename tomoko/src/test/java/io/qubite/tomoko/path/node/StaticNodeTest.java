@@ -1,11 +1,16 @@
 package io.qubite.tomoko.path.node;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class StaticNodeTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void doesMatch_sameString() throws Exception {
@@ -19,8 +24,9 @@ public class StaticNodeTest {
         assertFalse(node.doesMatch("different"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void constructor_slashCharacter() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
         new StaticNode("/asdf");
     }
 }

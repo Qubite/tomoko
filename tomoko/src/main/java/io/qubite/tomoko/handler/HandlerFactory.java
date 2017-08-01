@@ -2,7 +2,7 @@ package io.qubite.tomoko.handler;
 
 import io.qubite.tomoko.handler.value.*;
 import io.qubite.tomoko.handler.valueless.*;
-import io.qubite.tomoko.path.PathParameter;
+import io.qubite.tomoko.path.parameter.PathParameter;
 import io.qubite.tomoko.type.ValueType;
 import io.qubite.tomoko.util.Preconditions;
 import io.qubite.tomoko.util.QuadConsumer;

@@ -1,10 +1,15 @@
 package io.qubite.tomoko.path.converter;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
 
 public class IntegerConverterTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void toObject_notNull() throws Exception {
@@ -20,21 +25,24 @@ public class IntegerConverterTest {
         assertEquals("14", converted);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void toObject_null_exception() throws Exception {
         IntegerConverter underTest = new IntegerConverter();
+        thrown.expect(NullPointerException.class);
         Integer converted = underTest.toObject(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void toPathString_null_exception() throws Exception {
         IntegerConverter underTest = new IntegerConverter();
+        thrown.expect(NullPointerException.class);
         String converted = underTest.toPathString(null);
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void toObject_invalidString_exception() throws Exception {
         IntegerConverter underTest = new IntegerConverter();
+        thrown.expect(NumberFormatException.class);
         int converted = underTest.toObject("asdf");
     }
 

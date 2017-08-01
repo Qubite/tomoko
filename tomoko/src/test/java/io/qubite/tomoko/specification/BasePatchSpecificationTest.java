@@ -5,7 +5,9 @@ import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNodes;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -14,6 +16,9 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BasePatchSpecificationTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private ValueHandler noop;
@@ -29,21 +34,23 @@ public class BasePatchSpecificationTest {
         assertNotNull(patchSpecification);
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void build_registerAddHandlerAfterExistingHandler_exception() throws Exception {
         PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(pathTemplate, noop);
+        thrown.expect(PatcherException.class);
         builder.handleAdd(titlePath, noop);
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void build_registerAddHandlerNotOnLeaf_exception() throws Exception {
         PatcherSpecificationBuilder builder = PatcherSpecification.builder();
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(titlePath, noop);
+        thrown.expect(PatcherException.class);
         builder.handleAdd(pathTemplate, noop);
     }
 

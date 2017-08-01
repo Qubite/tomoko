@@ -1,7 +1,9 @@
 package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.PatcherException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,9 @@ import static org.junit.Assert.assertEquals;
 public class PathPatternTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PathPatternTest.class);
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void parse_empty() throws Exception {
@@ -46,13 +51,15 @@ public class PathPatternTest {
         assertEquals(4, parsed.size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parse_pathNotStartingWithSlash() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
         PathPattern parsed = PathPattern.parse("parameter");
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void parse_parameterWithSeparatorButNoRegex() throws Exception {
+        thrown.expect(PatcherException.class);
         PathPattern parsed = PathPattern.parse("/{parameter:}");
     }
 

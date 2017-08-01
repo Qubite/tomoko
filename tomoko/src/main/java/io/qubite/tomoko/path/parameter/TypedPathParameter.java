@@ -1,5 +1,6 @@
-package io.qubite.tomoko.path;
+package io.qubite.tomoko.path.parameter;
 
+import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.converter.PathParameterConverter;
 
 public class TypedPathParameter<T> implements PathParameter<T> {

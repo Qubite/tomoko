@@ -1,12 +1,17 @@
 package io.qubite.tomoko.path;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
 public class PathTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void getLength_empty() throws Exception {
@@ -22,8 +27,9 @@ public class PathTest {
         assertFalse(path.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parse_doesNotStartWithSlash() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
         Path.parse("asdfasdf");
     }
 
@@ -41,14 +47,16 @@ public class PathTest {
         assertEquals("", path.getValue(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void of_slashInNode() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
         Path.of("asdf", "asdf/asdf");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void of_slashInNodeList() throws Exception {
         String[] nodes = {"asdf", "asdf/asdf"};
+        thrown.expect(IllegalArgumentException.class);
         Path.of(Arrays.asList(nodes));
     }
 

@@ -3,7 +3,7 @@ package io.qubite.tomoko.handler.value;
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.path.PathParameter;
+import io.qubite.tomoko.path.parameter.PathParameter;
 
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;

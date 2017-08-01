@@ -1,10 +1,15 @@
 package io.qubite.tomoko.path.converter;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
 
 public class URLEncodedConverterTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void toObject_notNull() throws Exception {
@@ -20,15 +25,17 @@ public class URLEncodedConverterTest {
         assertEquals("%2Fasdf%2Fqwer", converted);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void toObject_null_exception() throws Exception {
         URLEncodedConverter underTest = new URLEncodedConverter();
+        thrown.expect(NullPointerException.class);
         underTest.toObject(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void toPathString_null_exception() throws Exception {
         URLEncodedConverter underTest = new URLEncodedConverter();
+        thrown.expect(NullPointerException.class);
         underTest.toPathString(null);
     }
 

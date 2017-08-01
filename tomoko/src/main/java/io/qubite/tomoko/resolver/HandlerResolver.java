@@ -20,25 +20,24 @@ public class HandlerResolver {
 
     public List<ValueOperation> findValueHandlers(Tree<ValueHandler> tree, Path path, ValueTree value) {
         TreeNode<ValueHandler> startingNode = tree.resolve(path);
-        LOGGER.info("Looking for ADD handlers. Starting at {}", path);
         Queue<HandlerResolutionContext> queue = new LinkedList<>();
         HandlerResolutionContext initialSearchNode = HandlerResolutionContext.of(path, value, startingNode);
         queue.add(initialSearchNode);
         List<ValueOperation> result = new ArrayList<>();
         while (!queue.isEmpty()) {
             HandlerResolutionContext current = queue.poll();
-            LOGGER.info("Checking node {}", current.getNode().getPathNode());
+            LOGGER.trace("Checking node {}", current.getNode().getPathNode());
             if (current.getNode().isHandlerRegistered()) {
-                LOGGER.info("Found handler");
+                LOGGER.trace("Found handler");
                 ValueOperation valueOperation = ValueOperation.of(current.getPath(), current.getNode().getHandler(), current.getValue());
                 result.add(valueOperation);
             } else {
-                LOGGER.info("Moving to value tree children");
+                LOGGER.trace("Moving to value tree children");
                 Iterator<Map.Entry<String, ValueTree>> fields = current.getValue().getFieldIterator();
                 boolean foundAny = fields.hasNext();
                 while (fields.hasNext()) {
                     Map.Entry<String, ValueTree> field = fields.next();
-                    LOGGER.info("Adding to queue: {}", field.getKey());
+                    LOGGER.trace("Adding to queue: {}", field.getKey());
                     queue.add(createNewNodeToVisit(current, field.getKey(), field.getValue()));
                 }
                 if (!foundAny) {
@@ -50,7 +49,6 @@ public class HandlerResolver {
     }
 
     public ValueOperation findValueHandler(Tree<ValueHandler> tree, Path path, ValueTree value) {
-        LOGGER.info("Looking for REPLACE handler at {}", path);
         TreeNode<ValueHandler> resolvedPath = tree.resolve(path);
         if (!resolvedPath.isHandlerRegistered()) {
             throw new PatcherException("No handler registered on path " + path.toString());
@@ -59,7 +57,6 @@ public class HandlerResolver {
     }
 
     public ValuelessOperation findValuelessHandler(Tree<ValuelessHandler> tree, Path path) {
-        LOGGER.info("Looking for REMOVE handler at {}", path);
         TreeNode<ValuelessHandler> resolvedPath = tree.resolve(path);
         if (!resolvedPath.isHandlerRegistered()) {
             throw new PatcherException("No handler registered on path " + path.toString());

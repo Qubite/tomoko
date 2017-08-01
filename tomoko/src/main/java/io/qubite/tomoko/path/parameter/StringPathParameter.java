@@ -1,4 +1,6 @@
-package io.qubite.tomoko.path;
+package io.qubite.tomoko.path.parameter;
+
+import io.qubite.tomoko.path.Path;
 
 public class StringPathParameter implements PathParameter<String> {
 
