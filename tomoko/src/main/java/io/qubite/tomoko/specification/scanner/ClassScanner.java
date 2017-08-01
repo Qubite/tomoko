@@ -2,8 +2,8 @@ package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.handler.value.ReflectionValueHandler;
-import io.qubite.tomoko.handler.value.ValueConverter;
-import io.qubite.tomoko.handler.value.ValueTreeConverter;
+import io.qubite.tomoko.handler.value.converter.ValueConverter;
+import io.qubite.tomoko.handler.value.converter.ValueConverterFactory;
 import io.qubite.tomoko.handler.valueless.ReflectionValuelessHandler;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.PathTemplate;
@@ -31,6 +31,16 @@ public class ClassScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassScanner.class);
 
     private final ConfigurationExtractor configurationExtractor = ConfigurationExtractor.instance();
+
+    private final ValueConverterFactory valueConverterFactory;
+
+    ClassScanner(ValueConverterFactory valueConverterFactory) {
+        this.valueConverterFactory = valueConverterFactory;
+    }
+
+    public static ClassScanner instance(ValueConverterFactory valueConverterFactory) {
+        return new ClassScanner(valueConverterFactory);
+    }
 
     public PatcherSpecification build(Object specification) {
         LOGGER.info("Patch specification started");
@@ -145,7 +155,7 @@ public class ClassScanner {
         MethodHandle methodHandle = createMethodHandle(method, instance);
         List<PathParameter<?>> pathParameters = parseParameters(parameters, parameters.length - 1, handlerPath);
         ValueType<?> valueType = extractValueType(parameters[parameters.length - 1]);
-        ValueConverter<?> converter = ValueTreeConverter.of(valueType);
+        ValueConverter<?> converter = valueConverterFactory.forType(valueType);
         ReflectionValueHandler handler = ReflectionValueHandler.of(pathParameters, converter, methodHandle);
         return handler;
     }

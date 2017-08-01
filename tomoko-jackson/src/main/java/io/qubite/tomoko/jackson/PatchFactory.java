@@ -1,49 +1,77 @@
 package io.qubite.tomoko.jackson;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
-import io.qubite.tomoko.type.Types;
-import io.qubite.tomoko.type.ValueType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PatchFactory {
 
-    private static final ValueType<List<JacksonOperationDto>> TYPE = Types.list(JacksonOperationDto.class);
+    private static final JavaType TYPE = TypeFactory.defaultInstance().constructCollectionType(List.class, JacksonOperationDto.class);
 
-    private final NodeFactory nodeFactory;
+    private final ObjectMapper mapper;
 
-    PatchFactory(NodeFactory nodeFactory) {
-        this.nodeFactory = nodeFactory;
+    PatchFactory(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
     public static PatchFactory instance() {
-        return new PatchFactory(new NodeFactory(new ObjectMapper()));
+        return new PatchFactory(new ObjectMapper());
     }
 
     public static PatchFactory instance(ObjectMapper mapper) {
-        return new PatchFactory(new NodeFactory(mapper));
+        return new PatchFactory(mapper);
     }
 
     public Patch parse(String json) {
-        return Patch.of(nodeFactory.toTree(json).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        try {
+            List<JacksonOperationDto> dtos = mapper.readValue(json, TYPE);
+            return toPatch(dtos);
+        } catch (JsonMappingException e) {
+            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+        } catch (IOException e) {
+            throw new PatcherException(e);
+        }
     }
 
     public Patch parse(InputStream inputStream) {
-        return Patch.of(nodeFactory.toTree(inputStream).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        try {
+            List<JacksonOperationDto> dtos = mapper.readValue(inputStream, TYPE);
+            return toPatch(dtos);
+        } catch (JsonMappingException e) {
+            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+        } catch (IOException e) {
+            throw new PatcherException(e);
+        }
     }
 
     public Patch parse(JsonNode node) {
-        return Patch.of(nodeFactory.toTree(node).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        try {
+            List<JacksonOperationDto> dtos = mapper.readValue(node.traverse(), TYPE);
+            return toPatch(dtos);
+        } catch (JsonMappingException e) {
+            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+        } catch (IOException e) {
+            throw new PatcherException(e);
+        }
+    }
+
+    private Patch toPatch(List<JacksonOperationDto> dtos) {
+        return Patch.of(dtos.stream().map(this::toOperationDto).collect(Collectors.toList()));
     }
 
     private OperationDto toOperationDto(JacksonOperationDto operationDto) {
-        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), nodeFactory.toTree(operationDto.getValue()));
+        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), JacksonTree.of(operationDto.getValue()));
     }
 
 }

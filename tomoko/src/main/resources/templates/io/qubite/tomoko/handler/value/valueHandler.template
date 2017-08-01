@@ -7,6 +7,7 @@ package io.qubite.tomoko.handler.value;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.parameter.PathParameter;
+import io.qubite.tomoko.handler.value.converter.ValueConverter;
 
 import ${prefix.consumer.fullName};
 

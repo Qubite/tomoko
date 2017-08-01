@@ -1,8 +1,6 @@
 package io.qubite.tomoko.direct;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.ValueTree;
-import io.qubite.tomoko.type.ValueType;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -65,20 +63,6 @@ public class DirectTree implements ValueTree {
         return children.get(name);
     }
 
-    @Override
-    public <T> T getAs(ValueType<T> valueType) {
-        if (!isLeaf()) {
-            throw new PatcherException("No value present");
-        }
-        if (value == null) {
-            return null;
-        }
-        if (!valueType.getBaseClass().isInstance(value)) {
-            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + valueType);
-        }
-        return (T) value;
-    }
-
     public void addChild(String name, DirectTree node) {
         if (valueSet) {
             throw new IllegalStateException("Cannot addChild child. Value already set.");
@@ -92,6 +76,13 @@ public class DirectTree implements ValueTree {
         }
         this.value = value;
         this.valueSet = true;
+    }
+
+    public Object getValue() {
+        if (!isLeaf()) {
+            throw new IllegalStateException("Cannot get value from a non leaf node.");
+        }
+        return value;
     }
 
     public void addAll(Map<String, DirectTree> children) {

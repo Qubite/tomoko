@@ -1,9 +1,10 @@
-package io.qubite.tomoko.direct.dsl;
+package io.qubite.tomoko.direct.patch;
 
 import io.qubite.tomoko.Patcher;
+import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.specification.dsl.ConfigurationDSL;
+import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -27,7 +28,7 @@ public class DSLTest {
 
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
-        ConfigurationDSL dsl = ConfigurationDSL.dsl();
+        HandlerConfigurationDSL dsl = Tomoko.direct().dsl();
         dsl.path().node(TICKETS_NODE).integer().node(TITLE_NODE).value().string().handleAdd(biConsumer);
         String providedValue = "asdf";
         int pathParameter = 1;

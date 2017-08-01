@@ -1,4 +1,4 @@
-package io.qubite.tomoko.direct.dsl;
+package io.qubite.tomoko.direct.patch;
 
 import io.qubite.tomoko.direct.DirectTree;
 import io.qubite.tomoko.direct.DirectTreeBuilder;

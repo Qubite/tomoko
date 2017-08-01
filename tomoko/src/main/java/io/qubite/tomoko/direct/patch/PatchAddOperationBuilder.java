@@ -1,4 +1,4 @@
-package io.qubite.tomoko.direct.dsl;
+package io.qubite.tomoko.direct.patch;
 
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.path.Path;

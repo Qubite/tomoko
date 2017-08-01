@@ -1,6 +1,7 @@
 package io.qubite.tomoko.handler.value;
 
 import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.handler.value.converter.ValueConverter;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.parameter.PathParameter;

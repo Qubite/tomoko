@@ -5,7 +5,7 @@ import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.specification.PatcherSpecification;
 
-class PatcherImpl implements Patcher {
+public class PatcherImpl implements Patcher {
 
     private final PatcherSpecification patcherSpecification;
     private final OperationExecutor operationExecutor;
@@ -13,6 +13,10 @@ class PatcherImpl implements Patcher {
     PatcherImpl(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
         this.patcherSpecification = patcherSpecification;
         this.operationExecutor = operationExecutor;
+    }
+
+    public static PatcherImpl instance(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
+        return new PatcherImpl(patcherSpecification, operationExecutor);
     }
 
     public void execute(Patch patch) {

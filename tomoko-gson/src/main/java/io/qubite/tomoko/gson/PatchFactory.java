@@ -2,48 +2,60 @@ package io.qubite.tomoko.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
-import io.qubite.tomoko.type.Types;
-import io.qubite.tomoko.type.ValueType;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PatchFactory {
 
-    private static final ValueType<List<GsonOperationDto>> TYPE = Types.list(GsonOperationDto.class);
+    private static final Type TYPE = CustomParametrizedType.of(List.class, GsonOperationDto.class);
 
-    private final NodeFactory nodeFactory;
+    private final Gson gson;
 
-    PatchFactory(NodeFactory nodeFactory) {
-        this.nodeFactory = nodeFactory;
+    PatchFactory(Gson gson) {
+        this.gson = gson;
     }
 
     public static PatchFactory instance() {
-        return new PatchFactory(new NodeFactory(new Gson()));
+        return new PatchFactory(new Gson());
     }
 
     public static PatchFactory instance(Gson gson) {
-        return new PatchFactory(new NodeFactory(gson));
+        return new PatchFactory(gson);
     }
 
     public Patch parse(String json) {
-        return Patch.of(nodeFactory.toTree(json).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        List<GsonOperationDto> dtos = gson.fromJson(json, TYPE);
+        return Patch.of(dtos.stream().map(this::toOperationDto).collect(Collectors.toList()));
     }
 
     public Patch parse(InputStream inputStream) {
-        return Patch.of(nodeFactory.toTree(inputStream).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(inputStream, "UTF-8");
+            List<GsonOperationDto> dtos = gson.fromJson(reader, TYPE);
+            return Patch.of(dtos.stream().map(this::toOperationDto).collect(Collectors.toList()));
+        } catch (UnsupportedEncodingException e) {
+            throw new PatcherException("Cannot parse provided input stream.", e);
+        }
     }
 
     public Patch parse(JsonElement node) {
-        return Patch.of(nodeFactory.toTree(node).getAs(TYPE).stream().map(this::toOperationDto).collect(Collectors.toList()));
+        List<GsonOperationDto> dtos = gson.fromJson(node, TYPE);
+        return Patch.of(dtos.stream().map(this::toOperationDto).collect(Collectors.toList()));
     }
 
     private OperationDto toOperationDto(GsonOperationDto operationDto) {
-        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), nodeFactory.toTree(operationDto.getValue()));
+        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), GsonTree.of(operationDto.getValue()));
     }
 
 }
