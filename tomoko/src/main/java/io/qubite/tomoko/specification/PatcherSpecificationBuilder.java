@@ -26,27 +26,40 @@ public class PatcherSpecificationBuilder {
         } catch (IllegalPathExtensionException e) {
             throw new ConfigurationException("A handler has already been registered as a ancestor of the requested path.");
         }
-        if (!node.isLeaf()) {
-            throw new ConfigurationException("A handler has already been registered as a descendant of the requested path.");
-        }
+        checkLeaf(node);
+        checkNoHandler(node);
         node.setHandler(handler);
         return this;
     }
 
     public PatcherSpecificationBuilder handleRemove(PathTemplate pathTemplate, ValuelessHandler handler) {
         TreeNode<ValuelessHandler> node = removeRoot.extend(pathTemplate);
+        checkNoHandler(node);
         node.setHandler(handler);
         return this;
     }
 
     public PatcherSpecificationBuilder handleReplace(PathTemplate pathTemplate, ValueHandler handler) {
         TreeNode<ValueHandler> node = replaceRoot.extend(pathTemplate);
+        checkNoHandler(node);
         node.setHandler(handler);
         return this;
     }
 
     public PatcherSpecification build() {
         return new PatcherSpecification(addRoot, removeRoot, replaceRoot);
+    }
+
+    private void checkNoHandler(TreeNode<?> node) {
+        if (node.isHandlerRegistered()) {
+            throw new ConfigurationException("Handler is already registered on this path.");
+        }
+    }
+
+    private void checkLeaf(TreeNode<?> node) {
+        if (!node.isLeaf()) {
+            throw new ConfigurationException("A handler has already been registered as a descendant of the requested path.");
+        }
     }
 
 }

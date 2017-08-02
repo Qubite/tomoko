@@ -13,6 +13,11 @@ public class TextNode implements PathNode {
     }
 
     @Override
+    public int classOrder() {
+        return 30;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -31,6 +36,19 @@ public class TextNode implements PathNode {
     @Override
     public String toString() {
         return "/{arg}";
+    }
+
+    @Override
+    public int compareTo(PathNode pathNode) {
+        if (!pathNode.getClass().equals(TextNode.class)) {
+            int result = classOrder() - pathNode.classOrder();
+            if (result == 0) {
+                throw new IllegalStateException("Two path node implementation cannot have the same order value.");
+            }
+            return result;
+        } else {
+            return 0;
+        }
     }
 
 }

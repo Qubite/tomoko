@@ -16,6 +16,8 @@ import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
+
 public class TomokoPatchExceptionalScenarioTest {
 
     @Rule
@@ -87,6 +89,25 @@ public class TomokoPatchExceptionalScenarioTest {
         thrown.expect(InvalidOperationException.class);
         thrown.expectCause(Matchers.any(HandlerNotFoundException.class));
         patcher.execute(patch);
+    }
+
+    @Test
+    public void execute_mixedNodesSorted() throws Exception {
+        Tomoko tomoko = DirectTomoko.instance();
+        StaticAndWildcardNodesSpecification specification = new StaticAndWildcardNodesSpecification();
+        Patcher patcher = tomoko.scanPatcher(specification);
+        Patch patch = PatchBuilder.instance().remove("/books/ASDF")
+                .toPatch();
+        patcher.execute(patch);
+        assertEquals("staticPathNode", specification.getInvoked());
+        Patch patch2 = PatchBuilder.instance().remove("/books/QWER")
+                .toPatch();
+        patcher.execute(patch2);
+        assertEquals("staticPathNodeTwo", specification.getInvoked());
+        Patch patchWildcard = PatchBuilder.instance().remove("/books/ZZZZ")
+                .toPatch();
+        patcher.execute(patchWildcard);
+        assertEquals("wildcard", specification.getInvoked());
     }
 
     private Patcher createAddPatcher() {

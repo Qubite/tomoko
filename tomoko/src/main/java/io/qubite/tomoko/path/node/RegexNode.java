@@ -17,6 +17,11 @@ public class RegexNode implements PathNode {
     }
 
     @Override
+    public int classOrder() {
+        return 20;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -37,4 +42,19 @@ public class RegexNode implements PathNode {
     public String toString() {
         return "/{arg:" + regex + "}";
     }
+
+    @Override
+    public int compareTo(PathNode pathNode) {
+        if (!pathNode.getClass().equals(RegexNode.class)) {
+            int result = classOrder() - pathNode.classOrder();
+            if (result == 0) {
+                throw new IllegalStateException("Two path node implementation cannot have the same order value.");
+            }
+            return result;
+        } else {
+            RegexNode that = (RegexNode) pathNode;
+            return regex.toString().compareTo(that.regex.toString());
+        }
+    }
+
 }

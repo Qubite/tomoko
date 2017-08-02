@@ -3,8 +3,8 @@ package io.qubite.tomoko.tree;
 import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.path.node.PathNodes;
 
-import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.TreeMap;
 
 public class TreeNodes {
 
@@ -12,15 +12,15 @@ public class TreeNodes {
     }
 
     public static <H> TreeNode<H> full(PathNode node, H handler) {
-        return new TreeNode(node, new LinkedHashMap<>(), Optional.of(handler));
+        return new TreeNode(node, new TreeMap<>(), Optional.of(handler));
     }
 
     public static <H> TreeNode<H> empty(PathNode node) {
-        return new TreeNode(node, new LinkedHashMap<>(), Optional.empty());
+        return new TreeNode(node, new TreeMap<>(), Optional.empty());
     }
 
     public static <H> TreeNode<H> root() {
-        return new TreeNode<>(PathNodes.rootNode(), new LinkedHashMap<>(), Optional.empty());
+        return new TreeNode<>(PathNodes.rootNode(), new TreeMap<>(), Optional.empty());
     }
 
 }

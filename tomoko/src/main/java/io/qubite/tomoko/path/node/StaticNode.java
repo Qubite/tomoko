@@ -22,6 +22,11 @@ public class StaticNode implements PathNode {
     }
 
     @Override
+    public int classOrder() {
+        return 10;
+    }
+
+    @Override
     public String toString() {
         return "/" + name;
     }
@@ -42,4 +47,19 @@ public class StaticNode implements PathNode {
     public int hashCode() {
         return Objects.hashCode(name);
     }
+
+    @Override
+    public int compareTo(PathNode pathNode) {
+        if (!pathNode.getClass().equals(StaticNode.class)) {
+            int result = classOrder() - pathNode.classOrder();
+            if (result == 0) {
+                throw new IllegalStateException("Two path node implementation cannot have the same order value.");
+            }
+            return result;
+        } else {
+            StaticNode that = (StaticNode) pathNode;
+            return name.compareTo(that.name);
+        }
+    }
+
 }
