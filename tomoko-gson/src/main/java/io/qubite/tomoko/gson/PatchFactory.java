@@ -2,7 +2,7 @@ package io.qubite.tomoko.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
@@ -45,7 +45,7 @@ public class PatchFactory {
             List<GsonOperationDto> dtos = gson.fromJson(reader, TYPE);
             return Patch.of(dtos.stream().map(this::toOperationDto).collect(Collectors.toList()));
         } catch (UnsupportedEncodingException e) {
-            throw new PatcherException("Cannot parse provided input stream.", e);
+            throw new TomokoException("Cannot parse provided input stream.", e);
         }
     }
 

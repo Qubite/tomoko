@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.converter.Converters;
 import io.qubite.tomoko.path.converter.PathParameterConverter;
@@ -26,7 +26,7 @@ public class ConfigurationExtractor {
         } else if (parameterClass.equals(String.class)) {
             return Converters.identity();
         } else {
-            throw new PatcherException("Unsupported path parameter type");
+            throw new ConfigurationException("Unsupported path parameter type");
         }
     }
 
@@ -37,7 +37,7 @@ public class ConfigurationExtractor {
         } else if (parameter.isNamePresent()) {
             return parameter.getName();
         } else {
-            throw new PatcherException("Could not determine the name of a parameter. Either use @Parameter annotation or compile the code with -parameters flag (Java 8+).");
+            throw new ConfigurationException("Could not determine the name of a parameter. Either use @Parameter annotation or compile the code with -parameters flag (Java 8+).");
         }
     }
 

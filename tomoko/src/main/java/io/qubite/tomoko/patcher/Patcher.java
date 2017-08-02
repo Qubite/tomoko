@@ -1,4 +1,4 @@
-package io.qubite.tomoko;
+package io.qubite.tomoko.patcher;
 
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;

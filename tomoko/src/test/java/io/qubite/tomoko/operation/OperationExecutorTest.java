@@ -1,6 +1,6 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.direct.DirectTree;
 import io.qubite.tomoko.direct.Operations;
 import io.qubite.tomoko.handler.value.ValueHandler;
@@ -59,7 +59,7 @@ public class OperationExecutorTest {
     @Test
     public void execute_missingHandlers_exception() throws Exception {
         PatcherSpecification specification = createEmptyPatcher();
-        thrown.expect(PatcherException.class);
+        thrown.expect(TomokoException.class);
         operationExecutor.execute(specification, createMultipleOperation());
     }
 
@@ -89,7 +89,7 @@ public class OperationExecutorTest {
         PatcherSpecification specification = createPatcher();
         DirectTree value = DirectTree.of("stringValue");
         OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
-        thrown.expect(PatcherException.class);
+        thrown.expect(TomokoException.class);
         operationExecutor.execute(specification, addOperation);
     }
 
@@ -100,7 +100,7 @@ public class OperationExecutorTest {
         builder.handleRemove(asdfDeepPath, valuelessHandler);
         PatcherSpecification specification = builder.build();
         OperationDto operation = Operations.remove("/author");
-        thrown.expect(PatcherException.class);
+        thrown.expect(TomokoException.class);
         operationExecutor.execute(specification, operation);
     }
 

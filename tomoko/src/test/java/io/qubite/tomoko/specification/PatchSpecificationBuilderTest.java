@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;
@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BasePatchSpecificationTest {
+public class PatchSpecificationBuilderTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -40,7 +40,7 @@ public class BasePatchSpecificationTest {
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(pathTemplate, noop);
-        thrown.expect(PatcherException.class);
+        thrown.expect(TomokoException.class);
         builder.handleAdd(titlePath, noop);
     }
 
@@ -50,7 +50,7 @@ public class BasePatchSpecificationTest {
         PathTemplate pathTemplate = PathTemplate.empty().append(PathNodes.staticNode("ticket"));
         PathTemplate titlePath = pathTemplate.append(PathNodes.staticNode("title"));
         builder.handleAdd(titlePath, noop);
-        thrown.expect(PatcherException.class);
+        thrown.expect(TomokoException.class);
         builder.handleAdd(pathTemplate, noop);
     }
 

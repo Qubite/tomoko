@@ -1,6 +1,5 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.util.Preconditions;
 
@@ -73,7 +72,7 @@ public class PathPattern implements Iterable<PatternElement> {
             }
             result++;
         }
-        throw new PatcherException("Parameter of index " + index + "not found in the path");
+        throw new IllegalArgumentException("Parameter of index " + index + "not found in the path");
     }
 
     public Path toPath(Map<String, String> parameterMap) {
@@ -87,7 +86,7 @@ public class PathPattern implements Iterable<PatternElement> {
                 } else if (element.isWildcard()) {
                     pathNodes.add(DEFAULT_WILDCARD_VALUE);
                 } else {
-                    throw new PatcherException("No value found for parameter " + element.getName());
+                    throw new IllegalArgumentException("No value found for parameter " + element.getName());
                 }
             }
         }
@@ -102,7 +101,7 @@ public class PathPattern implements Iterable<PatternElement> {
             }
             result++;
         }
-        throw new PatcherException("Parameter of name " + name + "not found in the path");
+        throw new IllegalArgumentException("Parameter of name " + name + "not found in the path");
     }
 
     private static PathPattern toPathPattern(String path) {
@@ -123,7 +122,7 @@ public class PathPattern implements Iterable<PatternElement> {
             if (staticMatcher.find()) {
                 return PatternElement.fixed(node);
             } else {
-                throw new PatcherException("Path node must be defined as /staticNode or /{parameterName} or /{parameterName:regex}. For the parameter name only letters are accepted.");
+                throw new IllegalArgumentException("Path node must be defined as /staticNode or /{parameterName} or /{parameterName:regex}. For the parameter name only letters are accepted.");
             }
         }
     }
@@ -136,12 +135,12 @@ public class PathPattern implements Iterable<PatternElement> {
             } else {
                 String regex = parameterMatcher.group(3);
                 if (regex.isEmpty()) {
-                    throw new PatcherException("Regex pattern is empty in path node " + node);
+                    throw new IllegalArgumentException("Regex pattern is empty in path node " + node);
                 }
                 return PatternElement.parameter(parameterMatcher.group(1), regex);
             }
         } else {
-            throw new PatcherException("Path parameter must be defined as /{parameterName} or /{parameterName:regex}. For the parameter name only letters are accepted.");
+            throw new IllegalArgumentException("Path parameter must be defined as /{parameterName} or /{parameterName:regex}. For the parameter name only letters are accepted.");
         }
     }
 

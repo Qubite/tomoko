@@ -4,8 +4,10 @@
 <#assign parameters = (prefix.size > 0)>
 package io.qubite.tomoko.handler.value;
 
+import io.qubite.tomoko.handler.HandlerException;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.path.parameter.PathParameter;
 import io.qubite.tomoko.handler.value.converter.ValueConverter;
 
@@ -37,11 +39,15 @@ public class ${prefix.name}ValueHandler<<#if parameters><#list 1..prefix.size as
 
     @Override
     public void execute(Path path, ValueTree valueTree) {
-        <#if parameters><#list 1..prefix.size as index>
-        ${config.generics[index-1].code} ${config.generics[index-1].parameter}ParameterValue = ${config.generics[index-1].parameter}Parameter.extractValue(path);
-        </#list></#if>
-        V value = valueConverter.parse(valueTree);
-        consumer.accept(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ParameterValue, </#list></#if>value);
+        try {
+            <#if parameters><#list 1..prefix.size as index>
+            ${config.generics[index-1].code} ${config.generics[index-1].parameter}ParameterValue = ${config.generics[index-1].parameter}Parameter.extractValue(path);
+            </#list></#if>
+            V value = valueConverter.parse(valueTree);
+            consumer.accept(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}ParameterValue, </#list></#if>value);
+        } catch (ConverterException e) {
+            throw new HandlerException(e);
+        }
     }
 
     @Override

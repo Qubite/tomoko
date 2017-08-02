@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.*;
 
 import java.io.IOException;
@@ -31,9 +31,9 @@ public class JacksonParser implements ValueParser<JacksonTree> {
         try {
             return parse(node.getValue(), valueType);
         } catch (JsonMappingException e) {
-            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + valueType, e);
+            throw new ConverterException("Could not parse the provided value as " + valueType);
         } catch (IOException e) {
-            throw new PatcherException(e);
+            throw new ConverterException(e);
         }
     }
 

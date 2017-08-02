@@ -1,6 +1,5 @@
 package io.qubite.tomoko.tree;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
@@ -77,7 +76,7 @@ public class TreeNode<H> implements Tree<H> {
         TreeNode<H> parent = this;
         for (PathNode pathNode : pathTemplate.getNodes()) {
             if (parent.isHandlerRegistered()) {
-                throw new PatcherException("Cannot extend the path as there is a handler registered on the way.");
+                throw new IllegalPathExtensionException();
             }
             Optional<TreeNode<H>> current = parent.getChild(pathNode);
             if (current.isPresent()) {
@@ -91,14 +90,14 @@ public class TreeNode<H> implements Tree<H> {
         return parent;
     }
 
-    public TreeNode<H> resolve(Path path) {
+    public TreeNode<H> resolve(Path path) throws PathNotFoundException {
         TreeNode<H> parent = this;
         for (String nodeValue : path.getNodes()) {
             Optional<TreeNode<H>> optionalMatchingChild = parent.findMatchingChild(nodeValue);
             if (optionalMatchingChild.isPresent()) {
                 parent = optionalMatchingChild.get();
             } else {
-                throw new PatcherException("Cannot resolve a given path. No matching node found.");
+                throw new PathNotFoundException("Cannot resolve a given path. No matching node found.");
             }
         }
         return parent;

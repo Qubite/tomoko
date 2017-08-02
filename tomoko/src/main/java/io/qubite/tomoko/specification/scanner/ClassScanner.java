@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.handler.value.ReflectionValueHandler;
 import io.qubite.tomoko.handler.value.converter.ValueConverter;
 import io.qubite.tomoko.handler.value.converter.ValueConverterFactory;
@@ -50,7 +50,7 @@ public class ClassScanner {
 
     private PatcherSpecificationBuilder scanClass(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
         if (specification == null) {
-            throw new PatcherException("Object to be scanned is null");
+            throw new ConfigurationException("Object to be scanned is null");
         }
         Class<?> specificationClass = specification.getClass();
         LOGGER.info("Scanning class {}", specificationClass.getName());
@@ -102,11 +102,11 @@ public class ClassScanner {
         try {
             Object linkedSpecificationInstance = method.invoke(specification);
             if (linkedSpecificationInstance == null) {
-                throw new PatcherException("Linked configuration object is null at method " + method.getDeclaringClass().getSimpleName() + "::" + method.getName());
+                throw new ConfigurationException("Linked configuration object is null at method " + method.getDeclaringClass().getSimpleName() + "::" + method.getName());
             }
             return linkedSpecificationInstance;
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new PatcherException(e);
+            throw new ConfigurationException(e);
         }
     }
 
@@ -115,11 +115,11 @@ public class ClassScanner {
             field.setAccessible(true);
             Object linkedSpecificationInstance = field.get(specification);
             if (linkedSpecificationInstance == null) {
-                throw new PatcherException("Linked configuration object is null at field" + field.getDeclaringClass().getSimpleName() + "::" + field.getName());
+                throw new ConfigurationException("Linked configuration object is null at field" + field.getDeclaringClass().getSimpleName() + "::" + field.getName());
             }
             return linkedSpecificationInstance;
         } catch (IllegalAccessException e) {
-            throw new PatcherException(e);
+            throw new ConfigurationException(e);
         }
     }
 
@@ -151,6 +151,7 @@ public class ClassScanner {
     }
 
     private ReflectionValueHandler toValueHandler(PathPattern handlerPath, Method method, Object instance) {
+        checkValueHandlerMethod(method);
         java.lang.reflect.Parameter[] parameters = method.getParameters();
         MethodHandle methodHandle = createMethodHandle(method, instance);
         List<PathParameter<?>> pathParameters = parseParameters(parameters, parameters.length - 1, handlerPath);
@@ -158,6 +159,12 @@ public class ClassScanner {
         ValueConverter<?> converter = valueConverterFactory.forType(valueType);
         ReflectionValueHandler handler = ReflectionValueHandler.of(pathParameters, converter, methodHandle);
         return handler;
+    }
+
+    private void checkValueHandlerMethod(Method method) {
+        if (method.getParameterCount() == 0) {
+            throw new ConfigurationException("Method marked as an add/replace handler must contain at least one argument.");
+        }
     }
 
     private MethodHandle createMethodHandle(Method method, Object instance) {
@@ -170,7 +177,7 @@ public class ClassScanner {
             methodHandle = callSiteMethod.dynamicInvoker();
             return methodHandle;
         } catch (IllegalAccessException e) {
-            throw new PatcherException(e);
+            throw new ConfigurationException(e);
         }
     }
 
@@ -205,7 +212,7 @@ public class ClassScanner {
                 Class<?> valueClass = extractRawClass(valueType);
                 return Types.generic(containerType, keyClass, valueClass);
             } else {
-                throw new PatcherException("Unsupported value type");
+                throw new ConfigurationException("Unsupported value type");
             }
         } else if (type instanceof Class) {
             Class<?> clazz = (Class<?>) type;
@@ -233,17 +240,17 @@ public class ClassScanner {
     private void checkLinkedSpecification(Field field) {
         boolean check = !Modifier.isStatic(field.getModifiers());
         if (!check) {
-            throw new PatcherException(String.format("Field %s::%s is marked with @LinkedConfiguration but is static.", field.getDeclaringClass().getSimpleName(), field.getName()));
+            throw new ConfigurationException(String.format("Field %s::%s is marked with @LinkedConfiguration but is static.", field.getDeclaringClass().getSimpleName(), field.getName()));
         }
     }
 
     private void checkLinkedSpecification(Method method) {
         boolean check = Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers());
         if (!check) {
-            throw new PatcherException(String.format("Method %s::%s is marked with @LinkedConfiguration but is not public or is static.", method.getDeclaringClass().getSimpleName(), method.getName()));
+            throw new ConfigurationException(String.format("Method %s::%s is marked with @LinkedConfiguration but is not public or is static.", method.getDeclaringClass().getSimpleName(), method.getName()));
         }
         if (method.getParameterCount() != 0) {
-            throw new PatcherException(String.format("Method %s::%s is marked with @LinkedConfiguration but is not a parameterless getter.", method.getDeclaringClass().getSimpleName(), method.getName()));
+            throw new ConfigurationException(String.format("Method %s::%s is marked with @LinkedConfiguration but is not a parameterless getter.", method.getDeclaringClass().getSimpleName(), method.getName()));
         }
     }
 

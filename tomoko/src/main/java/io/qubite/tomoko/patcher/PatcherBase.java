@@ -1,22 +1,22 @@
-package io.qubite.tomoko;
+package io.qubite.tomoko.patcher;
 
 import io.qubite.tomoko.operation.OperationExecutor;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.specification.PatcherSpecification;
 
-public class PatcherImpl implements Patcher {
+public class PatcherBase implements Patcher {
 
     private final PatcherSpecification patcherSpecification;
     private final OperationExecutor operationExecutor;
 
-    PatcherImpl(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
+    PatcherBase(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
         this.patcherSpecification = patcherSpecification;
         this.operationExecutor = operationExecutor;
     }
 
-    public static PatcherImpl instance(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
-        return new PatcherImpl(patcherSpecification, operationExecutor);
+    public static PatcherBase instance(PatcherSpecification patcherSpecification, OperationExecutor operationExecutor) {
+        return new PatcherBase(patcherSpecification, operationExecutor);
     }
 
     public void execute(Patch patch) {

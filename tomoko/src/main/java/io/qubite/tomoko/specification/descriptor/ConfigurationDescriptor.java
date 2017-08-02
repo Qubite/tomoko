@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.descriptor;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.specification.annotation.LinkedConfiguration;
 import io.qubite.tomoko.specification.descriptor.value.BinaryValueHandlerDescriptor;
@@ -175,7 +175,7 @@ public class ConfigurationDescriptor<T> {
 
     private void checkHandlerType(HandlerConfiguration configuration, CommandType expectedType) {
         if (!configuration.getCommandType().equals(expectedType)) {
-            throw new PatcherException("Method " + configuration.getMethod().getDeclaringClass().getSimpleName() + "::" + configuration.getMethod().getName() + " is not a handler for " + expectedType.name() + " operation.");
+            throw new TomokoException("Method " + configuration.getMethod().getDeclaringClass().getSimpleName() + "::" + configuration.getMethod().getName() + " is not a handler for " + expectedType.name() + " operation.");
         }
     }
 

@@ -99,7 +99,7 @@ public class DirectTree implements ValueTree {
             for (Map.Entry<String, DirectTree> entry : children.entrySet()) {
                 builder.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(", ");
             }
-            if (children.entrySet().size() > 1) {
+            if (children.entrySet().size() > 0) {
                 builder.setLength(builder.length() - 2);
             }
             builder.append("}");

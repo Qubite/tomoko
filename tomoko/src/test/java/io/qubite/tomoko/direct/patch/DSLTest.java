@@ -1,8 +1,8 @@
 package io.qubite.tomoko.direct.patch;
 
-import io.qubite.tomoko.Patcher;
-import io.qubite.tomoko.Tomoko;
+import io.qubite.tomoko.direct.DirectTomoko;
 import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.patcher.Patcher;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
 import org.junit.Test;
@@ -28,12 +28,12 @@ public class DSLTest {
 
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
-        HandlerConfigurationDSL dsl = Tomoko.direct().dsl();
+        HandlerConfigurationDSL dsl = DirectTomoko.instance().dsl();
         dsl.path().node(TICKETS_NODE).integer().node(TITLE_NODE).value().string().handleAdd(biConsumer);
         String providedValue = "asdf";
         int pathParameter = 1;
         Patcher patcher = dsl.toPatcher();
-        Patch patch = PatchBuilder.dsl().add(Path.of(TICKETS_NODE, "1", TITLE_NODE), providedValue).toOperation().toPatch();
+        Patch patch = PatchBuilder.instance().add(Path.of(TICKETS_NODE, "1", TITLE_NODE), providedValue).toOperation().toPatch();
         patcher.execute(patch);
         verify(biConsumer).accept(pathParameter, providedValue);
     }

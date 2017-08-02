@@ -1,6 +1,5 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.PatcherException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -59,7 +58,7 @@ public class PathPatternTest {
 
     @Test
     public void parse_parameterWithSeparatorButNoRegex() throws Exception {
-        thrown.expect(PatcherException.class);
+        thrown.expect(IllegalArgumentException.class);
         PathPattern parsed = PathPattern.parse("/{parameter:}");
     }
 

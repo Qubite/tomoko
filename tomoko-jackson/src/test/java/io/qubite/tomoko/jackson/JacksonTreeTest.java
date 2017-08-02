@@ -2,10 +2,12 @@ package io.qubite.tomoko.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.type.Types;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -18,6 +20,9 @@ public class JacksonTreeTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void getAs_string() throws Exception {
         JacksonParser parser = JacksonParser.instance(mapper);
@@ -25,9 +30,10 @@ public class JacksonTreeTest {
         assertEquals("asdf", result);
     }
 
-    @Test(expected = PatcherException.class)
+    @Test
     public void getAs_stringAsDouble_exception() throws Exception {
         JacksonParser parser = JacksonParser.instance(mapper);
+        thrown.expect(TomokoException.class);
         parser.getAs(JacksonTree.of(fromFile("/trees/stringValue.json")), Types.doubleValue());
     }
 

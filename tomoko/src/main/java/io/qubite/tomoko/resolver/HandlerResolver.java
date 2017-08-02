@@ -1,12 +1,12 @@
 package io.qubite.tomoko.resolver;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.operation.ValueOperation;
 import io.qubite.tomoko.operation.ValuelessOperation;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.tree.PathNotFoundException;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNode;
 import org.slf4j.Logger;
@@ -19,7 +19,12 @@ public class HandlerResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandlerResolver.class);
 
     public List<ValueOperation> findValueHandlers(Tree<ValueHandler> tree, Path path, ValueTree value) {
-        TreeNode<ValueHandler> startingNode = tree.resolve(path);
+        TreeNode<ValueHandler> startingNode;
+        try {
+            startingNode = tree.resolve(path);
+        } catch (PathNotFoundException e) {
+            throw new HandlerNotFoundException("No handler found on path " + path.toString() + " or deeper");
+        }
         Queue<HandlerResolutionContext> queue = new LinkedList<>();
         HandlerResolutionContext initialSearchNode = HandlerResolutionContext.of(path, value, startingNode);
         queue.add(initialSearchNode);
@@ -34,14 +39,13 @@ public class HandlerResolver {
             } else {
                 LOGGER.trace("Moving to value tree children");
                 Iterator<Map.Entry<String, ValueTree>> fields = current.getValue().getFieldIterator();
-                boolean foundAny = fields.hasNext();
+                if (!fields.hasNext()) {
+                    throw new HandlerNotFoundException("No handler found on path " + current.getPath());
+                }
                 while (fields.hasNext()) {
                     Map.Entry<String, ValueTree> field = fields.next();
                     LOGGER.trace("Adding to queue: {}", field.getKey());
                     queue.add(createNewNodeToVisit(current, field.getKey(), field.getValue()));
-                }
-                if (!foundAny) {
-                    throw new PatcherException("No handler found on path " + current.getPath());
                 }
             }
         }
@@ -49,26 +53,38 @@ public class HandlerResolver {
     }
 
     public ValueOperation findValueHandler(Tree<ValueHandler> tree, Path path, ValueTree value) {
-        TreeNode<ValueHandler> resolvedPath = tree.resolve(path);
-        if (!resolvedPath.isHandlerRegistered()) {
-            throw new PatcherException("No handler registered on path " + path.toString());
+        try {
+            TreeNode<ValueHandler> resolvedPath = tree.resolve(path);
+            if (!resolvedPath.isHandlerRegistered()) {
+                throw new HandlerNotFoundException("No handler registered on path " + path.toString());
+            }
+            return ValueOperation.of(path, resolvedPath.getHandler(), value);
+        } catch (PathNotFoundException e) {
+            throw new HandlerNotFoundException("No handler registered on path " + path.toString());
         }
-        return ValueOperation.of(path, resolvedPath.getHandler(), value);
     }
 
     public ValuelessOperation findValuelessHandler(Tree<ValuelessHandler> tree, Path path) {
-        TreeNode<ValuelessHandler> resolvedPath = tree.resolve(path);
-        if (!resolvedPath.isHandlerRegistered()) {
-            throw new PatcherException("No handler registered on path " + path.toString());
+        try {
+            TreeNode<ValuelessHandler> resolvedPath = tree.resolve(path);
+            if (!resolvedPath.isHandlerRegistered()) {
+                throw new HandlerNotFoundException("No handler registered on path " + path.toString());
+            }
+            return ValuelessOperation.of(path, resolvedPath.getHandler());
+        } catch (PathNotFoundException e) {
+            throw new HandlerNotFoundException("No handler registered on path " + path.toString());
         }
-        return ValuelessOperation.of(path, resolvedPath.getHandler());
     }
 
     private HandlerResolutionContext createNewNodeToVisit(HandlerResolutionContext current, String fieldName, ValueTree fieldValue) {
-        TreeNode<ValueHandler> matchingChild = current.getNode().findMatchingChild(fieldName).orElseThrow(() -> new PatcherException("Cannot find child for node: " + fieldName));
-        Path extendedPath = current.getPath().append(fieldName);
-        HandlerResolutionContext newNodeToVisit = HandlerResolutionContext.of(extendedPath, fieldValue, matchingChild);
-        return newNodeToVisit;
+        try {
+            TreeNode<ValueHandler> matchingChild = current.getNode().resolve(Path.of(fieldName));
+            Path extendedPath = current.getPath().append(fieldName);
+            HandlerResolutionContext newNodeToVisit = HandlerResolutionContext.of(extendedPath, fieldValue, matchingChild);
+            return newNodeToVisit;
+        } catch (PathNotFoundException e) {
+            throw new HandlerNotFoundException(String.format("No handler registered on path %s or deeper", current.getPath().append(fieldName).toString()));
+        }
     }
 
 }

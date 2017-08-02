@@ -42,7 +42,7 @@ public class LongConverterTest {
     @Test
     public void toObject_invalidString_exception() throws Exception {
         LongConverter underTest = new LongConverter();
-        thrown.expect(NumberFormatException.class);
+        thrown.expect(ConverterException.class);
         underTest.toObject("asdf");
     }
 

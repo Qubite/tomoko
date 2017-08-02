@@ -1,7 +1,7 @@
 package io.qubite.tomoko.handler.value.converter;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.ValueType;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class MultipleParsersConverter<V> implements ValueConverter<V> {
     public V parse(ValueTree valueTree) {
         ValueParser<?> parser = parsers.get(valueTree.getClass());
         if (parser == null) {
-            throw new PatcherException("No value converter found for type " + valueTree.getClass().getSimpleName());
+            throw new ConverterException("No value converter found for type " + valueTree.getClass().getSimpleName() + ". Check Tomoko configuration.");
         }
         return parse(valueTree, parser);
     }

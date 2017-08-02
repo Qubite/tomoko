@@ -16,7 +16,7 @@ public class PatchBuilder {
         this.operations = operations;
     }
 
-    public static PatchBuilder dsl() {
+    public static PatchBuilder instance() {
         return new PatchBuilder(new ArrayList<>());
     }
 
@@ -37,6 +37,11 @@ public class PatchBuilder {
 
     public <V> PatchBuilder replace(String path, V value) {
         operations.add(OperationDto.replace(path, DirectTree.of(value)));
+        return this;
+    }
+
+    public PatchBuilder add(String path, DirectTree directTree) {
+        operations.add(OperationDto.add(path, directTree));
         return this;
     }
 

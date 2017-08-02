@@ -1,13 +1,16 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.handler.HandlerException;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.path.Path;
+import io.qubite.tomoko.resolver.HandlerNotFoundException;
 import io.qubite.tomoko.resolver.HandlerResolver;
 import io.qubite.tomoko.specification.PatcherSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class OperationExecutorImpl implements OperationExecutor {
 
@@ -19,31 +22,32 @@ public class OperationExecutorImpl implements OperationExecutor {
         this.handlerResolver = handlerResolver;
     }
 
-    public void execute(PatcherSpecification patchSpecification, OperationDto operation) {
+    public void execute(PatcherSpecification patchSpecification, Patch operations) {
+        for (OperationDto operation : operations.getOperations()) {
+            execute(patchSpecification, operation);
+        }
+    }
+
+    public void execute(PatcherSpecification patchSpecification, OperationDto operation) throws InvalidOperationException {
         LOGGER.debug("Executing operation {}", operation);
         try {
             handleOperation(patchSpecification, operation);
-        } catch (PatcherException e) {
-            throw new PatcherException(String.format("Error handling an operation: %s", operation), e);
+        } catch (HandlerNotFoundException e) {
+            throw new InvalidOperationException(operation, e);
+        } catch (HandlerException e) {
+            throw new InvalidOperationException(operation, e);
         }
     }
 
-    public void execute(PatcherSpecification patchSpecification, Patch operations) {
-        try {
-            for (OperationDto operation : operations.getOperations()) {
-                execute(patchSpecification, operation);
-            }
-        } catch (PatcherException e) {
-            throw new PatcherException(String.format("Error handling a patch"), e);
-        }
-    }
-
-    private void handleOperation(PatcherSpecification specification, OperationDto operation) {
-        Path path = Path.parse(operation.getPath());
-        switch (operation.getType()) {
+    private void handleOperation(PatcherSpecification specification, OperationDto operationDto) {
+        Path path = Path.parse(operationDto.getPath());
+        switch (operationDto.getType()) {
             case ADD:
                 LOGGER.debug("Looking for ADD handlers starting at {}", path);
-                handlerResolver.findValueHandlers(specification.getAddHandlerTree(), path, operation.getValue()).stream().forEach(Operation::execute);
+                List<ValueOperation> foundOperations = handlerResolver.findValueHandlers(specification.getAddHandlerTree(), path, operationDto.getValue());
+                for (ValueOperation operation : foundOperations) {
+                    operation.execute();
+                }
                 break;
             case REMOVE:
                 LOGGER.debug("Looking for REMOVE handler at {}", path);
@@ -52,10 +56,10 @@ public class OperationExecutorImpl implements OperationExecutor {
                 break;
             case REPLACE:
                 LOGGER.debug("Looking for REPLACE handler at {}", path);
-                handlerResolver.findValueHandler(specification.getReplaceHandlerTree(), path, operation.getValue()).execute();
+                handlerResolver.findValueHandler(specification.getReplaceHandlerTree(), path, operationDto.getValue()).execute();
                 break;
             default:
-                throw new PatcherException("Unsupported operation type.");
+                throw new InvalidOperationException(operationDto);
         }
     }
 

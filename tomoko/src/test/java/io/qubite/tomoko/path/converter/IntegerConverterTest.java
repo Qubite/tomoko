@@ -42,7 +42,7 @@ public class IntegerConverterTest {
     @Test
     public void toObject_invalidString_exception() throws Exception {
         IntegerConverter underTest = new IntegerConverter();
-        thrown.expect(NumberFormatException.class);
+        thrown.expect(ConverterException.class);
         int converted = underTest.toObject("asdf");
     }
 

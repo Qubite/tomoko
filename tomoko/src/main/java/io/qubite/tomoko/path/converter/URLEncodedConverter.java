@@ -1,6 +1,5 @@
 package io.qubite.tomoko.path.converter;
 
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.util.Preconditions;
 
 import java.io.UnsupportedEncodingException;
@@ -15,7 +14,7 @@ public class URLEncodedConverter implements PathParameterConverter<String> {
         try {
             return URLDecoder.decode(value, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new PatcherException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -25,7 +24,7 @@ public class URLEncodedConverter implements PathParameterConverter<String> {
         try {
             return URLEncoder.encode(value, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new PatcherException(e);
+            throw new IllegalStateException(e);
         }
     }
 

@@ -1,9 +1,10 @@
 package io.qubite.tomoko.specification;
 
-import io.qubite.tomoko.PatcherException;
+import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;
+import io.qubite.tomoko.tree.IllegalPathExtensionException;
 import io.qubite.tomoko.tree.TreeNode;
 
 public class PatcherSpecificationBuilder {
@@ -19,9 +20,14 @@ public class PatcherSpecificationBuilder {
     }
 
     public PatcherSpecificationBuilder handleAdd(PathTemplate pathTemplate, ValueHandler handler) {
-        TreeNode<ValueHandler> node = addRoot.extendUntilHandler(pathTemplate);
+        TreeNode<ValueHandler> node;
+        try {
+            node = addRoot.extendUntilHandler(pathTemplate);
+        } catch (IllegalPathExtensionException e) {
+            throw new ConfigurationException("A handler has already been registered as a ancestor of the requested path.");
+        }
         if (!node.isLeaf()) {
-            throw new PatcherException("Add operation handler must be registered on a leaf node.");
+            throw new ConfigurationException("A handler has already been registered as a descendant of the requested path.");
         }
         node.setHandler(handler);
         return this;

@@ -1,10 +1,10 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.Patcher;
-import io.qubite.tomoko.PatcherImpl;
 import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.handler.value.converter.ValueConverterFactory;
 import io.qubite.tomoko.operation.OperationExecutorImpl;
+import io.qubite.tomoko.patcher.Patcher;
+import io.qubite.tomoko.patcher.PatcherBase;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.resolver.HandlerResolver;
 import io.qubite.tomoko.specification.PatcherSpecification;
@@ -33,7 +33,7 @@ public class HandlerConfigurationDSL {
     }
 
     public Patcher toPatcher() {
-        return PatcherImpl.instance(builder.build(), new OperationExecutorImpl(new HandlerResolver()));
+        return PatcherBase.instance(builder.build(), new OperationExecutorImpl(new HandlerResolver()));
     }
 
 }

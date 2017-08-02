@@ -1,6 +1,6 @@
 package io.qubite.tomoko.format;
 
-import io.qubite.tomoko.Tomoko;
+import io.qubite.tomoko.direct.DirectTomoko;
 import io.qubite.tomoko.specification.PatcherSpecification;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class TreeTextFormatTest {
 
     @Test
     public void name() throws Exception {
-        HandlerConfigurationDSL root = Tomoko.direct().dsl();
+        HandlerConfigurationDSL root = DirectTomoko.instance().dsl();
         root.path().node("asdf2/title").value().string().handleAdd(consumer);
         root.path().node("asdf2/description").value().string().handleAdd(consumer);
         root.path().node("asdf").integer().value().string().handleAdd(biConsumer);

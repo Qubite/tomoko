@@ -3,8 +3,8 @@ package io.qubite.tomoko.gson;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import io.qubite.tomoko.PatcherException;
 import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.*;
 
 import java.lang.reflect.Type;
@@ -30,7 +30,7 @@ public class GsonParser implements ValueParser<GsonTree> {
         try {
             return parse(element.getValue(), valueType);
         } catch (JsonSyntaxException e) {
-            throw new PatcherException("Value type mismatch between registered handler and received operation. Expected: " + valueType, e);
+            throw new ConverterException("Could not parse the provided value as " + valueType);
         }
     }
 
