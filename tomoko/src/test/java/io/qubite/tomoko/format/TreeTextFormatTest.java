@@ -28,7 +28,7 @@ public class TreeTextFormatTest {
 
     @Test
     public void name() throws Exception {
-        HandlerConfigurationDSL root = DirectTomoko.instance().dsl();
+        HandlerConfigurationDSL root = DirectTomoko.instance().specificationDsl();
         root.path().node("asdf2/title").value().string().handleAdd(consumer);
         root.path().node("asdf2/description").value().string().handleAdd(consumer);
         root.path().node("asdf").integer().value().string().handleAdd(biConsumer);

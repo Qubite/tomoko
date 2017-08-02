@@ -8,7 +8,6 @@ import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.tree.PathNotFoundException;
 import io.qubite.tomoko.tree.Tree;
-import io.qubite.tomoko.tree.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class HandlerResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandlerResolver.class);
 
     public List<ValueOperation> findValueHandlers(Tree<ValueHandler> tree, Path path, ValueTree value) {
-        TreeNode<ValueHandler> startingNode;
+        Tree<ValueHandler> startingNode;
         try {
             startingNode = tree.resolve(path);
         } catch (PathNotFoundException e) {
@@ -54,7 +53,7 @@ public class HandlerResolver {
 
     public ValueOperation findValueHandler(Tree<ValueHandler> tree, Path path, ValueTree value) {
         try {
-            TreeNode<ValueHandler> resolvedPath = tree.resolve(path);
+            Tree<ValueHandler> resolvedPath = tree.resolve(path);
             if (!resolvedPath.isHandlerRegistered()) {
                 throw new HandlerNotFoundException("No handler registered on path " + path.toString());
             }
@@ -66,7 +65,7 @@ public class HandlerResolver {
 
     public ValuelessOperation findValuelessHandler(Tree<ValuelessHandler> tree, Path path) {
         try {
-            TreeNode<ValuelessHandler> resolvedPath = tree.resolve(path);
+            Tree<ValuelessHandler> resolvedPath = tree.resolve(path);
             if (!resolvedPath.isHandlerRegistered()) {
                 throw new HandlerNotFoundException("No handler registered on path " + path.toString());
             }
@@ -78,7 +77,7 @@ public class HandlerResolver {
 
     private HandlerResolutionContext createNewNodeToVisit(HandlerResolutionContext current, String fieldName, ValueTree fieldValue) {
         try {
-            TreeNode<ValueHandler> matchingChild = current.getNode().resolve(Path.of(fieldName));
+            Tree<ValueHandler> matchingChild = current.getNode().resolve(Path.of(fieldName));
             Path extendedPath = current.getPath().append(fieldName);
             HandlerResolutionContext newNodeToVisit = HandlerResolutionContext.of(extendedPath, fieldValue, matchingChild);
             return newNodeToVisit;

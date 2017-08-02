@@ -28,7 +28,7 @@ public class DSLTest {
 
     @Test
     public void validSimpleTreeAndOperation() throws Exception {
-        HandlerConfigurationDSL dsl = DirectTomoko.instance().dsl();
+        HandlerConfigurationDSL dsl = DirectTomoko.instance().specificationDsl();
         dsl.path().node(TICKETS_NODE).integer().node(TITLE_NODE).value().string().handleAdd(biConsumer);
         String providedValue = "asdf";
         int pathParameter = 1;

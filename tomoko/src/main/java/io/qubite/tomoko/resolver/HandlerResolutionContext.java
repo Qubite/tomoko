@@ -3,21 +3,21 @@ package io.qubite.tomoko.resolver;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.patch.ValueTree;
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.tree.TreeNode;
+import io.qubite.tomoko.tree.Tree;
 
 class HandlerResolutionContext {
 
     private final Path path;
     private final ValueTree value;
-    private final TreeNode<ValueHandler> node;
+    private final Tree<ValueHandler> node;
 
-    HandlerResolutionContext(Path path, ValueTree value, TreeNode<ValueHandler> node) {
+    HandlerResolutionContext(Path path, ValueTree value, Tree<ValueHandler> node) {
         this.path = path;
         this.value = value;
         this.node = node;
     }
 
-    public static HandlerResolutionContext of(Path path, ValueTree value, TreeNode<ValueHandler> node) {
+    public static HandlerResolutionContext of(Path path, ValueTree value, Tree<ValueHandler> node) {
         return new HandlerResolutionContext(path, value, node);
     }
 
@@ -29,7 +29,7 @@ class HandlerResolutionContext {
         return value;
     }
 
-    public TreeNode<ValueHandler> getNode() {
+    public Tree<ValueHandler> getNode() {
         return node;
     }
 

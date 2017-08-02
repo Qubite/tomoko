@@ -26,26 +26,31 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ConfigurationDescriptor<T> {
+/**
+ * Type-safe way of generating paths and operations according to annotated specification class.
+ *
+ * @param <T>
+ */
+public class SpecificationDescriptor<T> {
 
     private final ConfigurationExtractor configurationExtractor = ConfigurationExtractor.instance();
     private final MethodProxy<T> methodProxy;
     private final PathPattern prefix;
 
-    public ConfigurationDescriptor(MethodProxy<T> methodProxy, PathPattern prefix) {
+    public SpecificationDescriptor(MethodProxy<T> methodProxy, PathPattern prefix) {
         this.methodProxy = methodProxy;
         this.prefix = prefix;
     }
 
-    public static <T> ConfigurationDescriptor<T> forClass(Class<T> clazz) {
+    public static <T> SpecificationDescriptor<T> forClass(Class<T> clazz) {
         return forClass(clazz, PathPattern.empty());
     }
 
-    private static <T> ConfigurationDescriptor<T> forClass(Class<T> clazz, PathPattern prefix) {
-        return new ConfigurationDescriptor<>(MethodProxy.forClass(clazz), prefix.append(ConfigurationExtractor.instance().extractClassPrefix(clazz)));
+    private static <T> SpecificationDescriptor<T> forClass(Class<T> clazz, PathPattern prefix) {
+        return new SpecificationDescriptor<>(MethodProxy.forClass(clazz), prefix.append(ConfigurationExtractor.instance().extractClassPrefix(clazz)));
     }
 
-    public <C> ConfigurationDescriptor<C> linked(Function<T, C> getter) {
+    public <C> SpecificationDescriptor<C> linked(Function<T, C> getter) {
         Method method = methodProxy.getMethod(getter);
         Preconditions.checkArgument(method.isAnnotationPresent(LinkedConfiguration.class), "Method not marked as linked configuration.");
         LinkedConfiguration annotation = method.getAnnotation(LinkedConfiguration.class);

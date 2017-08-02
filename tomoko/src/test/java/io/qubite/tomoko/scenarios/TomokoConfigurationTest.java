@@ -1,7 +1,6 @@
 package io.qubite.tomoko.scenarios;
 
 import io.qubite.tomoko.ConfigurationException;
-import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.direct.DirectTomoko;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +13,7 @@ public class TomokoConfigurationTest {
 
     @Test
     public void scanConfiguration_duplicatePath_exception() throws Exception {
-        Tomoko tomoko = DirectTomoko.instance();
+        DirectTomoko tomoko = DirectTomoko.instance();
         thrown.expect(ConfigurationException.class);
         tomoko.scanSpecification(new DuplicatePathSpecification());
     }

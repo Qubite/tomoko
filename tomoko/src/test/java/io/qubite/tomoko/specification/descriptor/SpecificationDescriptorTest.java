@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConfigurationDescriptorTest {
+public class SpecificationDescriptorTest {
 
     @Test
     public void generateOperation_directAddHandler() throws Exception {
-        ConfigurationDescriptor<TestSpecification> underTest = ConfigurationDescriptor.forClass(TestSpecification.class);
+        SpecificationDescriptor<TestSpecification> underTest = SpecificationDescriptor.forClass(TestSpecification.class);
         UnaryValueHandlerDescriptor<String, String> descriptor = underTest.addHandler(TestSpecification::updateTitle);
         OperationDto operation = descriptor.generate("ISBN", "new title");
         assertEquals(CommandType.ADD, operation.getType());
@@ -23,7 +23,7 @@ public class ConfigurationDescriptorTest {
 
     @Test
     public void generateOperation_directReplaceHandler() throws Exception {
-        ConfigurationDescriptor<TestSpecification> underTest = ConfigurationDescriptor.forClass(TestSpecification.class);
+        SpecificationDescriptor<TestSpecification> underTest = SpecificationDescriptor.forClass(TestSpecification.class);
         UnaryValueHandlerDescriptor<String, String> descriptor = underTest.replaceHandler(TestSpecification::replaceTitle);
         OperationDto operation = descriptor.generate("ISBN", "new title");
         assertEquals(CommandType.REPLACE, operation.getType());
@@ -32,7 +32,7 @@ public class ConfigurationDescriptorTest {
 
     @Test
     public void generateOperation_directRemoveHandler() throws Exception {
-        ConfigurationDescriptor<TestSpecification> underTest = ConfigurationDescriptor.forClass(TestSpecification.class);
+        SpecificationDescriptor<TestSpecification> underTest = SpecificationDescriptor.forClass(TestSpecification.class);
         UnaryRemoveHandlerDescriptor<String> descriptor = underTest.removeHandler(TestSpecification::removeTitle);
         OperationDto operation = descriptor.generate("ISBN");
         assertEquals(CommandType.REMOVE, operation.getType());
@@ -41,7 +41,7 @@ public class ConfigurationDescriptorTest {
 
     @Test
     public void generateOperation_linkedAddHandler() throws Exception {
-        ConfigurationDescriptor<LinkingSpecification> underTest = ConfigurationDescriptor.forClass(LinkingSpecification.class);
+        SpecificationDescriptor<LinkingSpecification> underTest = SpecificationDescriptor.forClass(LinkingSpecification.class);
         UnaryValueHandlerDescriptor<String, String> descriptor = underTest.linked(LinkingSpecification::getLinked).addHandler(TestSpecification::updateTitle);
         OperationDto operation = descriptor.generate("ISBN", "new title");
         assertEquals(CommandType.ADD, operation.getType());

@@ -8,20 +8,20 @@ import java.util.Optional;
 
 public interface Tree<H> {
 
-    PathNode getPathNode();
+    Tree<H> resolve(Path path);
 
     Optional<? extends Tree<H>> getChild(PathNode pathNode);
 
-    Map<PathNode, TreeNode<H>> getChildren();
+    Map<PathNode, ? extends Tree<H>> getChildren();
 
     Optional<? extends Tree<H>> findMatchingChild(String nodeValue);
+
+    PathNode getPathNode();
 
     H getHandler();
 
     boolean isHandlerRegistered();
 
     boolean isLeaf();
-
-    TreeNode<H> resolve(Path path);
 
 }

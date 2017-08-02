@@ -1,27 +1,76 @@
 package io.qubite.tomoko.gson;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.TomokoConfigurationBuilder;
+import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.patcher.Patcher;
+import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.specification.descriptor.SpecificationDescriptor;
+import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
+
+import java.io.InputStream;
 
 public class GsonTomoko {
 
-    public static Tomoko instance() {
+    private final Tomoko tomoko;
+    private final PatchFactory patchParser;
+
+    GsonTomoko(Tomoko tomoko, PatchFactory patchParser) {
+        this.tomoko = tomoko;
+        this.patchParser = patchParser;
+    }
+
+    public static GsonTomoko instance() {
         return instance(new Gson());
     }
 
-    public static Tomoko instance(Gson mapper) {
+    public static GsonTomoko instance(Gson mapper) {
         return instance(TomokoConfigurationBuilder.base(), mapper);
     }
 
-    public static Tomoko instance(TomokoConfigurationBuilder configurationBuilder) {
+    public static GsonTomoko instance(TomokoConfigurationBuilder configurationBuilder) {
         return instance(configurationBuilder, new Gson());
     }
 
-    public static Tomoko instance(TomokoConfigurationBuilder configurationBuilder, Gson mapper) {
+    public static GsonTomoko instance(TomokoConfigurationBuilder configurationBuilder, Gson mapper) {
         configurationBuilder.clearValueParsers();
         configurationBuilder.registerValueParser(new GsonParser(mapper));
-        return Tomoko.instance(configurationBuilder.build());
+        Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
+        return new GsonTomoko(tomoko, PatchFactory.instance(mapper));
+    }
+
+    public HandlerConfigurationDSL specificationDsl() {
+        return tomoko.specificationDsl();
+    }
+
+    public Patcher patcher(PatcherSpecification patchSpecification) {
+        return tomoko.patcher(patchSpecification);
+    }
+
+    public PatcherSpecification scanSpecification(Object specification) {
+        return tomoko.scanSpecification(specification);
+    }
+
+    public Patcher scanPatcher(Object specification) {
+        return tomoko.scanPatcher(specification);
+    }
+
+    public <T> SpecificationDescriptor<T> descriptorFor(Class<T> specificationClass) {
+        return tomoko.descriptorFor(specificationClass);
+    }
+
+    public Patch parsePatch(String json) {
+        return patchParser.parse(json);
+    }
+
+    public Patch parsePatch(InputStream inputStream) {
+        return patchParser.parse(inputStream);
+    }
+
+    public Patch parsePatch(JsonElement jsonElement) {
+        return patchParser.parse(jsonElement);
     }
 
 }

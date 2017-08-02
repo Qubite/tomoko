@@ -1,6 +1,5 @@
 package io.qubite.tomoko.scenarios;
 
-import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.direct.DirectTomoko;
 import io.qubite.tomoko.direct.DirectTree;
 import io.qubite.tomoko.direct.patch.PatchBuilder;
@@ -93,30 +92,30 @@ public class TomokoPatchExceptionalScenarioTest {
 
     @Test
     public void execute_mixedNodesSorted() throws Exception {
-        Tomoko tomoko = DirectTomoko.instance();
+        DirectTomoko tomoko = DirectTomoko.instance();
         StaticAndWildcardNodesSpecification specification = new StaticAndWildcardNodesSpecification();
         Patcher patcher = tomoko.scanPatcher(specification);
-        Patch patch = PatchBuilder.instance().remove("/books/ASDF")
+        Patch patch = tomoko.patchBuilder().remove("/books/ASDF")
                 .toPatch();
         patcher.execute(patch);
         assertEquals("staticPathNode", specification.getInvoked());
-        Patch patch2 = PatchBuilder.instance().remove("/books/QWER")
+        Patch patch2 = tomoko.patchBuilder().remove("/books/QWER")
                 .toPatch();
         patcher.execute(patch2);
         assertEquals("staticPathNodeTwo", specification.getInvoked());
-        Patch patchWildcard = PatchBuilder.instance().remove("/books/ZZZZ")
+        Patch patchWildcard = tomoko.patchBuilder().remove("/books/ZZZZ")
                 .toPatch();
         patcher.execute(patchWildcard);
         assertEquals("wildcard", specification.getInvoked());
     }
 
     private Patcher createAddPatcher() {
-        Tomoko tomoko = DirectTomoko.instance();
+        DirectTomoko tomoko = DirectTomoko.instance();
         return tomoko.scanPatcher(new AddTestSpecification());
     }
 
     private Patcher createRemovePatcher() {
-        Tomoko tomoko = DirectTomoko.instance();
+        DirectTomoko tomoko = DirectTomoko.instance();
         return tomoko.scanPatcher(new RemoveTestSpecification());
     }
 
