@@ -6,7 +6,7 @@ import io.qubite.tomoko.path.node.PathNode;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Tree<H> {
+public interface Tree<H> extends Iterable<TreeIterator.TreeEntry<H>> {
 
     Tree<H> resolve(Path path);
 
@@ -23,5 +23,6 @@ public interface Tree<H> {
     boolean isHandlerRegistered();
 
     boolean isLeaf();
+
 
 }

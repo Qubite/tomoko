@@ -26,4 +26,9 @@ public class SingleParserConverter<V, P> implements ValueConverter<V> {
         return parser.getAs((P) valueTree, valueType);
     }
 
+    @Override
+    public String toString() {
+        return valueType.toString();
+    }
+
 }

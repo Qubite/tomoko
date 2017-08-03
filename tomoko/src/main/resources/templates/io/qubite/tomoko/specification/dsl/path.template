@@ -15,7 +15,7 @@ import io.qubite.tomoko.path.node.PathNode;
 import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.path.parameter.StringPathParameter;
 import io.qubite.tomoko.path.parameter.TypedPathParameter;
-import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
+import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.type.SimpleType;
 import io.qubite.tomoko.type.TypeExtractor;
 import io.qubite.tomoko.type.Types;
@@ -33,13 +33,13 @@ import ${prefix.consumer.fullName};
 public class ${prefix.name}Path<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
 
     private final HandlerFactory handlerFactory;
-    private final PatcherSpecificationBuilder builder;
+    private final PatcherTreeSpecificationBuilder builder;
     <#if parameters><#list 1..prefix.size as index>
     private final TypedPathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath;
     </#list></#if>
     private final PathTemplate path;
 
-    ${prefix.name}Path(HandlerFactory handlerFactory, PatcherSpecificationBuilder builder, <#if parameters><#list 1..prefix.size as index>TypedPathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath, </#list></#if>PathTemplate path) {
+    ${prefix.name}Path(HandlerFactory handlerFactory, PatcherTreeSpecificationBuilder builder, <#if parameters><#list 1..prefix.size as index>TypedPathParameter<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ArgumentPath, </#list></#if>PathTemplate path) {
         this.handlerFactory = handlerFactory;
         this.builder = builder;
         <#if parameters><#list 1..prefix.size as index>

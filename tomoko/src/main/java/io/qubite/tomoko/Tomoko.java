@@ -4,8 +4,8 @@ import io.qubite.tomoko.handler.value.converter.ParserConverterFactory;
 import io.qubite.tomoko.operation.OperationExecutorImpl;
 import io.qubite.tomoko.patcher.Patcher;
 import io.qubite.tomoko.patcher.PatcherBase;
-import io.qubite.tomoko.resolver.HandlerResolver;
-import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.resolver.TreeHandlerResolver;
+import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.descriptor.SpecificationDescriptor;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
 import io.qubite.tomoko.specification.scanner.ClassScanner;
@@ -29,16 +29,16 @@ public class Tomoko {
         return HandlerConfigurationDSL.dsl(ParserConverterFactory.instance(configuration));
     }
 
-    public Patcher patcher(PatcherSpecification patchSpecification) {
-        return PatcherBase.instance(patchSpecification, new OperationExecutorImpl(new HandlerResolver()));
-    }
-
-    public PatcherSpecification scanSpecification(Object specification) {
+    public PatcherTreeSpecification scanHandlerTree(Object specification) {
         return ClassScanner.instance(ParserConverterFactory.instance(configuration)).build(specification);
     }
 
     public Patcher scanPatcher(Object specification) {
-        return patcher(scanSpecification(specification));
+        return patcher(scanHandlerTree(specification));
+    }
+
+    public Patcher patcher(PatcherTreeSpecification patcherTreeSpecification) {
+        return PatcherBase.instance(TreeHandlerResolver.of(patcherTreeSpecification), new OperationExecutorImpl());
     }
 
     public <T> SpecificationDescriptor<T> descriptorFor(Class<T> specificationClass) {

@@ -2,12 +2,12 @@ package io.qubite.tomoko.operation;
 
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
-import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.resolver.HandlerResolver;
 
 public interface OperationExecutor {
 
-    void execute(PatcherSpecification patchSpecification, OperationDto operation);
+    void execute(HandlerResolver handlerResolver, OperationDto operation);
 
-    void execute(PatcherSpecification patchSpecification, Patch operations);
+    void execute(HandlerResolver handlerResolver, Patch operations);
 
 }

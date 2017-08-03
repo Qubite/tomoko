@@ -4,7 +4,7 @@ import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.TomokoConfigurationBuilder;
 import io.qubite.tomoko.direct.patch.PatchBuilder;
 import io.qubite.tomoko.patcher.Patcher;
-import io.qubite.tomoko.specification.PatcherSpecification;
+import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.descriptor.SpecificationDescriptor;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
 
@@ -31,12 +31,12 @@ public class DirectTomoko {
         return tomoko.specificationDsl();
     }
 
-    public Patcher patcher(PatcherSpecification patchSpecification) {
-        return tomoko.patcher(patchSpecification);
+    public PatcherTreeSpecification scanHandlerTree(Object specification) {
+        return tomoko.scanHandlerTree(specification);
     }
 
-    public PatcherSpecification scanSpecification(Object specification) {
-        return tomoko.scanSpecification(specification);
+    public Patcher patcher(PatcherTreeSpecification patcherTreeSpecification) {
+        return tomoko.patcher(patcherTreeSpecification);
     }
 
     public Patcher scanPatcher(Object specification) {

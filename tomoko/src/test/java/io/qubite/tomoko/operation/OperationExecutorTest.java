@@ -11,8 +11,9 @@ import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.resolver.HandlerResolver;
-import io.qubite.tomoko.specification.PatcherSpecification;
-import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
+import io.qubite.tomoko.resolver.TreeHandlerResolver;
+import io.qubite.tomoko.specification.PatcherTreeSpecification;
+import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,7 +33,7 @@ public class OperationExecutorTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private OperationExecutorImpl operationExecutor = new OperationExecutorImpl(new HandlerResolver());
+    private OperationExecutorImpl operationExecutor = new OperationExecutorImpl();
 
     @Mock
     private ValueHandler valueHandler;
@@ -43,7 +44,7 @@ public class OperationExecutorTest {
 
     @Test
     public void execute_validAddOperations() throws Exception {
-        PatcherSpecification specification = createPatcher();
+        HandlerResolver specification = createPatcher();
         operationExecutor.execute(specification, createMultipleOperation());
         verify(valueHandler).execute(Matchers.any(), Matchers.any());
         verify(valueHandlerWithParameter).execute(Matchers.any(), Matchers.any());
@@ -58,14 +59,14 @@ public class OperationExecutorTest {
 
     @Test
     public void execute_missingHandlers_exception() throws Exception {
-        PatcherSpecification specification = createEmptyPatcher();
+        HandlerResolver specification = createEmptyPatcher();
         thrown.expect(TomokoException.class);
         operationExecutor.execute(specification, createMultipleOperation());
     }
 
     @Test
     public void execute_validRemoveOperation() throws Exception {
-        PatcherSpecification specification = createPatcher();
+        HandlerResolver specification = createPatcher();
         operationExecutor.execute(specification, createSingleRemoveOperation());
         verify(valuelessHandler).execute(Matchers.any());
     }
@@ -78,7 +79,7 @@ public class OperationExecutorTest {
 
     @Test
     public void execute_deepHandlerForComplexValue() throws Exception {
-        PatcherSpecification specification = createPatcher();
+        HandlerResolver specification = createPatcher();
         operationExecutor.execute(specification, createSingleComplexValueAsdf());
         verify(valueHandler).execute(Matchers.any(), Matchers.any());
         verify(valueHandlerWithParameter).execute(Matchers.any(), Matchers.any());
@@ -86,7 +87,7 @@ public class OperationExecutorTest {
 
     @Test
     public void execute_stringValueInIntegerNode_exception() throws Exception {
-        PatcherSpecification specification = createPatcher();
+        HandlerResolver specification = createPatcher();
         DirectTree value = DirectTree.of("stringValue");
         OperationDto addOperation = Operations.add("/asdf33/stringValue", value);
         thrown.expect(TomokoException.class);
@@ -95,24 +96,24 @@ public class OperationExecutorTest {
 
     @Test
     public void execute_removeOperationWithoutHandler_exception() throws Exception {
-        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
+        PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
         PathTemplate asdfDeepPath = PathTemplate.empty().append(PathNodes.staticNode("author")).append(PathNodes.staticNode("firstName"));
         builder.handleRemove(asdfDeepPath, valuelessHandler);
-        PatcherSpecification specification = builder.build();
+        PatcherTreeSpecification specification = builder.build();
         OperationDto operation = Operations.remove("/author");
         thrown.expect(TomokoException.class);
-        operationExecutor.execute(specification, operation);
+        operationExecutor.execute(TreeHandlerResolver.of(specification), operation);
     }
 
     @Test
     public void execute_replaceOperation() throws Exception {
-        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
+        PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
         PathTemplate asdfDeepPath = PathTemplate.empty().append(PathNodes.staticNode("author")).append(PathNodes.staticNode("firstName"));
         builder.handleReplace(asdfDeepPath, valueHandler);
-        PatcherSpecification specification = builder.build();
+        PatcherTreeSpecification specification = builder.build();
         DirectTree value = DirectTree.of("stringValue");
         OperationDto operation = Operations.replace("/author/firstName", value);
-        operationExecutor.execute(specification, operation);
+        operationExecutor.execute(TreeHandlerResolver.of(specification), operation);
         verify(valueHandler).execute(Matchers.any(), Matchers.any());
     }
 
@@ -123,19 +124,19 @@ public class OperationExecutorTest {
         return Patch.of(operations);
     }
 
-    private PatcherSpecification createPatcher() {
-        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
+    private HandlerResolver createPatcher() {
+        PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
         PathTemplate asdfPath = PathTemplate.empty().append(PathNodes.staticNode("asdf"));
         PathTemplate integerNodePath = PathTemplate.empty().append(PathNodes.staticNode("asdf33")).append(PathNodes.integerNode());
         builder.handleAdd(asdfPath, valueHandler);
         builder.handleAdd(integerNodePath, valueHandlerWithParameter);
         builder.handleRemove(asdfPath, valuelessHandler);
-        return builder.build();
+        return TreeHandlerResolver.of(builder.build());
     }
 
-    private PatcherSpecification createEmptyPatcher() {
-        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
-        return builder.build();
+    private TreeHandlerResolver createEmptyPatcher() {
+        PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
+        return TreeHandlerResolver.of(builder.build());
     }
 
 }

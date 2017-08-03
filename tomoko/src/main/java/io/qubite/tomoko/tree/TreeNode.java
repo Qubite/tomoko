@@ -4,6 +4,7 @@ import io.qubite.tomoko.path.Path;
 import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.path.node.PathNode;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -101,6 +102,11 @@ public class TreeNode<H> implements Tree<H> {
             }
         }
         return parent;
+    }
+
+    @Override
+    public Iterator<TreeIterator.TreeEntry<H>> iterator() {
+        return TreeIterator.instance(this);
     }
 
     private void checkIfCanAdd(PathNode pathNode) {

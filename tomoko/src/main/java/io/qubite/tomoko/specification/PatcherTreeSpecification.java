@@ -5,20 +5,20 @@ import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNodes;
 
-public class PatcherSpecification {
+public class PatcherTreeSpecification {
 
     private final Tree<ValueHandler> addHandlerTree;
     private final Tree<ValuelessHandler> removeHandlerTree;
     private final Tree<ValueHandler> replaceHandlerTree;
 
-    PatcherSpecification(Tree<ValueHandler> addHandlerTree, Tree<ValuelessHandler> removeHandlerTree, Tree<ValueHandler> replaceHandlerTree) {
+    PatcherTreeSpecification(Tree<ValueHandler> addHandlerTree, Tree<ValuelessHandler> removeHandlerTree, Tree<ValueHandler> replaceHandlerTree) {
         this.addHandlerTree = addHandlerTree;
         this.removeHandlerTree = removeHandlerTree;
         this.replaceHandlerTree = replaceHandlerTree;
     }
 
-    public static PatcherSpecificationBuilder builder() {
-        return new PatcherSpecificationBuilder(TreeNodes.root(), TreeNodes.root(), TreeNodes.root());
+    public static PatcherTreeSpecificationBuilder builder() {
+        return new PatcherTreeSpecificationBuilder(TreeNodes.root(), TreeNodes.root(), TreeNodes.root());
     }
 
     public Tree<ValueHandler> getAddHandlerTree() {

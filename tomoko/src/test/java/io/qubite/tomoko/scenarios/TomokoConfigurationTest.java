@@ -15,7 +15,7 @@ public class TomokoConfigurationTest {
     public void scanConfiguration_duplicatePath_exception() throws Exception {
         DirectTomoko tomoko = DirectTomoko.instance();
         thrown.expect(ConfigurationException.class);
-        tomoko.scanSpecification(new DuplicatePathSpecification());
+        tomoko.scanPatcher(new DuplicatePathSpecification());
     }
 
 }

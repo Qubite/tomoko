@@ -12,8 +12,8 @@ import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.path.parameter.PathParameter;
 import io.qubite.tomoko.path.parameter.StringPathParameter;
 import io.qubite.tomoko.path.parameter.TypedPathParameter;
-import io.qubite.tomoko.specification.PatcherSpecification;
-import io.qubite.tomoko.specification.PatcherSpecificationBuilder;
+import io.qubite.tomoko.specification.PatcherTreeSpecification;
+import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.specification.annotation.*;
 import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
@@ -42,13 +42,13 @@ public class ClassScanner {
         return new ClassScanner(valueConverterFactory);
     }
 
-    public PatcherSpecification build(Object specification) {
+    public PatcherTreeSpecification build(Object specification) {
         LOGGER.info("Patch specification started");
-        PatcherSpecificationBuilder builder = PatcherSpecification.builder();
+        PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
         return scanClass(builder, PathPattern.empty(), specification).build();
     }
 
-    private PatcherSpecificationBuilder scanClass(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherTreeSpecificationBuilder scanClass(PatcherTreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
         if (specification == null) {
             throw new ConfigurationException("Object to be scanned is null");
         }
@@ -61,7 +61,7 @@ public class ClassScanner {
         return builder;
     }
 
-    private PatcherSpecificationBuilder registerMethods(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherTreeSpecificationBuilder registerMethods(PatcherTreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
         Class<?> specificationClass = specification.getClass();
         Method[] publicMethods = specificationClass.getDeclaredMethods();
         for (Method method : publicMethods) {
@@ -72,7 +72,7 @@ public class ClassScanner {
         return builder;
     }
 
-    private PatcherSpecificationBuilder registerLinkedSpecifications(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification) {
+    private PatcherTreeSpecificationBuilder registerLinkedSpecifications(PatcherTreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
         Class<?> specificationClass = specification.getClass();
         Method[] publicMethods = specificationClass.getDeclaredMethods();
         for (Method method : publicMethods) {
@@ -123,7 +123,7 @@ public class ClassScanner {
         }
     }
 
-    private PatcherSpecificationBuilder registerMethod(PatcherSpecificationBuilder builder, PathPattern prefix, Object specification, Method method) {
+    private PatcherTreeSpecificationBuilder registerMethod(PatcherTreeSpecificationBuilder builder, PathPattern prefix, Object specification, Method method) {
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         PathPattern handlerPath = prefix.append(PathPattern.parse(handlerConfiguration.getPath()));
         LOGGER.info("Registering {} handler {}::{} at {}", handlerConfiguration.getCommandType(), method.getDeclaringClass().getSimpleName(), method.getName(), handlerPath);
