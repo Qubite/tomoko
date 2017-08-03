@@ -1,6 +1,6 @@
 <@pp.dropOutputFile />
 <#list config.prefixes as prefix>
-<@pp.changeOutputFile name=prefix.name+"RemoveHandlerDescriptor.java" />
+<@pp.changeOutputFile name=prefix.name+"ValuelessHandlerDescriptor.java" />
 <#assign parameters = (prefix.size > 0)>
 package io.qubite.tomoko.specification.descriptor.valueless;
 
@@ -22,14 +22,14 @@ import java.util.Map;
  * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} parameter
 </#list></#if>
  */
-public class ${prefix.name}RemoveHandlerDescriptor<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
+public class ${prefix.name}ValuelessHandlerDescriptor<#if parameters><<#list 1..prefix.size as index>${config.generics[index-1].code}<#sep>, </#list>></#if> {
 
     private final PathPattern path;
     <#if parameters><#list 1..prefix.size as index>
     private final ParameterDescriptor<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ParameterDescriptor;
     </#list></#if>
 
-    public ${prefix.name}RemoveHandlerDescriptor(PathPattern path<#if parameters>, <#list 1..prefix.size as index>ParameterDescriptor<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ParameterDescriptor<#sep>, </#list></#if>) {
+    public ${prefix.name}ValuelessHandlerDescriptor(PathPattern path<#if parameters>, <#list 1..prefix.size as index>ParameterDescriptor<${config.generics[index-1].code}> ${config.generics[index-1].parameter}ParameterDescriptor<#sep>, </#list></#if>) {
         this.path = path;
         <#if parameters><#list 1..prefix.size as index>
         this.${config.generics[index-1].parameter}ParameterDescriptor = ${config.generics[index-1].parameter}ParameterDescriptor;

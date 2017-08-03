@@ -3,6 +3,7 @@ package io.qubite.tomoko.format;
 import io.qubite.tomoko.direct.DirectTomoko;
 import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
+import io.qubite.tomoko.type.Types;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -29,9 +30,9 @@ public class TreeTextFormatTest {
     @Test
     public void format() throws Exception {
         HandlerConfigurationDSL root = DirectTomoko.instance().specificationDsl();
-        root.path().node("asdf2/title").value().string().handleAdd(consumer);
-        root.path().node("asdf2/description").value().string().handleAdd(consumer);
-        root.path().node("asdf").integer().value().string().handleAdd(biConsumer);
+        root.path().node("asdf2/title").handleAdd(consumer).value(Types.string()).register();
+        root.path().node("asdf2/description").handleAdd(consumer).value(Types.string()).register();
+        root.path().node("asdf").integer("asdfId").handleAdd(biConsumer).firstArgument("asdfId", Integer.class).type(Types.string()).register();
         PatcherTreeSpecification tree = root.toTree();
         TreeTextFormat underTest = new TreeTextFormat();
         String stringRepresentation = underTest.treeToString(tree);

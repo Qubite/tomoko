@@ -3,7 +3,7 @@ package io.qubite.tomoko.specification.descriptor;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.specification.descriptor.value.UnaryValueHandlerDescriptor;
-import io.qubite.tomoko.specification.descriptor.valueless.UnaryRemoveHandlerDescriptor;
+import io.qubite.tomoko.specification.descriptor.valueless.UnaryValuelessHandlerDescriptor;
 import io.qubite.tomoko.specification.scanner.LinkingSpecification;
 import io.qubite.tomoko.specification.scanner.TestSpecification;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class SpecificationDescriptorTest {
     @Test
     public void generateOperation_directRemoveHandler() throws Exception {
         SpecificationDescriptor<TestSpecification> underTest = SpecificationDescriptor.forClass(TestSpecification.class);
-        UnaryRemoveHandlerDescriptor<String> descriptor = underTest.removeHandler(TestSpecification::removeTitle);
+        UnaryValuelessHandlerDescriptor<String> descriptor = underTest.removeHandler(TestSpecification::removeTitle);
         OperationDto operation = descriptor.generate("ISBN");
         assertEquals(CommandType.REMOVE, operation.getType());
         assertEquals("/books/ISBN/title", operation.getPath());

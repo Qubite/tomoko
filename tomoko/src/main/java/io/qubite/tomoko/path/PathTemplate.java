@@ -1,6 +1,9 @@
 package io.qubite.tomoko.path;
 
 import io.qubite.tomoko.path.node.PathNode;
+import io.qubite.tomoko.path.node.PathNodes;
+import io.qubite.tomoko.specification.scanner.PathPattern;
+import io.qubite.tomoko.specification.scanner.PatternElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +23,27 @@ public class PathTemplate {
 
     public static PathTemplate empty() {
         return new PathTemplate(new ArrayList<>());
+    }
+
+    public static PathTemplate from(PathPattern pathPattern) {
+        PathTemplate result = PathTemplate.empty();
+        for (PatternElement element : pathPattern) {
+            PathNode node = from(element);
+            result = result.append(node);
+        }
+        return result;
+    }
+
+    private static PathNode from(PatternElement element) {
+        PathNode result;
+        if (element.isFixed()) {
+            result = PathNodes.staticNode(element.getName());
+        } else if (element.isWildcard()) {
+            result = PathNodes.textNode();
+        } else {
+            result = PathNodes.regexNode(element.getRegex());
+        }
+        return result;
     }
 
     public List<PathNode> getNodes() {

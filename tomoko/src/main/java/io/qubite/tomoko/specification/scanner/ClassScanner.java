@@ -1,14 +1,13 @@
 package io.qubite.tomoko.specification.scanner;
 
 import io.qubite.tomoko.ConfigurationException;
-import io.qubite.tomoko.handler.value.ReflectionValueHandler;
+import io.qubite.tomoko.handler.invocation.ClientCodeInvocations;
+import io.qubite.tomoko.handler.value.ParameterListValueHandler;
 import io.qubite.tomoko.handler.value.converter.ValueConverter;
 import io.qubite.tomoko.handler.value.converter.ValueConverterFactory;
-import io.qubite.tomoko.handler.valueless.ReflectionValuelessHandler;
+import io.qubite.tomoko.handler.valueless.ParameterListValuelessHandler;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.PathTemplate;
-import io.qubite.tomoko.path.node.PathNode;
-import io.qubite.tomoko.path.node.PathNodes;
 import io.qubite.tomoko.path.parameter.PathParameter;
 import io.qubite.tomoko.path.parameter.StringPathParameter;
 import io.qubite.tomoko.path.parameter.TypedPathParameter;
@@ -127,37 +126,37 @@ public class ClassScanner {
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         PathPattern handlerPath = prefix.append(PathPattern.parse(handlerConfiguration.getPath()));
         LOGGER.info("Registering {} handler {}::{} at {}", handlerConfiguration.getCommandType(), method.getDeclaringClass().getSimpleName(), method.getName(), handlerPath);
-        PathTemplate pathTemplate = toPathTemplate(handlerPath);
+        PathTemplate pathTemplate = PathTemplate.from(handlerPath);
         CommandType operationType = handlerConfiguration.getCommandType();
         if (operationType == CommandType.REMOVE) {
-            ReflectionValuelessHandler handler = toValuelessHandler(handlerPath, method, specification);
+            ParameterListValuelessHandler handler = toValuelessHandler(handlerPath, method, specification);
             builder.handleRemove(pathTemplate, handler);
         } else if (operationType == CommandType.ADD) {
-            ReflectionValueHandler handler = toValueHandler(handlerPath, method, specification);
+            ParameterListValueHandler handler = toValueHandler(handlerPath, method, specification);
             builder.handleAdd(pathTemplate, handler);
         } else if (operationType == CommandType.REPLACE) {
-            ReflectionValueHandler handler = toValueHandler(handlerPath, method, specification);
+            ParameterListValueHandler handler = toValueHandler(handlerPath, method, specification);
             builder.handleReplace(pathTemplate, handler);
         }
         return builder;
     }
 
-    private ReflectionValuelessHandler toValuelessHandler(PathPattern handlerPath, Method method, Object instance) {
+    private ParameterListValuelessHandler toValuelessHandler(PathPattern handlerPath, Method method, Object instance) {
         java.lang.reflect.Parameter[] parameters = method.getParameters();
         MethodHandle methodHandle = createMethodHandle(method, instance);
         List<PathParameter<?>> pathParameters = parseParameters(parameters, parameters.length, handlerPath);
-        ReflectionValuelessHandler handler = ReflectionValuelessHandler.of(pathParameters, methodHandle);
+        ParameterListValuelessHandler handler = ParameterListValuelessHandler.of(pathParameters, ClientCodeInvocations.invocation(methodHandle));
         return handler;
     }
 
-    private ReflectionValueHandler toValueHandler(PathPattern handlerPath, Method method, Object instance) {
+    private ParameterListValueHandler toValueHandler(PathPattern handlerPath, Method method, Object instance) {
         checkValueHandlerMethod(method);
         java.lang.reflect.Parameter[] parameters = method.getParameters();
         MethodHandle methodHandle = createMethodHandle(method, instance);
         List<PathParameter<?>> pathParameters = parseParameters(parameters, parameters.length - 1, handlerPath);
         ValueType<?> valueType = extractValueType(parameters[parameters.length - 1]);
         ValueConverter<?> converter = valueConverterFactory.forType(valueType);
-        ReflectionValueHandler handler = ReflectionValueHandler.of(pathParameters, converter, methodHandle);
+        ParameterListValueHandler handler = ParameterListValueHandler.of(pathParameters, converter, ClientCodeInvocations.invocation(methodHandle));
         return handler;
     }
 
@@ -191,9 +190,14 @@ public class ClassScanner {
 
     private PathParameter<?> toPathParameter(java.lang.reflect.Parameter parameter, PathPattern pattern) {
         String parameterName = configurationExtractor.extractParameterName(parameter);
-        int elementIndex = pattern.getElementIndexByParameterName(parameterName);
+        int elementIndex;
+        try {
+            elementIndex = pattern.getElementIndexByParameterName(parameterName);
+        } catch (IllegalArgumentException e) {
+            throw new ConfigurationException("Parameter " + parameterName + " does not exist on the path.");
+        }
         StringPathParameter baseParameter = StringPathParameter.of(elementIndex);
-        return TypedPathParameter.of(baseParameter, configurationExtractor.extractConverter(parameter));
+        return TypedPathParameter.of(baseParameter, configurationExtractor.getDefaultConverter(parameter));
     }
 
     private ValueType<?> extractValueType(java.lang.reflect.Parameter parameter) {
@@ -252,27 +256,6 @@ public class ClassScanner {
         if (method.getParameterCount() != 0) {
             throw new ConfigurationException(String.format("Method %s::%s is marked with @LinkedConfiguration but is not a parameterless getter.", method.getDeclaringClass().getSimpleName(), method.getName()));
         }
-    }
-
-    private PathTemplate toPathTemplate(PathPattern pathPattern) {
-        PathTemplate result = PathTemplate.empty();
-        for (PatternElement element : pathPattern) {
-            PathNode node = toPathNode(element);
-            result = result.append(node);
-        }
-        return result;
-    }
-
-    private PathNode toPathNode(PatternElement element) {
-        PathNode result;
-        if (element.isFixed()) {
-            result = PathNodes.staticNode(element.getName());
-        } else if (element.isWildcard()) {
-            result = PathNodes.textNode();
-        } else {
-            result = PathNodes.regexNode(element.getRegex());
-        }
-        return result;
     }
 
 }

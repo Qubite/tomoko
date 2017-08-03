@@ -5,10 +5,10 @@ import io.qubite.tomoko.handler.value.converter.ValueConverterFactory;
 import io.qubite.tomoko.operation.OperationExecutorImpl;
 import io.qubite.tomoko.patcher.Patcher;
 import io.qubite.tomoko.patcher.PatcherBase;
-import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.resolver.TreeHandlerResolver;
 import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
+import io.qubite.tomoko.specification.scanner.PathPattern;
 
 public class HandlerConfigurationDSL {
 
@@ -24,16 +24,16 @@ public class HandlerConfigurationDSL {
         return new HandlerConfigurationDSL(valueConverterFactory, PatcherTreeSpecification.builder());
     }
 
-    public NullaryPath path() {
-        return new NullaryPath(HandlerFactory.instance(valueConverterFactory), builder, PathTemplate.empty());
-    }
-
     public PatcherTreeSpecification toTree() {
         return builder.build();
     }
 
     public Patcher toPatcher() {
         return PatcherBase.instance(TreeHandlerResolver.of(builder.build()), new OperationExecutorImpl());
+    }
+
+    public PathDSL path() {
+        return new PathDSL(PathPattern.empty(), builder, HandlerFactory.instance(valueConverterFactory));
     }
 
 }

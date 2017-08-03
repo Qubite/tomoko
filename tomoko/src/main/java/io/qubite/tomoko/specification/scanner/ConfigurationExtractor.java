@@ -17,16 +17,20 @@ public class ConfigurationExtractor {
         return new ConfigurationExtractor();
     }
 
-    public PathParameterConverter<?> extractConverter(java.lang.reflect.Parameter parameter) {
+    public PathParameterConverter<?> getDefaultConverter(java.lang.reflect.Parameter parameter) {
         Class<?> parameterClass = parameter.getType();
-        if (parameterClass.equals(int.class) || parameterClass.equals(Integer.class)) {
-            return Converters.integer();
-        } else if (parameterClass.equals(long.class) || parameterClass.equals(Long.class)) {
-            return Converters.longConverter();
-        } else if (parameterClass.equals(String.class)) {
-            return Converters.identity();
+        return getDefaultConverter(parameterClass);
+    }
+
+    public <T> PathParameterConverter<T> getDefaultConverter(Class<T> targetType) {
+        if (targetType.equals(int.class) || targetType.equals(Integer.class)) {
+            return (PathParameterConverter<T>) Converters.integer();
+        } else if (targetType.equals(long.class) || targetType.equals(Long.class)) {
+            return (PathParameterConverter<T>) Converters.longConverter();
+        } else if (targetType.equals(String.class)) {
+            return (PathParameterConverter<T>) Converters.identity();
         } else {
-            throw new ConfigurationException("Unsupported path parameter type");
+            throw new ConfigurationException("No converter known for type " + targetType.getSimpleName());
         }
     }
 
@@ -42,7 +46,7 @@ public class ConfigurationExtractor {
     }
 
     public ParameterDescriptor<?> extractParameter(java.lang.reflect.Parameter parameter) {
-        PathParameterConverter<?> converter = extractConverter(parameter);
+        PathParameterConverter<?> converter = getDefaultConverter(parameter);
         String parameterName = extractParameterName(parameter);
         return ParameterDescriptor.of(parameterName, converter);
     }

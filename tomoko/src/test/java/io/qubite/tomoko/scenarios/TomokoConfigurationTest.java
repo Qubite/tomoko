@@ -18,4 +18,11 @@ public class TomokoConfigurationTest {
         tomoko.scanPatcher(new DuplicatePathSpecification());
     }
 
+    @Test
+    public void scanConfiguration_invalidParameterName_exception() throws Exception {
+        DirectTomoko tomoko = DirectTomoko.instance();
+        thrown.expect(ConfigurationException.class);
+        tomoko.scanPatcher(new InvalidParameterNameSpecification());
+    }
+
 }

@@ -7,10 +7,10 @@ import io.qubite.tomoko.specification.descriptor.value.BinaryValueHandlerDescrip
 import io.qubite.tomoko.specification.descriptor.value.NullaryValueHandlerDescriptor;
 import io.qubite.tomoko.specification.descriptor.value.TernaryValueHandlerDescriptor;
 import io.qubite.tomoko.specification.descriptor.value.UnaryValueHandlerDescriptor;
-import io.qubite.tomoko.specification.descriptor.valueless.BinaryRemoveHandlerDescriptor;
-import io.qubite.tomoko.specification.descriptor.valueless.NullaryRemoveHandlerDescriptor;
-import io.qubite.tomoko.specification.descriptor.valueless.TernaryRemoveHandlerDescriptor;
-import io.qubite.tomoko.specification.descriptor.valueless.UnaryRemoveHandlerDescriptor;
+import io.qubite.tomoko.specification.descriptor.valueless.BinaryValuelessHandlerDescriptor;
+import io.qubite.tomoko.specification.descriptor.valueless.NullaryValuelessHandlerDescriptor;
+import io.qubite.tomoko.specification.descriptor.valueless.TernaryValuelessHandlerDescriptor;
+import io.qubite.tomoko.specification.descriptor.valueless.UnaryValuelessHandlerDescriptor;
 import io.qubite.tomoko.specification.scanner.ConfigurationExtractor;
 import io.qubite.tomoko.specification.scanner.HandlerConfiguration;
 import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
@@ -132,25 +132,25 @@ public class SpecificationDescriptor<T> {
         return new TernaryValueHandlerDescriptor<>(type, handlerPath, firstParameterDescriptor, secondParameterDescriptor, thirdParameterDescriptor);
     }
 
-    public NullaryRemoveHandlerDescriptor removeHandler(Consumer<T> handler) {
+    public NullaryValuelessHandlerDescriptor removeHandler(Consumer<T> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         checkHandlerType(handlerConfiguration, CommandType.REMOVE);
         PathPattern handlerPath = getHandlerPath(handlerConfiguration);
-        return new NullaryRemoveHandlerDescriptor(handlerPath);
+        return new NullaryValuelessHandlerDescriptor(handlerPath);
     }
 
-    public <A> UnaryRemoveHandlerDescriptor<A> removeHandler(BiConsumer<T, A> handler) {
+    public <A> UnaryValuelessHandlerDescriptor<A> removeHandler(BiConsumer<T, A> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         checkHandlerType(handlerConfiguration, CommandType.REMOVE);
         PathPattern handlerPath = getHandlerPath(handlerConfiguration);
         Parameter[] parameters = method.getParameters();
         ParameterDescriptor<A> firstParameterDescriptor = (ParameterDescriptor<A>) configurationExtractor.extractParameter(parameters[0]);
-        return new UnaryRemoveHandlerDescriptor<>(handlerPath, firstParameterDescriptor);
+        return new UnaryValuelessHandlerDescriptor<>(handlerPath, firstParameterDescriptor);
     }
 
-    public <A, B> BinaryRemoveHandlerDescriptor<A, B> removeHandler(TriConsumer<T, A, B> handler) {
+    public <A, B> BinaryValuelessHandlerDescriptor<A, B> removeHandler(TriConsumer<T, A, B> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         checkHandlerType(handlerConfiguration, CommandType.REMOVE);
@@ -158,10 +158,10 @@ public class SpecificationDescriptor<T> {
         Parameter[] parameters = method.getParameters();
         ParameterDescriptor<A> firstParameterDescriptor = (ParameterDescriptor<A>) configurationExtractor.extractParameter(parameters[0]);
         ParameterDescriptor<B> secondParameterDescriptor = (ParameterDescriptor<B>) configurationExtractor.extractParameter(parameters[1]);
-        return new BinaryRemoveHandlerDescriptor<>(handlerPath, firstParameterDescriptor, secondParameterDescriptor);
+        return new BinaryValuelessHandlerDescriptor<>(handlerPath, firstParameterDescriptor, secondParameterDescriptor);
     }
 
-    public <A, B, C> TernaryRemoveHandlerDescriptor<A, B, C> removeHandler(QuadConsumer<T, A, B, C> handler) {
+    public <A, B, C> TernaryValuelessHandlerDescriptor<A, B, C> removeHandler(QuadConsumer<T, A, B, C> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
         checkHandlerType(handlerConfiguration, CommandType.REMOVE);
@@ -170,7 +170,7 @@ public class SpecificationDescriptor<T> {
         ParameterDescriptor<A> firstParameterDescriptor = (ParameterDescriptor<A>) configurationExtractor.extractParameter(parameters[0]);
         ParameterDescriptor<B> secondParameterDescriptor = (ParameterDescriptor<B>) configurationExtractor.extractParameter(parameters[1]);
         ParameterDescriptor<C> thirdParameterDescriptor = (ParameterDescriptor<C>) configurationExtractor.extractParameter(parameters[2]);
-        return new TernaryRemoveHandlerDescriptor<>(handlerPath, firstParameterDescriptor, secondParameterDescriptor, thirdParameterDescriptor);
+        return new TernaryValuelessHandlerDescriptor<>(handlerPath, firstParameterDescriptor, secondParameterDescriptor, thirdParameterDescriptor);
     }
 
     private PathPattern getHandlerPath(HandlerConfiguration handlerConfiguration) {
