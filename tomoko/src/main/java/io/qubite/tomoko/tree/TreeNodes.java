@@ -11,10 +11,6 @@ public class TreeNodes {
     private TreeNodes() {
     }
 
-    public static <H> TreeNode<H> full(PathNode node, H handler) {
-        return new TreeNode(node, new TreeMap<>(), Optional.of(handler));
-    }
-
     public static <H> TreeNode<H> empty(PathNode node) {
         return new TreeNode(node, new TreeMap<>(), Optional.empty());
     }

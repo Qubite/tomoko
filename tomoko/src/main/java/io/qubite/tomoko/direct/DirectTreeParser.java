@@ -4,6 +4,9 @@ import io.qubite.tomoko.handler.value.converter.ValueParser;
 import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.ValueType;
 
+/**
+ * Parser for DirectTree implementation of the ValueTree interface.
+ */
 public class DirectTreeParser implements ValueParser<DirectTree> {
 
     @Override

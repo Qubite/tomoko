@@ -7,10 +7,16 @@ import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.specification.descriptor.value.NullaryValueHandlerDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 import io.qubite.tomoko.type.TypeExtractor;
+import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
 
 import java.util.function.Consumer;
 
+/**
+ * Handler configuration phase DSL. For more information check {@link io.qubite.tomoko.specification.dsl}.
+ *
+ * @param <V> handler value type
+ */
 public class NullaryValueHandlerSpec<V> {
 
     private final CommandType commandType;
@@ -35,19 +41,33 @@ public class NullaryValueHandlerSpec<V> {
     }
 
     /**
-     * Use Types class to override the extracted value type.
+     * Use {@link Types} class to override the extracted value type. Must be used if the type cannot be infered. This can happen when the handler is a mock/proxy or the type is generic.
      *
      * @param valueType
-     * @return
+     * @return ongoing handler configuration
      */
     public NullaryValueHandlerSpec<V> value(ValueType<V> valueType) {
         return new NullaryValueHandlerSpec<>(commandType, pathPattern, handler, builder, handlerFactory, valueType);
     }
 
     /**
+     * Shorthand for value(Types.simple(valueRawClass)).
+     *
+     * @param valueRawClass
+     * @return
+     */
+    public NullaryValueHandlerSpec<V> simpleValue(Class<V> valueRawClass) {
+        return value(Types.simple(valueRawClass));
+    }
+
+    /**
      * Completes the path template definition and registers a handler.<br/><br/>
-     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
-     * In that case the type should be specified through the value() method.
+     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock/proxy or the type is generic.
+     * In that case the type should be specified through the {@link #value(ValueType)} method.<br/>
+     * <br/>
+     * Ends the handler configuration phase.
+     *
+     * @return path/handler descriptor
      */
     public NullaryValueHandlerDescriptor<V> register() {
         ValueType<V> finalType = valueTypeOverride == null ? TypeExtractor.extractSimpleType(handler) : valueTypeOverride;

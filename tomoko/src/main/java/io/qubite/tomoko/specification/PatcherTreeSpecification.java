@@ -5,6 +5,15 @@ import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.tree.Tree;
 import io.qubite.tomoko.tree.TreeNodes;
 
+/**
+ * <p>
+ * Handler tree model.
+ * </p>
+ * <p>
+ * Contains trees of registered paths and handlers for ADD, REMOVE and REPLACE operations.
+ * </p>
+ * Immutable.
+ */
 public class PatcherTreeSpecification {
 
     private final Tree<ValueHandler> addHandlerTree;

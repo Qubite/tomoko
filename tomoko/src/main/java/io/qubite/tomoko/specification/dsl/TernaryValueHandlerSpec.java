@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.LambdaDescriptor;
 import io.qubite.tomoko.configuration.ParameterConfiguration;
 import io.qubite.tomoko.configuration.PathParameterFactory;
 import io.qubite.tomoko.handler.HandlerFactory;
@@ -14,11 +14,19 @@ import io.qubite.tomoko.specification.scanner.ConfigurationExtractor;
 import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 import io.qubite.tomoko.type.TypeExtractor;
+import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
 import io.qubite.tomoko.util.Preconditions;
 import io.qubite.tomoko.util.QuadConsumer;
-import net.jodah.typetools.TypeResolver;
 
+/**
+ * Handler configuration phase DSL. For more information check {@link io.qubite.tomoko.specification.dsl}.
+ *
+ * @param <A> handler first parameter type
+ * @param <B> handler second parameter type
+ * @param <C> handler third parameter type
+ * @param <V> handler value type
+ */
 public class TernaryValueHandlerSpec<A, B, C, V> {
 
     private final PatcherTreeSpecificationBuilder builder;
@@ -51,13 +59,23 @@ public class TernaryValueHandlerSpec<A, B, C, V> {
     }
 
     /**
-     * Use Types class to override the extracted value type.
+     * Use {@link Types} class to override the extracted value type. Must be used if the type cannot be infered. This can happen when the handler is a mock/proxy or the type is generic.
      *
      * @param valueType
+     * @return ongoing handler configuration
+     */
+    public TernaryValueHandlerSpec<A, B, C, V> value(ValueType<V> valueType) {
+        return new TernaryValueHandlerSpec<>(commandType, pathPattern, handler, builder, handlerFactory, firstParameterOverride, secondParameterOverride, thirdParameterOverride, valueType);
+    }
+
+    /**
+     * Shorthand for value(Types.simple(valueRawClass)).
+     *
+     * @param valueRawClass
      * @return
      */
-    public TernaryValueHandlerSpec<A, B, C, V> type(ValueType<V> valueType) {
-        return new TernaryValueHandlerSpec<>(commandType, pathPattern, handler, builder, handlerFactory, firstParameterOverride, secondParameterOverride, thirdParameterOverride, valueType);
+    public TernaryValueHandlerSpec<A, B, C, V> simpleValue(Class<V> valueRawClass) {
+        return value(Types.simple(valueRawClass));
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> firstArgument(String name, PathParameterConverter<A> converter) {
@@ -68,15 +86,21 @@ public class TernaryValueHandlerSpec<A, B, C, V> {
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> firstArgument(String name) {
-        Class<A> parameterClass = (Class<A>) TypeResolver.resolveRawArguments(QuadConsumer.class, handler.getClass())[0];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> firstArgument(String name, Class<A> argumentType) {
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
+    }
+
+    private TernaryValueHandlerSpec<A, B, C, V> inferFirstArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return firstArgument(lambda.extractName(0), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> secondArgument(String name, PathParameterConverter<B> converter) {
@@ -87,15 +111,21 @@ public class TernaryValueHandlerSpec<A, B, C, V> {
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> secondArgument(String name) {
-        Class<B> parameterClass = (Class<B>) TypeResolver.resolveRawArguments(QuadConsumer.class, handler.getClass())[1];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> secondArgument(String name, Class<B> argumentType) {
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
+    }
+
+    private TernaryValueHandlerSpec<A, B, C, V> inferSecondArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return secondArgument(lambda.extractName(1), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> thirdArgument(String name, PathParameterConverter<C> converter) {
@@ -106,10 +136,9 @@ public class TernaryValueHandlerSpec<A, B, C, V> {
     }
 
     public TernaryValueHandlerSpec<A, B, C, V> thirdArgument(String name) {
-        Class<C> parameterClass = (Class<C>) TypeResolver.resolveRawArguments(QuadConsumer.class, handler.getClass())[2];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<C> parameterClass = (Class<C>) lambda.extractParameterClass(2);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return thirdArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -117,21 +146,40 @@ public class TernaryValueHandlerSpec<A, B, C, V> {
         return thirdArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private TernaryValueHandlerSpec<A, B, C, V> inferThirdArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<C> parameterClass = (Class<C>) lambda.extractParameterClass(2);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return thirdArgument(lambda.extractName(2), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     /**
-     * Completes the path template definition and registers a handler.<br/><br/>
-     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
-     * In that case the type should be specified through the value() method.
+     * Completes the path template definition and registers a handler.<br/>
+     * <br/>
+     * If parameter name/type cannot be infered then use *Argument method to describe them explicitly.<br/>
+     * <br/>
+     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock/proxy or the type is generic.
+     * In that case the type should be specified through the {@link #value(ValueType)} method.<br/>
+     * <br/>
+     * Ends the handler configuration phase.
+     *
+     * @return path/handler descriptor
      */
     public TernaryValueHandlerDescriptor<A, B, C, V> register() {
+        TernaryValueHandlerSpec<A, B, C, V> spec = this;
         if (firstParameterOverride == null) {
-            throw new ConfigurationException("First parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferFirstArgument();
         }
         if (secondParameterOverride == null) {
-            throw new ConfigurationException("Second parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferSecondArgument();
         }
         if (thirdParameterOverride == null) {
-            throw new ConfigurationException("Third parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferThirdArgument();
         }
+        return spec.internalRegister();
+    }
+
+    private TernaryValueHandlerDescriptor<A, B, C, V> internalRegister() {
         ValueType<V> finalType = valueTypeOverride == null ? TypeExtractor.extractSimpleType(handler) : valueTypeOverride;
         PathParameter<A> firstParameter = PathParameterFactory.instance().toPathParameter(firstParameterOverride, pathPattern);
         PathParameter<B> secondParameter = PathParameterFactory.instance().toPathParameter(secondParameterOverride, pathPattern);

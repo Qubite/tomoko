@@ -7,6 +7,9 @@ import io.qubite.tomoko.path.PathTemplate;
 import io.qubite.tomoko.tree.IllegalPathExtensionException;
 import io.qubite.tomoko.tree.TreeNode;
 
+/**
+ * Builder for {@link PatcherTreeSpecification}.
+ */
 public class PatcherTreeSpecificationBuilder {
 
     private final TreeNode<ValueHandler> addRoot;

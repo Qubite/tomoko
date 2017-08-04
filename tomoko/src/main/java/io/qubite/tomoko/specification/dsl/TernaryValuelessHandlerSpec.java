@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.LambdaDescriptor;
 import io.qubite.tomoko.configuration.ParameterConfiguration;
 import io.qubite.tomoko.configuration.PathParameterFactory;
 import io.qubite.tomoko.handler.HandlerFactory;
@@ -14,8 +14,14 @@ import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 import io.qubite.tomoko.util.Preconditions;
 import io.qubite.tomoko.util.TriConsumer;
-import net.jodah.typetools.TypeResolver;
 
+/**
+ * Handler configuration phase DSL. For more information check {@link io.qubite.tomoko.specification.dsl}.
+ *
+ * @param <A> handler first parameter type
+ * @param <B> handler second parameter type
+ * @param <C> handler third parameter type
+ */
 public class TernaryValuelessHandlerSpec<A, B, C> {
 
     private final PatcherTreeSpecificationBuilder builder;
@@ -45,15 +51,14 @@ public class TernaryValuelessHandlerSpec<A, B, C> {
     public TernaryValuelessHandlerSpec<A, B, C> firstArgument(String name, PathParameterConverter<A> converter) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(converter);
-        ParameterConfiguration<A> parameter = ParameterConfiguration.of(name, converter);
+        ParameterConfiguration parameter = ParameterConfiguration.of(name, converter);
         return new TernaryValuelessHandlerSpec<>(pathPattern, handler, builder, handlerFactory, parameter, secondParameterOverride, thirdParameterOverride);
     }
 
     public TernaryValuelessHandlerSpec<A, B, C> firstArgument(String name) {
-        Class<A> parameterClass = (Class<A>) TypeResolver.resolveRawArguments(TriConsumer.class, handler.getClass())[0];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -61,18 +66,24 @@ public class TernaryValuelessHandlerSpec<A, B, C> {
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private TernaryValuelessHandlerSpec<A, B, C> inferFirstArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return firstArgument(lambda.extractName(0), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     public TernaryValuelessHandlerSpec<A, B, C> secondArgument(String name, PathParameterConverter<B> converter) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(converter);
-        ParameterConfiguration<B> parameter = ParameterConfiguration.of(name, converter);
+        ParameterConfiguration parameter = ParameterConfiguration.of(name, converter);
         return new TernaryValuelessHandlerSpec<>(pathPattern, handler, builder, handlerFactory, firstParameterOverride, parameter, thirdParameterOverride);
     }
 
     public TernaryValuelessHandlerSpec<A, B, C> secondArgument(String name) {
-        Class<B> parameterClass = (Class<B>) TypeResolver.resolveRawArguments(TriConsumer.class, handler.getClass())[1];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -80,18 +91,24 @@ public class TernaryValuelessHandlerSpec<A, B, C> {
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private TernaryValuelessHandlerSpec<A, B, C> inferSecondArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return secondArgument(lambda.extractName(1), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     public TernaryValuelessHandlerSpec<A, B, C> thirdArgument(String name, PathParameterConverter<C> converter) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(converter);
-        ParameterConfiguration<C> parameter = ParameterConfiguration.of(name, converter);
+        ParameterConfiguration parameter = ParameterConfiguration.of(name, converter);
         return new TernaryValuelessHandlerSpec<>(pathPattern, handler, builder, handlerFactory, firstParameterOverride, secondParameterOverride, parameter);
     }
 
     public TernaryValuelessHandlerSpec<A, B, C> thirdArgument(String name) {
-        Class<C> parameterClass = (Class<C>) TypeResolver.resolveRawArguments(TriConsumer.class, handler.getClass())[2];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<C> parameterClass = (Class<C>) lambda.extractParameterClass(2);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return thirdArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -99,21 +116,31 @@ public class TernaryValuelessHandlerSpec<A, B, C> {
         return thirdArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private TernaryValuelessHandlerSpec<A, B, C> inferThirdArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<C> parameterClass = (Class<C>) lambda.extractParameterClass(2);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return thirdArgument(lambda.extractName(2), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     /**
      * Completes the path template definition and registers a handler.<br/><br/>
-     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
-     * In that case the type should be specified through the value() method.
      */
     public TernaryValuelessHandlerDescriptor<A, B, C> register() {
+        TernaryValuelessHandlerSpec<A, B, C> spec = this;
         if (firstParameterOverride == null) {
-            throw new ConfigurationException("First parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferFirstArgument();
         }
         if (secondParameterOverride == null) {
-            throw new ConfigurationException("Second parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferSecondArgument();
         }
         if (thirdParameterOverride == null) {
-            throw new ConfigurationException("Third parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferThirdArgument();
         }
+        return spec.internalRegister();
+    }
+
+    private TernaryValuelessHandlerDescriptor<A, B, C> internalRegister() {
         PathParameter<A> firstParameter = PathParameterFactory.instance().toPathParameter(firstParameterOverride, pathPattern);
         PathParameter<B> secondParameter = PathParameterFactory.instance().toPathParameter(secondParameterOverride, pathPattern);
         PathParameter<C> thirdParameter = PathParameterFactory.instance().toPathParameter(thirdParameterOverride, pathPattern);

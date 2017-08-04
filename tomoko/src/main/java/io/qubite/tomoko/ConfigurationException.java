@@ -1,5 +1,8 @@
 package io.qubite.tomoko;
 
+/**
+ * Indicates there was a problem when creating a patcher due to a bad configuration ie. not properly annotated method.
+ */
 public class ConfigurationException extends TomokoException {
 
     public ConfigurationException() {

@@ -46,7 +46,6 @@ public class JacksonTreeTest {
 
     @Test
     public void fieldIterator_complexObject() throws Exception {
-        JacksonParser parser = JacksonParser.instance(mapper);
         JacksonTree tree = JacksonTree.of(fromFile("/trees/complexObject.json"));
         Iterator<Map.Entry<String, ValueTree>> iterator = tree.getFieldIterator();
         Map.Entry<String, ValueTree> titleNode = iterator.next();

@@ -28,4 +28,11 @@ public class Preconditions {
             throw new ConfigurationException("Could not extract type information. Specify it directly through value() methods.");
         }
     }
+
+    public static <T> void checkNotUnknown(Class<T> clazz, String message) {
+        if (clazz.equals(TypeResolver.Unknown.class)) {
+            throw new ConfigurationException(message);
+        }
+    }
+
 }

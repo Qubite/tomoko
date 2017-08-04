@@ -28,7 +28,7 @@ public class DSLTest {
     @Test
     public void validSimpleTreeAndOperation_mockedMethods() throws Exception {
         HandlerConfigurationDSL dsl = DirectTomoko.instance().specificationDsl();
-        UnaryValueHandlerDescriptor<Integer, String> registeredHandler = dsl.path(TICKETS_NODE).integer(TICKET_ID).path(TITLE_NODE).handleAdd(biConsumer).firstArgument(TICKET_ID, Integer.class).type(Types.string()).register();
+        UnaryValueHandlerDescriptor<Integer, String> registeredHandler = dsl.path(TICKETS_NODE).integer(TICKET_ID).path(TITLE_NODE).handleAdd(biConsumer).firstArgument(TICKET_ID, Integer.class).value(Types.string()).register();
         String providedValue = "asdf";
         int pathParameter = 1;
         Patcher patcher = dsl.toPatcher();

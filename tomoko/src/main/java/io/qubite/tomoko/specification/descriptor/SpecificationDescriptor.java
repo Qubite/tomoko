@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.descriptor;
 
-import io.qubite.tomoko.TomokoException;
+import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.specification.annotation.LinkedConfiguration;
 import io.qubite.tomoko.specification.descriptor.value.BinaryValueHandlerDescriptor;
@@ -27,9 +27,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
+ * <p>
  * Type-safe way of generating paths and operations according to annotated specification class.
+ * </p>
+ * <p>
+ * All methods must be provided in the static way i.e. SpecificationClass::updateTitle.
+ * </p>
+ * <p>
+ * Immutable.
+ * </p>
  *
- * @param <T>
+ * @param <T> specification class
  */
 public class SpecificationDescriptor<T> {
 
@@ -42,6 +50,13 @@ public class SpecificationDescriptor<T> {
         this.prefix = prefix;
     }
 
+    /**
+     * Creates a handler specification reader for the provided class.
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public static <T> SpecificationDescriptor<T> forClass(Class<T> clazz) {
         return forClass(clazz, PathPattern.empty());
     }
@@ -50,6 +65,13 @@ public class SpecificationDescriptor<T> {
         return new SpecificationDescriptor<>(MethodProxy.forClass(clazz), prefix.append(ConfigurationExtractor.instance().extractClassPrefix(clazz)));
     }
 
+    /**
+     * Supports specifications linked through {@link LinkedConfiguration} annotation.
+     *
+     * @param getter
+     * @param <C>
+     * @return
+     */
     public <C> SpecificationDescriptor<C> linked(Function<T, C> getter) {
         Method method = methodProxy.getMethod(getter);
         Preconditions.checkArgument(method.isAnnotationPresent(LinkedConfiguration.class), "Method not marked as linked configuration.");
@@ -59,34 +81,102 @@ public class SpecificationDescriptor<T> {
         return forClass(linkedConfigurationClass, linkPrefix);
     }
 
+    /**
+     * Creates a descriptor for the provided ADD operation handler.
+     *
+     * @param handler
+     * @param <V>
+     * @return
+     */
     public <V> NullaryValueHandlerDescriptor<V> addHandler(BiConsumer<T, V> handler) {
         return valueHandler(CommandType.ADD, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided ADD operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <V>
+     * @return
+     */
     public <A, V> UnaryValueHandlerDescriptor<A, V> addHandler(TriConsumer<T, A, V> handler) {
         return valueHandler(CommandType.ADD, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided ADD operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @param <V>
+     * @return
+     */
     public <A, B, V> BinaryValueHandlerDescriptor<A, B, V> addHandler(QuadConsumer<T, A, B, V> handler) {
         return valueHandler(CommandType.ADD, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided ADD operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <V>
+     * @return
+     */
     public <A, B, C, V> TernaryValueHandlerDescriptor<A, B, C, V> addHandler(QuinConsumer<T, A, B, C, V> handler) {
         return valueHandler(CommandType.ADD, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided REPLACE operation handler.
+     *
+     * @param handler
+     * @param <V>
+     * @return
+     */
     public <V> NullaryValueHandlerDescriptor<V> replaceHandler(BiConsumer<T, V> handler) {
         return valueHandler(CommandType.REPLACE, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided REPLACE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <V>
+     * @return
+     */
     public <A, V> UnaryValueHandlerDescriptor<A, V> replaceHandler(TriConsumer<T, A, V> handler) {
         return valueHandler(CommandType.REPLACE, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided REPLACE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @param <V>
+     * @return
+     */
     public <A, B, V> BinaryValueHandlerDescriptor<A, B, V> replaceHandler(QuadConsumer<T, A, B, V> handler) {
         return valueHandler(CommandType.REPLACE, handler);
     }
 
+    /**
+     * Creates a descriptor for the provided REPLACE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <V>
+     * @return
+     */
     public <A, B, C, V> TernaryValueHandlerDescriptor<A, B, C, V> replaceHandler(QuinConsumer<T, A, B, C, V> handler) {
         return valueHandler(CommandType.REPLACE, handler);
     }
@@ -132,6 +222,12 @@ public class SpecificationDescriptor<T> {
         return new TernaryValueHandlerDescriptor<>(type, handlerPath, firstParameterDescriptor, secondParameterDescriptor, thirdParameterDescriptor);
     }
 
+    /**
+     * Creates a descriptor for the provided REMOVE operation handler.
+     *
+     * @param handler
+     * @return
+     */
     public NullaryValuelessHandlerDescriptor removeHandler(Consumer<T> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
@@ -140,6 +236,13 @@ public class SpecificationDescriptor<T> {
         return new NullaryValuelessHandlerDescriptor(handlerPath);
     }
 
+    /**
+     * Creates a descriptor for the provided REMOVE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @return
+     */
     public <A> UnaryValuelessHandlerDescriptor<A> removeHandler(BiConsumer<T, A> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
@@ -150,6 +253,14 @@ public class SpecificationDescriptor<T> {
         return new UnaryValuelessHandlerDescriptor<>(handlerPath, firstParameterDescriptor);
     }
 
+    /**
+     * Creates a descriptor for the provided REMOVE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @return
+     */
     public <A, B> BinaryValuelessHandlerDescriptor<A, B> removeHandler(TriConsumer<T, A, B> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
@@ -161,6 +272,15 @@ public class SpecificationDescriptor<T> {
         return new BinaryValuelessHandlerDescriptor<>(handlerPath, firstParameterDescriptor, secondParameterDescriptor);
     }
 
+    /**
+     * Creates a descriptor for the provided REMOVE operation handler.
+     *
+     * @param handler
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @return
+     */
     public <A, B, C> TernaryValuelessHandlerDescriptor<A, B, C> removeHandler(QuadConsumer<T, A, B, C> handler) {
         Method method = methodProxy.getMethod(handler);
         HandlerConfiguration handlerConfiguration = configurationExtractor.extractHandlerConfiguration(method);
@@ -180,7 +300,7 @@ public class SpecificationDescriptor<T> {
 
     private void checkHandlerType(HandlerConfiguration configuration, CommandType expectedType) {
         if (!configuration.getCommandType().equals(expectedType)) {
-            throw new TomokoException("Method " + configuration.getMethod().getDeclaringClass().getSimpleName() + "::" + configuration.getMethod().getName() + " is not a handler for " + expectedType.name() + " operation.");
+            throw new ConfigurationException("Method " + configuration.getMethod().getDeclaringClass().getSimpleName() + "::" + configuration.getMethod().getName() + " is not a handler for " + expectedType.name() + " operation.");
         }
     }
 

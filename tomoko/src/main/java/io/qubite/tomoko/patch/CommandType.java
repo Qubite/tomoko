@@ -1,5 +1,8 @@
 package io.qubite.tomoko.patch;
 
+/**
+ * Supported patch operation types.
+ */
 public enum CommandType {
 
     ADD("add"), REMOVE("remove"), REPLACE("replace");

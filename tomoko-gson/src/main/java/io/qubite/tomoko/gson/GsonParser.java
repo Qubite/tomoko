@@ -9,6 +9,9 @@ import io.qubite.tomoko.type.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Parser for GsonTree implementation of the ValueTree interface.
+ */
 public class GsonParser implements ValueParser<GsonTree> {
 
     private final Gson gson;

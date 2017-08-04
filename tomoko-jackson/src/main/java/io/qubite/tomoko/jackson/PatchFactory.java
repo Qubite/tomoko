@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.patch.PatchParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,9 +38,9 @@ public class PatchFactory {
             List<JacksonOperationDto> dtos = mapper.readValue(json, TYPE);
             return toPatch(dtos);
         } catch (JsonMappingException e) {
-            throw new TomokoException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+            throw new PatchParseException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
         } catch (IOException e) {
-            throw new TomokoException(e);
+            throw new PatchParseException(e);
         }
     }
 
@@ -49,9 +49,9 @@ public class PatchFactory {
             List<JacksonOperationDto> dtos = mapper.readValue(inputStream, TYPE);
             return toPatch(dtos);
         } catch (JsonMappingException e) {
-            throw new TomokoException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+            throw new PatchParseException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
         } catch (IOException e) {
-            throw new TomokoException(e);
+            throw new PatchParseException(e);
         }
     }
 
@@ -60,9 +60,9 @@ public class PatchFactory {
             List<JacksonOperationDto> dtos = mapper.readValue(node.traverse(), TYPE);
             return toPatch(dtos);
         } catch (JsonMappingException e) {
-            throw new TomokoException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
+            throw new PatchParseException("Value valueType mismatch between registered handler and received operation. Expected: " + JacksonOperationDto.class.getSimpleName(), e);
         } catch (IOException e) {
-            throw new TomokoException(e);
+            throw new PatchParseException(e);
         }
     }
 

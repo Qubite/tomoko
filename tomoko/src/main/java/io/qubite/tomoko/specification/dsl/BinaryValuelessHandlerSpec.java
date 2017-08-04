@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.LambdaDescriptor;
 import io.qubite.tomoko.configuration.ParameterConfiguration;
 import io.qubite.tomoko.configuration.PathParameterFactory;
 import io.qubite.tomoko.handler.HandlerFactory;
@@ -13,10 +13,15 @@ import io.qubite.tomoko.specification.scanner.ConfigurationExtractor;
 import io.qubite.tomoko.specification.scanner.ParameterDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 import io.qubite.tomoko.util.Preconditions;
-import net.jodah.typetools.TypeResolver;
 
 import java.util.function.BiConsumer;
 
+/**
+ * Handler configuration phase DSL. For more information check {@link io.qubite.tomoko.specification.dsl}.
+ *
+ * @param <A> handler first parameter type
+ * @param <B> handler second parameter type
+ */
 public class BinaryValuelessHandlerSpec<A, B> {
 
     private final PatcherTreeSpecificationBuilder builder;
@@ -44,15 +49,14 @@ public class BinaryValuelessHandlerSpec<A, B> {
     public BinaryValuelessHandlerSpec<A, B> firstArgument(String name, PathParameterConverter<A> converter) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(converter);
-        ParameterConfiguration<A> parameter = ParameterConfiguration.of(name, converter);
+        ParameterConfiguration parameter = ParameterConfiguration.of(name, converter);
         return new BinaryValuelessHandlerSpec<>(pathPattern, handler, builder, handlerFactory, parameter, secondParameterOverride);
     }
 
     public BinaryValuelessHandlerSpec<A, B> firstArgument(String name) {
-        Class<A> parameterClass = (Class<A>) TypeResolver.resolveRawArguments(BiConsumer.class, handler.getClass())[0];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -60,18 +64,24 @@ public class BinaryValuelessHandlerSpec<A, B> {
         return firstArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private BinaryValuelessHandlerSpec<A, B> inferFirstArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<A> parameterClass = (Class<A>) lambda.extractParameterClass(0);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return firstArgument(lambda.extractName(0), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     public BinaryValuelessHandlerSpec<A, B> secondArgument(String name, PathParameterConverter<B> converter) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(converter);
-        ParameterConfiguration<B> parameter = ParameterConfiguration.of(name, converter);
+        ParameterConfiguration parameter = ParameterConfiguration.of(name, converter);
         return new BinaryValuelessHandlerSpec<>(pathPattern, handler, builder, handlerFactory, firstParameterOverride, parameter);
     }
 
     public BinaryValuelessHandlerSpec<A, B> secondArgument(String name) {
-        Class<B> parameterClass = (Class<B>) TypeResolver.resolveRawArguments(BiConsumer.class, handler.getClass())[1];
-        if (parameterClass.equals(TypeResolver.Unknown.class)) {
-            throw new ConfigurationException("Parameter type cannot be infered. Set converter directly.");
-        }
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
     }
 
@@ -79,18 +89,28 @@ public class BinaryValuelessHandlerSpec<A, B> {
         return secondArgument(name, ConfigurationExtractor.instance().getDefaultConverter(argumentType));
     }
 
+    private BinaryValuelessHandlerSpec<A, B> inferSecondArgument() {
+        LambdaDescriptor<?> lambda = LambdaDescriptor.of(handler);
+        Class<B> parameterClass = (Class<B>) lambda.extractParameterClass(1);
+        Preconditions.checkNotUnknown(parameterClass, "Parameter type cannot be infered. Set converter directly.");
+        return secondArgument(lambda.extractName(1), ConfigurationExtractor.instance().getDefaultConverter(parameterClass));
+    }
+
     /**
      * Completes the path template definition and registers a handler.<br/><br/>
-     * Value type is inferred from the handler's signature. Sometimes it is impossible e.g. when the handler is a mock or the type is generic.
-     * In that case the type should be specified through the value() method.
      */
     public BinaryValuelessHandlerDescriptor<A, B> register() {
+        BinaryValuelessHandlerSpec<A, B> spec = this;
         if (firstParameterOverride == null) {
-            throw new ConfigurationException("First parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferFirstArgument();
         }
         if (secondParameterOverride == null) {
-            throw new ConfigurationException("Second parameter has not been described. Use appropriate DSL methods.");
+            spec = spec.inferSecondArgument();
         }
+        return spec.internalRegister();
+    }
+
+    private BinaryValuelessHandlerDescriptor<A, B> internalRegister() {
         PathParameter<A> firstParameter = PathParameterFactory.instance().toPathParameter(firstParameterOverride, pathPattern);
         PathParameter<B> secondParameter = PathParameterFactory.instance().toPathParameter(secondParameterOverride, pathPattern);
         ParameterDescriptor<A> firstParameterDescriptor = ParameterDescriptor.of(firstParameterOverride.getParameterName(), firstParameterOverride.getConverter());

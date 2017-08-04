@@ -13,6 +13,16 @@ import io.qubite.tomoko.util.TriConsumer;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Domain specification language for path specification phase. Allows adding new nodes and registering handlers on the current path.<br/>
+ * <br/>
+ * Path to be added to the current path must follow a Spring-like syntax.<br/>
+ * "/users/{username}/comments/{commentId:[0-9]+}" is a valid example containing 4 nodes and 2 parameters.<br/>
+ * "/users" and "/comments" are static nodes. They are to be matched exactly as defined.<br/>
+ * "/{username}" is a wildcard parameter named "username". It will accept any non empty string.<br/>
+ * "/{commentId:[0-9]+}" is a regex parameter named "commentId". It will accept any string matching the "[0-9]+" pattern.<br/>
+ * <br/>
+ */
 public class PathDSL {
 
     private final PathPattern pathPattern;
@@ -32,6 +42,7 @@ public class PathDSL {
     /**
      * Adds a string parameter to the path.
      *
+     * @param parameterName
      * @return
      */
     public PathDSL wildcard(String parameterName) {
@@ -39,7 +50,7 @@ public class PathDSL {
     }
 
     /**
-     * Adds an integer parameter to the path.
+     * Adds an integer parameter to the path. It will accept any string matching the "[0-9]+" pattern.
      *
      * @return
      */
@@ -50,6 +61,7 @@ public class PathDSL {
     /**
      * Adds a string parameter restricted by a regular expression to the path.
      *
+     * @param parameterName
      * @return
      */
     public PathDSL regex(String parameterName, String regex) {
@@ -57,9 +69,7 @@ public class PathDSL {
     }
 
     /**
-     * Adds a static string to the path e.g. "/author/{authorId:[a-zA-Z]+}/firstName".<br/><br/>
-     * Splits the parameter into separate tokens by the "/" character and adds each token as a separate node.
-     * The syntax is the same as in case of specifying the path on an annotated method.
+     * Extends the current path by the provided string. The path must follow the syntax defined in the {@link PathDSL class description}.
      *
      * @param uriLikePath
      * @return
@@ -83,50 +93,160 @@ public class PathDSL {
         return path(PatternElement.fixed("-"));
     }
 
+    /**
+     * Sets the provided handler as a base of the ADD operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <V>     value type
+     * @return ongoing handler configuration
+     */
     public <V> NullaryValueHandlerSpec<V> handleAdd(Consumer<V> handler) {
         return NullaryValueHandlerSpec.of(CommandType.ADD, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the ADD operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, V> UnaryValueHandlerSpec<A, V> handleAdd(BiConsumer<A, V> handler) {
         return UnaryValueHandlerSpec.of(CommandType.ADD, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the ADD operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, B, V> BinaryValueHandlerSpec<A, B, V> handleAdd(TriConsumer<A, B, V> handler) {
         return BinaryValueHandlerSpec.of(CommandType.ADD, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the ADD operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @param <C> third parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, B, C, V> TernaryValueHandlerSpec<A, B, C, V> handleAdd(QuadConsumer<A, B, C, V> handler) {
         return TernaryValueHandlerSpec.of(CommandType.ADD, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REPLACE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <V> NullaryValueHandlerSpec<V> handleReplace(Consumer<V> handler) {
         return new NullaryValueHandlerSpec<>(CommandType.REPLACE, pathPattern, handler, builder, handlerFactory, null);
     }
 
+    /**
+     * Sets the provided handler as a base of the REPLACE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, V> UnaryValueHandlerSpec<A, V> handleReplace(BiConsumer<A, V> handler) {
         return UnaryValueHandlerSpec.of(CommandType.REPLACE, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REPLACE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, B, V> BinaryValueHandlerSpec<A, B, V> handleReplace(TriConsumer<A, B, V> handler) {
         return BinaryValueHandlerSpec.of(CommandType.REPLACE, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REPLACE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @param <C> third parameter type
+     * @param <V> value type
+     * @return ongoing handler configuration
+     */
     public <A, B, C, V> TernaryValueHandlerSpec<A, B, C, V> handleReplace(QuadConsumer<A, B, C, V> handler) {
         return TernaryValueHandlerSpec.of(CommandType.REPLACE, pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REMOVE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @return ongoing handler configuration
+     */
     public NullaryValuelessHandlerDescriptor handleRemove(Runnable handler) {
         return NullaryValuelessHandlerSpec.of(pathPattern, handler, builder, handlerFactory).register();
     }
 
+    /**
+     * Sets the provided handler as a base of the REMOVE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @return ongoing handler configuration
+     */
     public <A> UnaryValuelessHandlerSpec<A> handleRemove(Consumer<A> handler) {
         return UnaryValuelessHandlerSpec.of(pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REMOVE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @return ongoing handler configuration
+     */
     public <A, B> BinaryValuelessHandlerSpec<A, B> handleRemove(BiConsumer<A, B> handler) {
         return BinaryValuelessHandlerSpec.of(pathPattern, handler, builder, handlerFactory);
     }
 
+    /**
+     * Sets the provided handler as a base of the REMOVE operation handler configuration.<br/>
+     * Ends the path definition phase and starts the handler configuration one.
+     *
+     * @param handler code to be invoked when a matching patch operation is encountered
+     * @param <A> first parameter type
+     * @param <B> second parameter type
+     * @param <C> third parameter type
+     * @return ongoing handler configuration
+     */
     public <A, B, C> TernaryValuelessHandlerSpec<A, B, C> handleRemove(TriConsumer<A, B, C> handler) {
         return TernaryValuelessHandlerSpec.of(pathPattern, handler, builder, handlerFactory);
     }

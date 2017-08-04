@@ -6,6 +6,9 @@ import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.specification.descriptor.valueless.NullaryValuelessHandlerDescriptor;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 
+/**
+ * Handler configuration phase DSL. For more information check {@link io.qubite.tomoko.specification.dsl}.
+ */
 public class NullaryValuelessHandlerSpec {
 
     private final PathPattern pathPattern;
@@ -25,7 +28,10 @@ public class NullaryValuelessHandlerSpec {
     }
 
     /**
-     * Completes the path template definition and registers a handler.
+     * Completes the path template definition and registers a handler.<br/><br/>
+     * Ends the handler configuration phase.
+     *
+     * @return path/handler descriptor
      */
     public NullaryValuelessHandlerDescriptor register() {
         builder.handleRemove(PathTemplate.from(pathPattern), handlerFactory.handler(handler));

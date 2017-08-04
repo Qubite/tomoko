@@ -11,6 +11,9 @@ import io.qubite.tomoko.type.*;
 
 import java.io.IOException;
 
+/**
+ * Parser for JacksonTree implementation of the ValueTree interface.
+ */
 public class JacksonParser implements ValueParser<JacksonTree> {
 
     private final ObjectMapper mapper;

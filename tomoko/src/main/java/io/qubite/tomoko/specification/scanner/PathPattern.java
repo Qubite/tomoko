@@ -37,12 +37,20 @@ public class PathPattern implements Iterable<PatternElement> {
 
     public PathPattern append(PathPattern pathPattern) {
         List<PatternElement> elements = new ArrayList<>(this.elements);
+        for (PatternElement element : pathPattern) {
+            if (element.isParameter()) {
+                checkIfAlreadyContainsParameter(element.getName());
+            }
+        }
         elements.addAll(pathPattern.elements);
         return new PathPattern(elements);
     }
 
     public PathPattern append(PatternElement element) {
         List<PatternElement> elements = new ArrayList<>(this.elements);
+        if (element.isParameter()) {
+            checkIfAlreadyContainsParameter(element.getName());
+        }
         elements.add(element);
         return new PathPattern(elements);
     }
@@ -141,6 +149,14 @@ public class PathPattern implements Iterable<PatternElement> {
             }
         } else {
             throw new IllegalArgumentException("Path parameter must be defined as /{parameterName} or /{parameterName:regex}. For the parameter name only letters are accepted.");
+        }
+    }
+
+    private void checkIfAlreadyContainsParameter(String parameterName) {
+        for (PatternElement element : elements) {
+            if (element.isParameter() && element.getName().equals(parameterName)) {
+                throw new IllegalArgumentException("Parameter named " + parameterName + " already exists on the path.");
+            }
         }
     }
 

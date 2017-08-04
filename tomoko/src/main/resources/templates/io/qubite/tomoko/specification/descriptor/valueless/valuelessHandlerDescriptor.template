@@ -16,8 +16,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Contains whole information about the path, path parameters and the value type. Used to generate operations in a type safe way.
- *
+ * <p>
+ * Contains whole information about the path and path parameters. Used to generate operations in a type safe way.
+ * </p>
+ * <p>
+ * Parameters defined by the handler must be passed as arguments. For wildcard parameters a dummy value will be generated.
+ * For regex parameters however it is not possible and so a value for such a parameter must be passed in the parameter map.
+ * </p>
+ * <p>
+ * Operations generated this way can be parsed using the {@link io.qubite.tomoko.direct.DirectTreeParser}.
+ * </p>
 <#if parameters><#list 1..prefix.size as index>
  * @param <${config.generics[index-1].code}> type of the ${config.generics[index-1].parameter} parameter
 </#list></#if>
@@ -36,14 +44,46 @@ public class ${prefix.name}ValuelessHandlerDescriptor<#if parameters><<#list 1..
         </#list></#if>
     }
 
+    /**
+     * Creates an operation with a path generated according to the provided parameters and this descriptor.
+     *
+     * @throws IllegalArgumentException path cannot be generated as there is a missing value for one of the parameters
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @return
+     */
     public OperationDto generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
         return generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>new HashMap<>());
     }
 
+    /**
+     * Creates an operation with a path generated according to the provided parameters and this descriptor.
+     *
+     * @throws IllegalArgumentException path cannot be generated as there is a missing value for one of the parameters
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @param parameterMap
+     * @return
+     */
     public OperationDto generate(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter, </#list></#if>Map<String, String> parameterMap) {
         return Operations.remove(generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>parameterMap));
     }
 
+    /**
+     * <p>
+     * Creates a {@link Path} instance using the provided parameter values. Parameters defined by the handler must be passed as arguments. For wildcard parameters a dummy value will be generated.
+     * For regex parameters however it is not possible and so a value for such a parameter must be passed in the parameter map.
+     * </p>
+     *
+     * @throws IllegalArgumentException path cannot be generated as there is a missing value for one of the parameters
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @param parameterMap
+     * @return
+     */
     public Path generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter, </#list></#if>Map<String, String> parameterMap) {
         Map<String, String> copiedMap = new HashMap<>(parameterMap);
         <#if parameters><#list 1..prefix.size as index>
@@ -52,6 +92,19 @@ public class ${prefix.name}ValuelessHandlerDescriptor<#if parameters><<#list 1..
         return path.toPath(copiedMap);
     }
 
+    /**
+     * <p>
+     * Creates a {@link Path} instance using the provided parameter values. Parameters defined by the handler must be passed as arguments. For wildcard parameters a dummy value will be generated.
+     * For regex parameters however it is not possible and so a value for such a parameter must be passed in the parameter map.
+     * </p>
+     *
+     * @throws IllegalArgumentException path cannot be generated as there is a missing value for one of the parameters
+     <#if parameters><#list 1..prefix.size as index>
+     * @param ${config.generics[index-1].parameter}Parameter
+     </#list></#if>
+     * @param parameterMap
+     * @return
+     */
     public Path generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].code} ${config.generics[index-1].parameter}Parameter<#sep>, </#list></#if>) {
         return generatePath(<#if parameters><#list 1..prefix.size as index>${config.generics[index-1].parameter}Parameter, </#list></#if>new HashMap<>());
     }

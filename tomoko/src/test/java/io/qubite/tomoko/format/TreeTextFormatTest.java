@@ -32,7 +32,7 @@ public class TreeTextFormatTest {
         HandlerConfigurationDSL root = DirectTomoko.instance().specificationDsl();
         root.path("/asdf2/title").handleAdd(consumer).value(Types.string()).register();
         root.path("/asdf2/description").handleAdd(consumer).value(Types.string()).register();
-        root.path("/asdf").integer("asdfId").handleAdd(biConsumer).firstArgument("asdfId", Integer.class).type(Types.string()).register();
+        root.path("/asdf").integer("asdfId").handleAdd(biConsumer).firstArgument("asdfId", Integer.class).value(Types.string()).register();
         PatcherTreeSpecification tree = root.toTree();
         TreeTextFormat underTest = new TreeTextFormat();
         String stringRepresentation = underTest.treeToString(tree);

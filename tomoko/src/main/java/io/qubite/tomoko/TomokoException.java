@@ -1,5 +1,8 @@
 package io.qubite.tomoko;
 
+/**
+ * Root to all library related exceptions.
+ */
 public class TomokoException extends RuntimeException {
 
     public TomokoException() {

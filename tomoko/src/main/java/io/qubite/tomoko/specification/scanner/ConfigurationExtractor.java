@@ -115,8 +115,6 @@ public class ConfigurationExtractor {
         String path;
         if (patcherConfiguration == null) {
             path = "";
-        } else if (!patcherConfiguration.path().isEmpty()) {
-            path = patcherConfiguration.path();
         } else {
             path = patcherConfiguration.value();
         }

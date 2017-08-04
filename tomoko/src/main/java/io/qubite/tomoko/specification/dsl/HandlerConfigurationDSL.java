@@ -11,6 +11,11 @@ import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.specification.scanner.ClassScanner;
 import io.qubite.tomoko.specification.scanner.PathPattern;
 
+/**
+ * Domain specific language for patch method registration.
+ * <br/><br/>
+ * Allows specifying the path, handler and handler parameter configuration in a type safe way.
+ */
 public class HandlerConfigurationDSL {
 
     private final ValueConverterFactory valueConverterFactory;
@@ -25,19 +30,38 @@ public class HandlerConfigurationDSL {
         return new HandlerConfigurationDSL(valueConverterFactory, PatcherTreeSpecification.builder());
     }
 
+    /**
+     * Creates an ongoing path configuration. For accepted syntax check the {@link io.qubite.tomoko.specification.dsl.PathDSL} class.
+     *
+     * @param uriLikePath starting path
+     * @return ongoing path configuration
+     */
     public PathDSL path(String uriLikePath) {
         return new PathDSL(PathPattern.empty(), builder, HandlerFactory.instance(valueConverterFactory)).path(uriLikePath);
     }
 
+    /**
+     * Scans an object and registers all properly annotated methods as handlers.
+     * @param specification
+     * @return
+     */
     public HandlerConfigurationDSL scan(Object specification) {
         ClassScanner.instance(valueConverterFactory).scanToBuilder(builder, specification);
         return this;
     }
 
+    /**
+     * Converts registered handlers to a tree model. Useful for debugging. Completes the configuration phase.
+     * @return
+     */
     public PatcherTreeSpecification toTree() {
         return builder.build();
     }
 
+    /**
+     * Creates a patcher object ready to be used. Completes the configuration phase.
+     * @return
+     */
     public Patcher toPatcher() {
         return PatcherBase.instance(TreeHandlerResolver.of(builder.build()), new OperationExecutorImpl());
     }

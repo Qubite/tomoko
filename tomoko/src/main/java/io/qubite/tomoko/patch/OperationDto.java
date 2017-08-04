@@ -1,5 +1,8 @@
 package io.qubite.tomoko.patch;
 
+/**
+ * Single patch operation model.
+ */
 public class OperationDto {
 
     private final String path;
