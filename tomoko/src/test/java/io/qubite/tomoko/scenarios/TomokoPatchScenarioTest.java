@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class TomokoPatchExceptionalScenarioTest {
+public class TomokoPatchScenarioTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -107,6 +107,16 @@ public class TomokoPatchExceptionalScenarioTest {
                 .toPatch();
         patcher.execute(patchWildcard);
         assertEquals("wildcard", specification.getInvoked());
+    }
+
+    @Test
+    public void execute_urlEncodedParameter() throws Exception {
+        DirectTomoko tomoko = DirectTomoko.instance();
+        UrlEncodedTestSpecification specification = new UrlEncodedTestSpecification();
+        Patcher patcher = tomoko.scanPatcher(specification);
+        Patch patch = tomoko.patchBuilder().remove("/files/asdf%2Fqwerty").toPatch();
+        patcher.execute(patch);
+        assertEquals("asdf/qwerty", specification.getParameter());
     }
 
     private Patcher createAddPatcher() {

@@ -45,7 +45,7 @@ public class PathPatternTest {
 
     @Test
     public void parse_validParameters() throws Exception {
-        PathPattern parsed = PathPattern.parse("/{parameter}/{another:[a-z]}/{andYetAnother}/static");
+        PathPattern parsed = PathPattern.parse("/{parameter}/{another:[a-z]+}/{andYetAnother}/static");
         assertEquals(3, parsed.parameterCount());
         assertEquals(4, parsed.size());
     }

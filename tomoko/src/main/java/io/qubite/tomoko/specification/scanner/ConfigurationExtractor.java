@@ -3,6 +3,7 @@ package io.qubite.tomoko.specification.scanner;
 import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.converter.Converters;
+import io.qubite.tomoko.path.converter.IdentityConverter;
 import io.qubite.tomoko.path.converter.PathParameterConverter;
 import io.qubite.tomoko.specification.annotation.*;
 
@@ -34,21 +35,53 @@ public class ConfigurationExtractor {
         }
     }
 
-    public String extractParameterName(java.lang.reflect.Parameter parameter) {
+    private PathParameterConverter<?> extractConverter(java.lang.reflect.Parameter parameter) {
+        if (parameter.isAnnotationPresent(Parameter.class)) {
+            Class<? extends PathParameterConverter<?>> annotationConverter = parameter.getAnnotation(Parameter.class).converter();
+            if (annotationConverter.equals(IdentityConverter.class)) {
+                return getDefaultConverter(parameter);
+            } else {
+                return createConverter(annotationConverter);
+            }
+        }
+        if (parameter.isAnnotationPresent(UrlEncoded.class)) {
+            return Converters.urlEncoded();
+        }
+        throw new ConfigurationException("Could not determine converter for parameter " + parameter.getName());
+    }
+
+    private String extractParameterName(java.lang.reflect.Parameter parameter) {
         if (parameter.isAnnotationPresent(Parameter.class)) {
             Parameter namedParameter = parameter.getAnnotation(Parameter.class);
-            return namedParameter.value();
-        } else if (parameter.isNamePresent()) {
-            return parameter.getName();
-        } else {
-            throw new ConfigurationException("Could not determine the name of a parameter. Either use @Parameter annotation or compile the code with -parameters flag (Java 8+).");
+            if (!namedParameter.name().isEmpty()) {
+                return namedParameter.name();
+            } else if (!namedParameter.value().isEmpty()) {
+                return namedParameter.value();
+            }
         }
+        if (parameter.isAnnotationPresent(UrlEncoded.class)) {
+            if (!parameter.getAnnotation(UrlEncoded.class).value().isEmpty()) {
+                return parameter.getAnnotation(UrlEncoded.class).value();
+            }
+        }
+        if (parameter.isNamePresent()) {
+            return parameter.getName();
+        }
+        throw new ConfigurationException("Could not determine the name of a parameter. Either use @Parameter annotation or compile the code with -parameters flag (Java 8+).");
     }
 
     public ParameterDescriptor<?> extractParameter(java.lang.reflect.Parameter parameter) {
-        PathParameterConverter<?> converter = getDefaultConverter(parameter);
+        PathParameterConverter<?> converter = extractConverter(parameter);
         String parameterName = extractParameterName(parameter);
         return ParameterDescriptor.of(parameterName, converter);
+    }
+
+    private PathParameterConverter<?> createConverter(Class<? extends PathParameterConverter<?>> converterClass) {
+        try {
+            return converterClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new ConfigurationException("Cannot instantiate converter of type " + converterClass.getSimpleName());
+        }
     }
 
     public HandlerConfiguration extractHandlerConfiguration(Method method) {

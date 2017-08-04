@@ -1,5 +1,6 @@
 package io.qubite.tomoko.specification.dsl;
 
+import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
@@ -34,7 +35,7 @@ public class PathDSL {
      * @return
      */
     public PathDSL wildcard(String parameterName) {
-        return node(PatternElement.wildcardParameter(parameterName));
+        return path(PatternElement.wildcardParameter(parameterName));
     }
 
     /**
@@ -43,7 +44,7 @@ public class PathDSL {
      * @return
      */
     public PathDSL integer(String parameterName) {
-        return node(PatternElement.parameter(parameterName, "^[0-9]+$"));
+        return path(PatternElement.parameter(parameterName, "^[0-9]+$"));
     }
 
     /**
@@ -52,36 +53,34 @@ public class PathDSL {
      * @return
      */
     public PathDSL regex(String parameterName, String regex) {
-        return node(PatternElement.parameter(parameterName, regex));
+        return path(PatternElement.parameter(parameterName, regex));
     }
 
     /**
-     * Adds a static string to the path e.g. "author/firstName".<br/><br/>
+     * Adds a static string to the path e.g. "/author/{authorId:[a-zA-Z]+}/firstName".<br/><br/>
      * Splits the parameter into separate tokens by the "/" character and adds each token as a separate node.
-     * The "/" character is prohibited at the start and at the end of the provided parameter.
+     * The syntax is the same as in case of specifying the path on an annotated method.
      *
-     * @param text
+     * @param uriLikePath
      * @return
      */
-    public PathDSL node(String text) {
-        String[] nodes = text.split("/", -1);
-        PathDSL result = this;
-        for (String node : nodes) {
-            if (node.isEmpty()) {
-                throw new IllegalArgumentException("Path node name cannot be empty");
-            }
-            result = node(PatternElement.fixed(node));
+    public PathDSL path(String uriLikePath) {
+        PathPattern path;
+        try {
+            path = PathPattern.parse(uriLikePath);
+        } catch (IllegalArgumentException e) {
+            throw new ConfigurationException("Invalid path syntax", e);
         }
-        return result;
+        return path(path);
     }
 
     /**
-     * Adds the end index static token ("-") to the path.
+     * Adds the end index static token ("-") to the path. Usually marks the end of a path.
      *
      * @return
      */
     public PathDSL endIndex() {
-        return node(PatternElement.fixed("-"));
+        return path(PatternElement.fixed("-"));
     }
 
     public <V> NullaryValueHandlerSpec<V> handleAdd(Consumer<V> handler) {
@@ -132,8 +131,12 @@ public class PathDSL {
         return TernaryValuelessHandlerSpec.of(pathPattern, handler, builder, handlerFactory);
     }
 
-    private PathDSL node(PatternElement element) {
+    private PathDSL path(PatternElement element) {
         return new PathDSL(pathPattern.append(element), builder, handlerFactory);
+    }
+
+    private PathDSL path(PathPattern path) {
+        return new PathDSL(pathPattern.append(path), builder, handlerFactory);
     }
 
 }

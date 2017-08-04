@@ -14,8 +14,8 @@ public class PathPattern implements Iterable<PatternElement> {
 
     private static final String DEFAULT_WILDCARD_VALUE = "dummy_value";
 
-    private static Pattern PATH_PARAMETER_PATTERN = Pattern.compile("^([a-zA-Z]+)(:(.*))?$");
-    private static Pattern STATIC_NODE_PATTERN = Pattern.compile("^[a-zA-Z]+$");
+    private static Pattern PATH_PARAMETER_PATTERN = Pattern.compile("^([a-zA-Z0-9]+)(:(.*))?$");
+    private static Pattern STATIC_NODE_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
     private final List<PatternElement> elements;
 

@@ -25,6 +25,10 @@ public class ParameterDescriptor<T> {
         return name;
     }
 
+    public PathParameterConverter<T> getConverter() {
+        return converter;
+    }
+
     public String getParameterValue(T value) {
         return converter.toPathString(value);
     }

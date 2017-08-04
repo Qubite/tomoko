@@ -14,6 +14,7 @@ import io.qubite.tomoko.path.parameter.TypedPathParameter;
 import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;
 import io.qubite.tomoko.specification.annotation.*;
+import io.qubite.tomoko.specification.annotation.Parameter;
 import io.qubite.tomoko.type.Types;
 import io.qubite.tomoko.type.ValueType;
 import org.slf4j.Logger;
@@ -41,10 +42,15 @@ public class ClassScanner {
         return new ClassScanner(valueConverterFactory);
     }
 
-    public PatcherTreeSpecification build(Object specification) {
+    public PatcherTreeSpecification scan(Object specification) {
         LOGGER.info("Patch specification started");
         PatcherTreeSpecificationBuilder builder = PatcherTreeSpecification.builder();
         return scanClass(builder, PathPattern.empty(), specification).build();
+    }
+
+    public PatcherTreeSpecificationBuilder scanToBuilder(PatcherTreeSpecificationBuilder builder, Object specification) {
+        LOGGER.info("Patch specification started");
+        return scanClass(builder, PathPattern.empty(), specification);
     }
 
     private PatcherTreeSpecificationBuilder scanClass(PatcherTreeSpecificationBuilder builder, PathPattern prefix, Object specification) {
@@ -189,15 +195,22 @@ public class ClassScanner {
     }
 
     private PathParameter<?> toPathParameter(java.lang.reflect.Parameter parameter, PathPattern pattern) {
-        String parameterName = configurationExtractor.extractParameterName(parameter);
+        validateParameter(parameter);
+        ParameterDescriptor<?> parameterDescriptor = configurationExtractor.extractParameter(parameter);
         int elementIndex;
         try {
-            elementIndex = pattern.getElementIndexByParameterName(parameterName);
+            elementIndex = pattern.getElementIndexByParameterName(parameterDescriptor.getName());
         } catch (IllegalArgumentException e) {
-            throw new ConfigurationException("Parameter " + parameterName + " does not exist on the path.");
+            throw new ConfigurationException("Parameter " + parameterDescriptor.getName() + " does not exist on the path.");
         }
         StringPathParameter baseParameter = StringPathParameter.of(elementIndex);
-        return TypedPathParameter.of(baseParameter, configurationExtractor.getDefaultConverter(parameter));
+        return TypedPathParameter.of(baseParameter, parameterDescriptor.getConverter());
+    }
+
+    private void validateParameter(java.lang.reflect.Parameter parameter) {
+        if (parameter.isAnnotationPresent(UrlEncoded.class) && parameter.isAnnotationPresent(Parameter.class)) {
+            throw new ConfigurationException("UrlEncoded and Parameter annotations are substitutes. Use only one of them.");
+        }
     }
 
     private ValueType<?> extractValueType(java.lang.reflect.Parameter parameter) {

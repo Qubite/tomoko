@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class DSLTest {
 
-    public static final String TICKETS_NODE = "tickets";
-    public static final String TITLE_NODE = "title";
+    public static final String TICKETS_NODE = "/tickets";
+    public static final String TITLE_NODE = "/title";
     public static final String TICKET_ID = "ticketId";
 
     @Mock
@@ -28,7 +28,7 @@ public class DSLTest {
     @Test
     public void validSimpleTreeAndOperation_mockedMethods() throws Exception {
         HandlerConfigurationDSL dsl = DirectTomoko.instance().specificationDsl();
-        UnaryValueHandlerDescriptor<Integer, String> registeredHandler = dsl.path().node(TICKETS_NODE).integer(TICKET_ID).node(TITLE_NODE).handleAdd(biConsumer).firstArgument(TICKET_ID, Integer.class).type(Types.string()).register();
+        UnaryValueHandlerDescriptor<Integer, String> registeredHandler = dsl.path(TICKETS_NODE).integer(TICKET_ID).path(TITLE_NODE).handleAdd(biConsumer).firstArgument(TICKET_ID, Integer.class).type(Types.string()).register();
         String providedValue = "asdf";
         int pathParameter = 1;
         Patcher patcher = dsl.toPatcher();
@@ -40,7 +40,7 @@ public class DSLTest {
     @Test
     public void validSimpleTreeAndOperation_realMethods() throws Exception {
         HandlerConfigurationDSL dsl = DirectTomoko.instance().specificationDsl();
-        dsl.path().node(TICKETS_NODE).integer(TICKET_ID).node(TITLE_NODE).handleAdd(this::realConsumer).firstArgument(TICKET_ID).register();
+        dsl.path("/tickets/{ticketId:[0-9]+}/title").handleAdd(this::realConsumer).firstArgument(TICKET_ID).register();
         Patcher patcher = dsl.toPatcher();
     }
 

@@ -30,7 +30,7 @@ public class Tomoko {
     }
 
     public PatcherTreeSpecification scanHandlerTree(Object specification) {
-        return ClassScanner.instance(ParserConverterFactory.instance(configuration)).build(specification);
+        return ClassScanner.instance(ParserConverterFactory.instance(configuration)).scan(specification);
     }
 
     public Patcher scanPatcher(Object specification) {
