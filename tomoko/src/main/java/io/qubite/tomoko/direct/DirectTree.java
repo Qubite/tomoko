@@ -7,6 +7,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * <p>
+ * Value tree implementation composed of path nodes and real objects on leaf nodes.
+ * </p>
+ * <p>
+ * Best for testing purposes when one want to avoid using string to object parsers.
+ * </p>
+ */
 public class DirectTree implements ValueTree {
 
     private final Map<String, DirectTree> children;

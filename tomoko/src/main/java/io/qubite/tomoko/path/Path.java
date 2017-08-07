@@ -8,7 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * <p>
+ *     Represents an actual path ie. "/tickets/1/description".
+ * </p>
+ * <p>
  * Immutable
+ * </p>
  */
 public class Path {
 
