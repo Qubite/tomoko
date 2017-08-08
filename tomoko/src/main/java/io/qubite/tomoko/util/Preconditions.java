@@ -11,6 +11,12 @@ public class Preconditions {
         }
     }
 
+    public static void checkNotNull(Object toCheck, String message) {
+        if (toCheck == null) {
+            throw new NullPointerException(message);
+        }
+    }
+
     public static void checkArgument(boolean test, String message) {
         if (!test) {
             throw new IllegalArgumentException(message);

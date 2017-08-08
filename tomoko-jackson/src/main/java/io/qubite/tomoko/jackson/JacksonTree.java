@@ -2,6 +2,7 @@ package io.qubite.tomoko.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.util.Preconditions;
 
 import java.util.AbstractMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ class JacksonTree implements ValueTree {
     }
 
     static JacksonTree of(JsonNode node) {
+        Preconditions.checkNotNull(node);
         return new JacksonTree(node);
     }
 

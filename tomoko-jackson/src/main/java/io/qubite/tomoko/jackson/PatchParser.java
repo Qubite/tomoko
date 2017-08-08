@@ -71,7 +71,15 @@ public class PatchParser {
     }
 
     private OperationDto toOperationDto(JacksonOperationDto operationDto) {
-        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), JacksonTree.of(operationDto.getValue()));
+        CommandType type = CommandType.of(operationDto.getOp());
+        if (type.equals(CommandType.REMOVE)) {
+            return OperationDto.remove(operationDto.getPath());
+        } else {
+            if (operationDto.getValue() == null) {
+                throw new PatchParseException("For ADD and REPLACE operations value must be specified.");
+            }
+            return OperationDto.of(operationDto.getPath(), type, JacksonTree.of(operationDto.getValue()));
+        }
     }
 
 }

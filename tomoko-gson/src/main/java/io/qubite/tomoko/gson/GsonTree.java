@@ -2,6 +2,7 @@ package io.qubite.tomoko.gson;
 
 import com.google.gson.JsonElement;
 import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.util.Preconditions;
 
 import java.util.AbstractMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ class GsonTree implements ValueTree {
     }
 
     static GsonTree of(JsonElement element) {
+        Preconditions.checkNotNull(element);
         return new GsonTree(element);
     }
 

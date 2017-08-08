@@ -33,7 +33,7 @@ public class GsonParser implements ValueParser<GsonTree> {
         try {
             return parse(element.getValue(), valueType);
         } catch (JsonSyntaxException e) {
-            throw new ConverterException("Could not parse the provided value as " + valueType);
+            throw new ConverterException("Could not parse the provided value as " + valueType, e);
         }
     }
 

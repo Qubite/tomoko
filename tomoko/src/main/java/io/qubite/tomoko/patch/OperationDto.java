@@ -1,5 +1,7 @@
 package io.qubite.tomoko.patch;
 
+import io.qubite.tomoko.util.Preconditions;
+
 /**
  * Single patch operation model.
  */
@@ -10,6 +12,11 @@ public class OperationDto {
     private final ValueTree value;
 
     OperationDto(String path, CommandType type, ValueTree value) {
+        Preconditions.checkNotNull(path);
+        Preconditions.checkNotNull(type);
+        if (!type.equals(CommandType.REMOVE)) {
+            Preconditions.checkNotNull(value);
+        }
         this.path = path;
         this.type = type;
         this.value = value;

@@ -34,7 +34,7 @@ public class JacksonParser implements ValueParser<JacksonTree> {
         try {
             return parse(node.getValue(), valueType);
         } catch (JsonMappingException e) {
-            throw new ConverterException("Could not parse the provided value as " + valueType);
+            throw new ConverterException("Could not parse the provided value as " + valueType, e);
         } catch (IOException e) {
             throw new ConverterException(e);
         }

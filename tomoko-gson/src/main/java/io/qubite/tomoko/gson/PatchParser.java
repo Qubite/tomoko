@@ -6,6 +6,7 @@ import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.patch.OperationDto;
 import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.patch.PatchParseException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,7 +56,15 @@ public class PatchParser {
     }
 
     private OperationDto toOperationDto(GsonOperationDto operationDto) {
-        return OperationDto.of(operationDto.getPath(), CommandType.of(operationDto.getOp()), GsonTree.of(operationDto.getValue()));
+        CommandType type = CommandType.of(operationDto.getOp());
+        if (type.equals(CommandType.REMOVE)) {
+            return OperationDto.remove(operationDto.getPath());
+        } else {
+            if (operationDto.getValue() == null) {
+                throw new PatchParseException("For ADD and REPLACE operations value must be specified.");
+            }
+            return OperationDto.of(operationDto.getPath(), type, GsonTree.of(operationDto.getValue()));
+        }
     }
 
 }
