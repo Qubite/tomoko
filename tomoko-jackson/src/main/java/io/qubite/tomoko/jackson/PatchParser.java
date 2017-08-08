@@ -15,22 +15,22 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PatchFactory {
+public class PatchParser {
 
     private static final JavaType TYPE = TypeFactory.defaultInstance().constructCollectionType(List.class, JacksonOperationDto.class);
 
     private final ObjectMapper mapper;
 
-    PatchFactory(ObjectMapper mapper) {
+    PatchParser(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public static PatchFactory instance() {
-        return new PatchFactory(new ObjectMapper());
+    public static PatchParser instance() {
+        return new PatchParser(new ObjectMapper());
     }
 
-    public static PatchFactory instance(ObjectMapper mapper) {
-        return new PatchFactory(mapper);
+    public static PatchParser instance(ObjectMapper mapper) {
+        return new PatchParser(mapper);
     }
 
     public Patch parse(String json) {

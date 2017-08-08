@@ -1,16 +1,12 @@
 package io.qubite.tomoko.gson;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.TomokoConfigurationBuilder;
-import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.patcher.Patcher;
 import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.descriptor.SpecificationDescriptor;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
-
-import java.io.InputStream;
 
 /**
  * Central Tomoko library facade specialized for use with Gson. Quick and easy way to access all important elements.
@@ -18,11 +14,11 @@ import java.io.InputStream;
 public class GsonTomoko {
 
     private final Tomoko tomoko;
-    private final PatchFactory patchParser;
+    private final Gson gson;
 
-    GsonTomoko(Tomoko tomoko, PatchFactory patchParser) {
+    GsonTomoko(Tomoko tomoko, Gson gson) {
         this.tomoko = tomoko;
-        this.patchParser = patchParser;
+        this.gson = gson;
     }
 
     /**
@@ -65,7 +61,7 @@ public class GsonTomoko {
         configurationBuilder.clearValueParsers();
         configurationBuilder.registerValueParser(new GsonParser(mapper));
         Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
-        return new GsonTomoko(tomoko, PatchFactory.instance(mapper));
+        return new GsonTomoko(tomoko, mapper);
     }
 
     /**
@@ -119,34 +115,8 @@ public class GsonTomoko {
         return tomoko.descriptorFor(specificationClass);
     }
 
-    /**
-     * Parses the provided string and returns a patch object using Gson.
-     *
-     * @param json
-     * @return
-     */
-    public Patch parsePatch(String json) {
-        return patchParser.parse(json);
-    }
-
-    /**
-     * Parses the provided input stream and returns a patch object using Gson.
-     *
-     * @param inputStream
-     * @return
-     */
-    public Patch parsePatch(InputStream inputStream) {
-        return patchParser.parse(inputStream);
-    }
-
-    /**
-     * Parses the provided Gson JsonElement and returns a patch object.
-     *
-     * @param jsonElement
-     * @return
-     */
-    public Patch parsePatch(JsonElement jsonElement) {
-        return patchParser.parse(jsonElement);
+    public PatchParser patchParser() {
+        return PatchParser.instance(gson);
     }
 
 }

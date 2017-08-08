@@ -15,22 +15,22 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PatchFactory {
+public class PatchParser {
 
     private static final Type TYPE = CustomParametrizedType.of(List.class, GsonOperationDto.class);
 
     private final Gson gson;
 
-    PatchFactory(Gson gson) {
+    PatchParser(Gson gson) {
         this.gson = gson;
     }
 
-    public static PatchFactory instance() {
-        return new PatchFactory(new Gson());
+    public static PatchParser instance() {
+        return new PatchParser(new Gson());
     }
 
-    public static PatchFactory instance(Gson gson) {
-        return new PatchFactory(gson);
+    public static PatchParser instance(Gson gson) {
+        return new PatchParser(gson);
     }
 
     public Patch parse(String json) {

@@ -1,16 +1,12 @@
 package io.qubite.tomoko.jackson;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qubite.tomoko.Tomoko;
 import io.qubite.tomoko.TomokoConfigurationBuilder;
-import io.qubite.tomoko.patch.Patch;
 import io.qubite.tomoko.patcher.Patcher;
 import io.qubite.tomoko.specification.PatcherTreeSpecification;
 import io.qubite.tomoko.specification.descriptor.SpecificationDescriptor;
 import io.qubite.tomoko.specification.dsl.HandlerConfigurationDSL;
-
-import java.io.InputStream;
 
 /**
  * Central Tomoko library facade specialized for use with Jackson. Quick and easy way to access all important elements.
@@ -18,11 +14,11 @@ import java.io.InputStream;
 public class JacksonTomoko {
 
     private final Tomoko tomoko;
-    private final PatchFactory patchParser;
+    private final ObjectMapper mapper;
 
-    JacksonTomoko(Tomoko tomoko, PatchFactory patchParser) {
+    JacksonTomoko(Tomoko tomoko, ObjectMapper mapper) {
         this.tomoko = tomoko;
-        this.patchParser = patchParser;
+        this.mapper = mapper;
     }
 
     /**
@@ -65,7 +61,7 @@ public class JacksonTomoko {
         configurationBuilder.clearValueParsers();
         configurationBuilder.registerValueParser(new JacksonParser(mapper));
         Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
-        return new JacksonTomoko(tomoko, PatchFactory.instance(mapper));
+        return new JacksonTomoko(tomoko, mapper);
     }
 
     /**
@@ -119,34 +115,8 @@ public class JacksonTomoko {
         return tomoko.descriptorFor(specificationClass);
     }
 
-    /**
-     * Parses the provided string and returns a patch object using Jackson.
-     *
-     * @param json
-     * @return
-     */
-    public Patch parsePatch(String json) {
-        return patchParser.parse(json);
-    }
-
-    /**
-     * Parses the provided input stream and returns a patch object using Jackson.
-     *
-     * @param inputStream
-     * @return
-     */
-    public Patch parsePatch(InputStream inputStream) {
-        return patchParser.parse(inputStream);
-    }
-
-    /**
-     * Parses the provided Jackson JsonNode and returns a patch object.
-     *
-     * @param jsonNode
-     * @return
-     */
-    public Patch parsePatch(JsonNode jsonNode) {
-        return patchParser.parse(jsonNode);
+    public PatchParser getPatchParser() {
+        return PatchParser.instance(mapper);
     }
 
 }
