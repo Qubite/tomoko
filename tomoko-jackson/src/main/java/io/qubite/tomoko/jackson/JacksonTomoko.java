@@ -115,7 +115,7 @@ public class JacksonTomoko {
         return tomoko.descriptorFor(specificationClass);
     }
 
-    public PatchParser getPatchParser() {
+    public PatchParser patchParser() {
         return PatchParser.instance(mapper);
     }
 
