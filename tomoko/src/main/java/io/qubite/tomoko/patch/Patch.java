@@ -23,11 +23,11 @@ public class Patch {
         return Collections.unmodifiableList(operations);
     }
 
-    public Patch appendPath(String path) {
-        return new Patch(operations.stream().map((operation) -> append(operation, path)).collect(Collectors.toList()));
+    public Patch prepend(String path) {
+        return new Patch(operations.stream().map((operation) -> prepend(operation, path)).collect(Collectors.toList()));
     }
 
-    private OperationDto append(OperationDto operation, String path) {
+    private OperationDto prepend(OperationDto operation, String path) {
         return OperationDto.of(path + operation.getPath(), operation.getType(), operation.getValue());
     }
 

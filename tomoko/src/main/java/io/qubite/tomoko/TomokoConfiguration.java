@@ -1,6 +1,6 @@
 package io.qubite.tomoko;
 
-import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.handler.value.converter.ValueTreeParser;
 
 import java.util.Set;
 
@@ -11,10 +11,10 @@ import java.util.Set;
  */
 public class TomokoConfiguration {
 
-    private final Set<ValueParser<?>> valueParsers;
+    private final Set<ValueTreeParser<?>> valueTreeParsers;
 
-    TomokoConfiguration(Set<ValueParser<?>> valueParsers) {
-        this.valueParsers = valueParsers;
+    TomokoConfiguration(Set<ValueTreeParser<?>> valueTreeParsers) {
+        this.valueTreeParsers = valueTreeParsers;
     }
 
     /**
@@ -26,8 +26,8 @@ public class TomokoConfiguration {
         return TomokoConfigurationBuilder.base();
     }
 
-    public Set<ValueParser<?>> getValueParsers() {
-        return valueParsers;
+    public Set<ValueTreeParser<?>> getValueTreeParsers() {
+        return valueTreeParsers;
     }
 
 

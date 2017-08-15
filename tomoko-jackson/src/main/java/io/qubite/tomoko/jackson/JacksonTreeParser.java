@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.handler.value.converter.ValueTreeParser;
 import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.*;
 
@@ -14,20 +14,20 @@ import java.io.IOException;
 /**
  * Parser for JacksonTree implementation of the ValueTree interface.
  */
-public class JacksonParser implements ValueParser<JacksonTree> {
+public class JacksonTreeParser implements ValueTreeParser<JacksonTree> {
 
     private final ObjectMapper mapper;
 
-    JacksonParser(ObjectMapper mapper) {
+    JacksonTreeParser(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public static JacksonParser instance() {
+    public static JacksonTreeParser instance() {
         return instance(new ObjectMapper());
     }
 
-    public static JacksonParser instance(ObjectMapper mapper) {
-        return new JacksonParser(mapper);
+    public static JacksonTreeParser instance(ObjectMapper mapper) {
+        return new JacksonTreeParser(mapper);
     }
 
     public <T> T getAs(JacksonTree node, ValueType<T> valueType) {

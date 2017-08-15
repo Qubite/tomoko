@@ -35,8 +35,8 @@ public class DirectTomoko {
      * @return
      */
     public static DirectTomoko instance(TomokoConfigurationBuilder configurationBuilder) {
-        configurationBuilder.clearValueParsers();
-        configurationBuilder.registerValueParser(new DirectTreeParser());
+        configurationBuilder.clearValueTreeParsers();
+        configurationBuilder.registerValueTreeParser(new DirectTreeParser());
         Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
         return new DirectTomoko(tomoko);
     }

@@ -1,6 +1,6 @@
 package io.qubite.tomoko;
 
-import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.handler.value.converter.ValueTreeParser;
 import io.qubite.tomoko.util.Preconditions;
 
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class TomokoConfigurationBuilder {
 
-    private final Set<ValueParser<?>> valueParsers = new HashSet<>();
+    private final Set<ValueTreeParser<?>> valueTreeParsers = new HashSet<>();
 
     public static TomokoConfigurationBuilder base() {
         return new TomokoConfigurationBuilder();
@@ -25,12 +25,12 @@ public class TomokoConfigurationBuilder {
      * @param <T>
      * @return
      */
-    public <T> TomokoConfigurationBuilder registerValueParser(ValueParser<T> parser) {
+    public <T> TomokoConfigurationBuilder registerValueTreeParser(ValueTreeParser<T> parser) {
         Preconditions.checkNotNull(parser);
-        if (valueParsers.stream().anyMatch((existing) -> existing.supportedType().equals(parser.supportedType()))) {
+        if (valueTreeParsers.stream().anyMatch((existing) -> existing.supportedType().equals(parser.supportedType()))) {
             throw new IllegalArgumentException("Cannot register two value parsers for the same type: " + parser.supportedType());
         }
-        valueParsers.add(parser);
+        valueTreeParsers.add(parser);
         return this;
     }
 
@@ -38,8 +38,8 @@ public class TomokoConfigurationBuilder {
      * Removes all registered value parsers.
      * @return
      */
-    public TomokoConfigurationBuilder clearValueParsers() {
-        valueParsers.clear();
+    public TomokoConfigurationBuilder clearValueTreeParsers() {
+        valueTreeParsers.clear();
         return this;
     }
 
@@ -48,10 +48,10 @@ public class TomokoConfigurationBuilder {
      * @return
      */
     public TomokoConfiguration build() {
-        if (valueParsers.isEmpty()) {
+        if (valueTreeParsers.isEmpty()) {
             throw new IllegalStateException("There must be at least one value parser registered.");
         }
-        return new TomokoConfiguration(Collections.unmodifiableSet(this.valueParsers));
+        return new TomokoConfiguration(Collections.unmodifiableSet(this.valueTreeParsers));
     }
 
 }

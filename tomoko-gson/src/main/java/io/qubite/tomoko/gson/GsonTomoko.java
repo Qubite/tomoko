@@ -22,7 +22,7 @@ public class GsonTomoko {
     }
 
     /**
-     * Creates a new GsonTomoko instance. Automatically registers the {@link GsonParser} instance.
+     * Creates a new GsonTomoko instance. Automatically registers the {@link GsonTreeParser} instance.
      *
      * @return
      */
@@ -31,7 +31,7 @@ public class GsonTomoko {
     }
 
     /**
-     * Creates a new GsonTomoko instance. Automatically registers the {@link GsonParser} instance using the provided mapper.
+     * Creates a new GsonTomoko instance. Automatically registers the {@link GsonTreeParser} instance using the provided mapper.
      *
      * @param mapper
      * @return
@@ -41,7 +41,7 @@ public class GsonTomoko {
     }
 
     /**
-     * Creates a new GsonTomoko instance using the provided configuration as the basis. Automatically registers the {@link GsonParser} instance.
+     * Creates a new GsonTomoko instance using the provided configuration as the basis. Automatically registers the {@link GsonTreeParser} instance.
      *
      * @param configurationBuilder
      * @return
@@ -51,15 +51,15 @@ public class GsonTomoko {
     }
 
     /**
-     * Creates a new GsonTomoko instance using the provided configuration as the basis. Automatically registers the {@link GsonParser} instance using the provided mapper.
+     * Creates a new GsonTomoko instance using the provided configuration as the basis. Automatically registers the {@link GsonTreeParser} instance using the provided mapper.
      *
      * @param configurationBuilder
      * @param mapper
      * @return
      */
     public static GsonTomoko instance(TomokoConfigurationBuilder configurationBuilder, Gson mapper) {
-        configurationBuilder.clearValueParsers();
-        configurationBuilder.registerValueParser(new GsonParser(mapper));
+        configurationBuilder.clearValueTreeParsers();
+        configurationBuilder.registerValueTreeParser(new GsonTreeParser(mapper));
         Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
         return new GsonTomoko(tomoko, mapper);
     }

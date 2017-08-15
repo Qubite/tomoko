@@ -6,15 +6,15 @@ import io.qubite.tomoko.type.ValueType;
 
 public class SingleParserConverter<V, P> implements ValueConverter<V> {
 
-    private final ValueParser<P> parser;
+    private final ValueTreeParser<P> parser;
     private final ValueType<V> valueType;
 
-    SingleParserConverter(ValueParser<P> parser, ValueType<V> valueType) {
+    SingleParserConverter(ValueTreeParser<P> parser, ValueType<V> valueType) {
         this.parser = parser;
         this.valueType = valueType;
     }
 
-    public static <V, P> SingleParserConverter<V, P> of(ValueParser<P> parser, ValueType<V> valueType) {
+    public static <V, P> SingleParserConverter<V, P> of(ValueTreeParser<P> parser, ValueType<V> valueType) {
         return new SingleParserConverter<>(parser, valueType);
     }
 

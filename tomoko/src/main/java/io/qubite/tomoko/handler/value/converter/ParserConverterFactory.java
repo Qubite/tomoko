@@ -19,11 +19,11 @@ public class ParserConverterFactory implements ValueConverterFactory {
 
     @Override
     public <T> ValueConverter<T> forType(ValueType<T> valueType) {
-        Set<ValueParser<?>> valueParsers = tomokoConfiguration.getValueParsers();
-        if (valueParsers.size() == 1) {
-            return SingleParserConverter.of(valueParsers.stream().findAny().get(), valueType);
+        Set<ValueTreeParser<?>> valueTreeParsers = tomokoConfiguration.getValueTreeParsers();
+        if (valueTreeParsers.size() == 1) {
+            return SingleParserConverter.of(valueTreeParsers.stream().findAny().get(), valueType);
         } else {
-            return MultipleParsersConverter.of(valueType, valueParsers);
+            return MultipleParsersConverter.of(valueType, valueTreeParsers);
         }
     }
 

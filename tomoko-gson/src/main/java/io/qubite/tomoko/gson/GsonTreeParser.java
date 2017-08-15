@@ -3,7 +3,7 @@ package io.qubite.tomoko.gson;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import io.qubite.tomoko.handler.value.converter.ValueParser;
+import io.qubite.tomoko.handler.value.converter.ValueTreeParser;
 import io.qubite.tomoko.path.converter.ConverterException;
 import io.qubite.tomoko.type.*;
 
@@ -12,20 +12,20 @@ import java.lang.reflect.Type;
 /**
  * Parser for GsonTree implementation of the ValueTree interface.
  */
-public class GsonParser implements ValueParser<GsonTree> {
+public class GsonTreeParser implements ValueTreeParser<GsonTree> {
 
     private final Gson gson;
 
-    GsonParser(Gson gson) {
+    GsonTreeParser(Gson gson) {
         this.gson = gson;
     }
 
-    public static GsonParser instance() {
+    public static GsonTreeParser instance() {
         return instance(new Gson());
     }
 
-    public static GsonParser instance(Gson gson) {
-        return new GsonParser(gson);
+    public static GsonTreeParser instance(Gson gson) {
+        return new GsonTreeParser(gson);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.qubite.tomoko.handler.invocation;
 
+import io.qubite.tomoko.TomokoException;
 import io.qubite.tomoko.handler.HandlerExecutionException;
 
 import java.lang.invoke.MethodHandle;
@@ -18,7 +19,7 @@ public class MethodHandleInvocation implements ClientCodeInvocation {
         try {
             methodHandle.invokeExact(parameters);
         } catch (WrongMethodTypeException e) {
-            throw new IllegalStateException("Problem with Tomoko itself.", e);
+            throw new TomokoException("Problem with Tomoko itself.", e);
         } catch (Throwable throwable) {
             if (throwable instanceof Error) {
                 throw (Error) throwable;

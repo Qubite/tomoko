@@ -25,21 +25,21 @@ public class JacksonTreeTest {
 
     @Test
     public void getAs_string() throws Exception {
-        JacksonParser parser = JacksonParser.instance(mapper);
+        JacksonTreeParser parser = JacksonTreeParser.instance(mapper);
         String result = parser.getAs(JacksonTree.of(fromFile("/trees/stringValue.json")), Types.string());
         assertEquals("asdf", result);
     }
 
     @Test
     public void getAs_stringAsDouble_exception() throws Exception {
-        JacksonParser parser = JacksonParser.instance(mapper);
+        JacksonTreeParser parser = JacksonTreeParser.instance(mapper);
         thrown.expect(TomokoException.class);
         parser.getAs(JacksonTree.of(fromFile("/trees/stringValue.json")), Types.doubleValue());
     }
 
     @Test
     public void getAs_stringList() throws Exception {
-        JacksonParser parser = JacksonParser.instance(mapper);
+        JacksonTreeParser parser = JacksonTreeParser.instance(mapper);
         List<String> result = parser.getAs(JacksonTree.of(fromFile("/trees/stringList.json")), Types.list(String.class));
         assertEquals(2, result.size());
     }

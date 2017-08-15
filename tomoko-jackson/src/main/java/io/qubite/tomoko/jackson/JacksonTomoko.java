@@ -22,7 +22,7 @@ public class JacksonTomoko {
     }
 
     /**
-     * Creates a new JacksonTomoko instance using a default {@link ObjectMapper}. Automatically registers the {@link JacksonParser} instance.
+     * Creates a new JacksonTomoko instance using a default {@link ObjectMapper}. Automatically registers the {@link JacksonTreeParser} instance.
      *
      * @return
      */
@@ -31,7 +31,7 @@ public class JacksonTomoko {
     }
 
     /**
-     * Creates a new JacksonTomoko instance using the provided mapper. Automatically registers the {@link JacksonParser} instance.
+     * Creates a new JacksonTomoko instance using the provided mapper. Automatically registers the {@link JacksonTreeParser} instance.
      *
      * @param mapper
      * @return
@@ -41,7 +41,7 @@ public class JacksonTomoko {
     }
 
     /**
-     * Creates a new JacksonTomoko instance using the provided configuration as the basis. Automatically registers the {@link JacksonParser} instance.
+     * Creates a new JacksonTomoko instance using the provided configuration as the basis. Automatically registers the {@link JacksonTreeParser} instance.
      *
      * @param configurationBuilder
      * @return
@@ -51,15 +51,15 @@ public class JacksonTomoko {
     }
 
     /**
-     * Creates a new JacksonTomoko instance using the provided configuration as the basis. Automatically registers the {@link JacksonParser} instance using the provided mapper.
+     * Creates a new JacksonTomoko instance using the provided configuration as the basis. Automatically registers the {@link JacksonTreeParser} instance using the provided mapper.
      *
      * @param configurationBuilder
      * @param mapper
      * @return
      */
     public static JacksonTomoko instance(TomokoConfigurationBuilder configurationBuilder, ObjectMapper mapper) {
-        configurationBuilder.clearValueParsers();
-        configurationBuilder.registerValueParser(new JacksonParser(mapper));
+        configurationBuilder.clearValueTreeParsers();
+        configurationBuilder.registerValueTreeParser(new JacksonTreeParser(mapper));
         Tomoko tomoko = Tomoko.instance(configurationBuilder.build());
         return new JacksonTomoko(tomoko, mapper);
     }
