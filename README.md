@@ -2,7 +2,7 @@
 
 How to make PATCH in REST easy to manage or in other words RFC 6902 made Java friendly.
 
-For detailed documentation and examples go to [GitHub pages](https://qubite.github.io/tomoko).
+For tutorials, detailed documentation and examples go to the official [Tomoko site](https://tomoko.qubite.io).
 
 ## Maven
 
@@ -14,7 +14,7 @@ Newest version can be found here.
 <dependency>
   <groupId>io.qubite.tomoko</groupId>
   <artifactId>tomoko-jackson</artifactId>
-  <version>0.2.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@ Newest version can be found here.
 <dependency>
   <groupId>io.qubite.tomoko</groupId>
   <artifactId>tomoko-gson</artifactId>
-  <version>0.2.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 

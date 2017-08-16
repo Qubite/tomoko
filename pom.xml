@@ -7,7 +7,7 @@
     <groupId>io.qubite.tomoko</groupId>
     <artifactId>tomoko-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>Tomoko</name>
     <description>Easy handling of REST PATCH requests in the object world according to RFC 6902</description>
