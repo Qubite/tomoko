@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.dsl;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import io.qubite.tomoko.handler.HandlerFactory;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.specification.PatcherTreeSpecificationBuilder;

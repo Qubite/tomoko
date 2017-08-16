@@ -1,4 +1,6 @@
-package io.qubite.tomoko;
+package io.qubite.tomoko.configuration;
+
+import io.qubite.tomoko.TomokoException;
 
 /**
  * Indicates there was a problem when creating a patcher due to a bad configuration ie. not properly annotated method.

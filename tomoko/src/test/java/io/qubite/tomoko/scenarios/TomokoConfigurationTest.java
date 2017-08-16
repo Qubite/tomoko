@@ -1,6 +1,6 @@
 package io.qubite.tomoko.scenarios;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import io.qubite.tomoko.direct.DirectTomoko;
 import org.junit.Rule;
 import org.junit.Test;

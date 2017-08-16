@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import io.qubite.tomoko.handler.value.ValueHandler;
 import io.qubite.tomoko.handler.valueless.ValuelessHandler;
 import io.qubite.tomoko.path.PathTemplate;

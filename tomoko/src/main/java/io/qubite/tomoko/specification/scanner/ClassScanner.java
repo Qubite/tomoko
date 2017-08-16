@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import io.qubite.tomoko.handler.invocation.ClientCodeInvocations;
 import io.qubite.tomoko.handler.value.ParameterListValueHandler;
 import io.qubite.tomoko.handler.value.converter.ValueConverter;

@@ -1,6 +1,6 @@
 package io.qubite.tomoko.specification.scanner;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import io.qubite.tomoko.patch.CommandType;
 import io.qubite.tomoko.path.converter.Converters;
 import io.qubite.tomoko.path.converter.IdentityConverter;

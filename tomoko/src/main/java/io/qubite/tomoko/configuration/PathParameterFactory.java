@@ -1,6 +1,5 @@
 package io.qubite.tomoko.configuration;
 
-import io.qubite.tomoko.ConfigurationException;
 import io.qubite.tomoko.path.parameter.PathParameter;
 import io.qubite.tomoko.path.parameter.StringPathParameter;
 import io.qubite.tomoko.path.parameter.TypedPathParameter;

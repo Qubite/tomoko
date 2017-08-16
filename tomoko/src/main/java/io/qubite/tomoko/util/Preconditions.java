@@ -1,6 +1,6 @@
 package io.qubite.tomoko.util;
 
-import io.qubite.tomoko.ConfigurationException;
+import io.qubite.tomoko.configuration.ConfigurationException;
 import net.jodah.typetools.TypeResolver;
 
 public class Preconditions {
@@ -25,7 +25,7 @@ public class Preconditions {
 
     public static <T> void checkNonGeneric(Class<T> clazz) {
         if (clazz.getTypeParameters().length > 0) {
-            throw new ConfigurationException("Class " + clazz.getSimpleName() + " is generic. Use value().generic() instead.");
+            throw new ConfigurationException("Class " + clazz.getSimpleName() + " is generic. Use value() to define the type explicitly.");
         }
     }
 
