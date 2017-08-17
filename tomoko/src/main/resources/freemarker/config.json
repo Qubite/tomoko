@@ -1,0 +1,66 @@
+{
+  "prefixes": [
+    {
+      "name": "Nullary",
+      "size": 0,
+      "consumer": {
+        "name": "Consumer",
+        "fullName": "java.util.function.Consumer"
+      },
+      "removeConsumer": {
+        "name": "Runnable",
+        "fullName": "java.lang.Runnable"
+      }
+    },
+    {
+      "name": "Unary",
+      "size": 1,
+      "consumer": {
+        "name": "BiConsumer",
+        "fullName": "java.util.function.BiConsumer"
+      },
+      "removeConsumer": {
+        "name": "Consumer",
+        "fullName": "java.util.function.Consumer"
+      }
+    },
+    {
+      "name": "Binary",
+      "size": 2,
+      "consumer": {
+        "name": "TriConsumer",
+        "fullName": "io.qubite.tomoko.util.TriConsumer"
+      },
+      "removeConsumer": {
+        "name": "BiConsumer",
+        "fullName": "java.util.function.BiConsumer"
+      }
+    },
+    {
+      "name": "Ternary",
+      "size": 3,
+      "consumer": {
+        "name": "QuadConsumer",
+        "fullName": "io.qubite.tomoko.util.QuadConsumer"
+      },
+      "removeConsumer": {
+        "name": "TriConsumer",
+        "fullName": "io.qubite.tomoko.util.TriConsumer"
+      }
+    }
+  ],
+  "generics": [
+    {
+      "code": "A",
+      "parameter": "first"
+    },
+    {
+      "code": "B",
+      "parameter": "second"
+    },
+    {
+      "code": "C",
+      "parameter": "third"
+    }
+  ]
+}

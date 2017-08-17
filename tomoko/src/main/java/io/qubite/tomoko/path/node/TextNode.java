@@ -2,10 +2,7 @@ package io.qubite.tomoko.path.node;
 
 import java.util.Objects;
 
-/**
- * Created by edhendil on 03.09.16.
- */
-public class TextNode implements ValueNode<String> {
+public class TextNode implements PathNode {
 
     TextNode() {
     }
@@ -16,13 +13,8 @@ public class TextNode implements ValueNode<String> {
     }
 
     @Override
-    public String toObject(String value) {
-        return value;
-    }
-
-    @Override
-    public String toPathString(String value) {
-        return value;
+    public int classOrder() {
+        return 30;
     }
 
     @Override
@@ -33,7 +25,6 @@ public class TextNode implements ValueNode<String> {
         if (!(o instanceof TextNode)) {
             return false;
         }
-        TextNode that = (TextNode) o;
         return true;
     }
 
@@ -44,7 +35,20 @@ public class TextNode implements ValueNode<String> {
 
     @Override
     public String toString() {
-        return "/(string)";
+        return "/{arg}";
+    }
+
+    @Override
+    public int compareTo(PathNode pathNode) {
+        if (!pathNode.getClass().equals(TextNode.class)) {
+            int result = classOrder() - pathNode.classOrder();
+            if (result == 0) {
+                throw new IllegalStateException("Two path node implementation cannot have the same order value.");
+            }
+            return result;
+        } else {
+            return 0;
+        }
     }
 
 }

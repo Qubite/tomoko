@@ -6,18 +6,17 @@ import io.qubite.tomoko.path.node.PathNode;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by edhendil on 17.08.16.
- */
-public interface Tree<H> {
+public interface Tree<H> extends Iterable<TreeIterator.TreeEntry<H>> {
 
-    PathNode getPathNode();
+    Tree<H> resolve(Path path);
 
     Optional<? extends Tree<H>> getChild(PathNode pathNode);
 
-    Map<PathNode, TreeNode<H>> getChildren();
+    Map<PathNode, ? extends Tree<H>> getChildren();
 
     Optional<? extends Tree<H>> findMatchingChild(String nodeValue);
+
+    PathNode getPathNode();
 
     H getHandler();
 
@@ -25,6 +24,5 @@ public interface Tree<H> {
 
     boolean isLeaf();
 
-    MatchingPath<H> resolve(Path path);
 
 }

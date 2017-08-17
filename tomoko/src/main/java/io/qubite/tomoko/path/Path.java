@@ -1,14 +1,19 @@
 package io.qubite.tomoko.path;
 
+import io.qubite.tomoko.util.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by edhendil on 11.08.16.
+ * <p>
+ *     Represents an actual path ie. "/tickets/1/description".
+ * </p>
  * <p>
  * Immutable
+ * </p>
  */
 public class Path {
 
@@ -19,9 +24,22 @@ public class Path {
     }
 
     public static Path parse(String path) {
-        List<String> nodes = new ArrayList<>(Arrays.asList(path.split("/")));
-        nodes.remove(0);
+        if (path.isEmpty()) {
+            return empty();
+        }
+        Preconditions.checkArgument(path.startsWith("/"), "Path must start with a slash character or be empty");
+        List<String> nodes = new ArrayList<>(Arrays.asList(path.substring(1).split("/")));
         return new Path(nodes);
+    }
+
+    public static Path of(String... nodes) {
+        checkSlash(Arrays.asList(nodes));
+        return new Path(Arrays.asList(nodes));
+    }
+
+    public static Path of(List<String> nodes) {
+        checkSlash(nodes);
+        return new Path(new ArrayList<>(nodes));
     }
 
     public static Path empty() {
@@ -51,6 +69,7 @@ public class Path {
     }
 
     public Path prepend(String value) {
+        Preconditions.checkArgument(!value.contains("/"), "Node cannot contain the slash character.");
         List<String> newNodes = new ArrayList<>();
         newNodes.add(value);
         newNodes.addAll(this.nodes);
@@ -64,6 +83,7 @@ public class Path {
     }
 
     public Path append(String value) {
+        Preconditions.checkArgument(!value.contains("/"), "Node cannot contain the slash character.");
         List<String> newNodes = new ArrayList<>(this.nodes);
         newNodes.add(value);
         return new Path(newNodes);
@@ -76,6 +96,13 @@ public class Path {
             builder.append(nodeName);
         }
         return builder.toString();
+    }
+
+    private static void checkSlash(List<String> nodes) {
+        boolean foundSlash = nodes.stream().anyMatch((node) -> node.contains("/"));
+        if (foundSlash) {
+            throw new IllegalArgumentException("Node cannot contain the slash character.");
+        }
     }
 
 }

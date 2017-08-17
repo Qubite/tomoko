@@ -1,23 +1,21 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.handler.add.AddHandler;
-import io.qubite.tomoko.handler.remove.RemoveHandler;
-import io.qubite.tomoko.path.PathParameters;
+import io.qubite.tomoko.handler.value.ValueHandler;
+import io.qubite.tomoko.handler.valueless.ValuelessHandler;
+import io.qubite.tomoko.patch.ValueTree;
+import io.qubite.tomoko.path.Path;
 
-/**
- * Created by edhendil on 13.08.16.
- */
 public class Operations {
 
     private Operations() {
     }
 
-    public static <T> AddOperation<T> add(PathParameters pathParameters, T value, AddHandler<T> handler) {
-        return new AddOperation(pathParameters, value, handler);
+    public static ValueOperation value(Path path, ValueHandler handler, ValueTree value) {
+        return new ValueOperation(path, handler, value);
     }
 
-    public static RemoveOperation remove(PathParameters pathParameters, RemoveHandler handler) {
-        return new RemoveOperation(pathParameters, handler);
+    public static ValuelessOperation valueless(Path path, ValuelessHandler handler) {
+        return new ValuelessOperation(path, handler);
     }
 
 }

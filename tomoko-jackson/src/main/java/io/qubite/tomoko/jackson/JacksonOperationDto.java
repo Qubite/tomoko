@@ -2,9 +2,6 @@ package io.qubite.tomoko.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-/**
- * Created by edhendil on 16.08.16.
- */
 class JacksonOperationDto {
 
     private String path;

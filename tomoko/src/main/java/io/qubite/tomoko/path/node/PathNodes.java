@@ -1,50 +1,34 @@
 package io.qubite.tomoko.path.node;
 
-import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class PathNodes {
 
     private PathNodes() {
     }
 
-    public static StaticNode staticNode(String text) {
+    public static PathNode staticNode(String text) {
         return new StaticNode(text);
     }
 
-    public static StaticNode endIndexNode() {
-        return new StaticNode("-");
+    public static PathNode endIndexNode() {
+        return staticNode("-");
     }
 
-    public static StaticNode rootNode() {
-        return new StaticNode("");
+    public static PathNode rootNode() {
+        return staticNode("");
     }
 
-    public static RegexNode regexNode(String regex) {
-        return new RegexNode(regex);
+    public static PathNode regexNode(String regex) {
+        return new RegexNode(Pattern.compile(regex));
     }
 
-    public static TextNode textNode() {
+    public static PathNode textNode() {
         return new TextNode();
     }
 
-    public static IntegerNode integerNode() {
-        return new IntegerNode();
-    }
-
-    public static LongNode longNode() {
-        return new LongNode();
-    }
-
-    public static IntegerRangeNode integerNode(int min, int max) {
-        return new IntegerRangeNode(Optional.of(min), Optional.of(max));
-    }
-
-    public static IntegerRangeNode minIntegerNode(int min) {
-        return new IntegerRangeNode(Optional.of(min), Optional.empty());
-    }
-
-    public static IntegerRangeNode maxIntegerNode(int max) {
-        return new IntegerRangeNode(Optional.empty(), Optional.of(max));
+    public static PathNode integerNode() {
+        return regexNode("^[0-9]+$");
     }
 
 }

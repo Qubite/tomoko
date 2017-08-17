@@ -2,9 +2,6 @@ package io.qubite.tomoko.type;
 
 import java.util.Collection;
 
-/**
- * Created by edhendil on 18.08.16.
- */
 public class CollectionType<C extends Collection<E>, E> implements ValueType<C> {
 
     private final Class<C> baseClass;

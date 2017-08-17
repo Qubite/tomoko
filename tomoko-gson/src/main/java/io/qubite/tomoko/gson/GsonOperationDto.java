@@ -2,9 +2,6 @@ package io.qubite.tomoko.gson;
 
 import com.google.gson.JsonElement;
 
-/**
- * Created by edhendil on 16.08.16.
- */
 class GsonOperationDto {
 
     private String path;

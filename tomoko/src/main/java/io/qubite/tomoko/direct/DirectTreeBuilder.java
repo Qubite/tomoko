@@ -1,11 +1,7 @@
 package io.qubite.tomoko.direct;
 
 import io.qubite.tomoko.path.Path;
-import io.qubite.tomoko.path.Paths;
 
-/**
- * Created by edhendil on 28.08.16.
- */
 public class DirectTreeBuilder {
 
     private DirectTree root;
@@ -15,7 +11,7 @@ public class DirectTreeBuilder {
     }
 
     public Path getCommonPath() {
-        Path commonPath = Paths.empty();
+        Path commonPath = Path.empty();
         DirectTree current = root;
         while (true) {
             if (current.isSingleChild()) {

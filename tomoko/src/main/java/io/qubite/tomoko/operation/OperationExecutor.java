@@ -1,16 +1,13 @@
 package io.qubite.tomoko.operation;
 
-import io.qubite.tomoko.json.OperationDto;
-import io.qubite.tomoko.json.Patch;
-import io.qubite.tomoko.specification.TreeSpecification;
+import io.qubite.tomoko.patch.OperationDto;
+import io.qubite.tomoko.patch.Patch;
+import io.qubite.tomoko.resolver.HandlerResolver;
 
-/**
- * Created by edhendil on 20.08.16.
- */
 public interface OperationExecutor {
 
-    void execute(TreeSpecification patchSpecification, OperationDto operation);
+    void execute(HandlerResolver handlerResolver, OperationDto operation);
 
-    void execute(TreeSpecification patchSpecification, Patch operations);
+    void execute(HandlerResolver handlerResolver, Patch operations);
 
 }

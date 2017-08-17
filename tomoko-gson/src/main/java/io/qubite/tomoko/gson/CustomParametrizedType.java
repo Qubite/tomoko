@@ -3,9 +3,6 @@ package io.qubite.tomoko.gson;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * Created by edhendil on 18.08.16.
- */
 class CustomParametrizedType implements ParameterizedType {
 
     private final Class<?> baseClass;

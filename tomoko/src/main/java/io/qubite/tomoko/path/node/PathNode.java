@@ -1,13 +1,9 @@
 package io.qubite.tomoko.path.node;
 
-public interface PathNode<T> {
+public interface PathNode extends Comparable<PathNode> {
 
     boolean doesMatch(String value);
 
-    boolean isValueHolder();
-
-    T toObject(String value);
-
-    String toPathString(T value);
+    int classOrder();
 
 }

@@ -1,15 +1,18 @@
 package io.qubite.tomoko.path.node;
 
+import io.qubite.tomoko.util.Preconditions;
+
 import java.util.Objects;
 
-/**
- * Created by edhendil on 10.08.16.
- */
-public class StaticNode implements ValuelessNode {
+public class StaticNode implements PathNode {
 
     private final String name;
 
     StaticNode(String name) {
+        Preconditions.checkNotNull(name);
+        if (name.contains("/")) {
+            throw new IllegalArgumentException("Static node cannot contain a slash character");
+        }
         this.name = name;
     }
 
@@ -18,8 +21,14 @@ public class StaticNode implements ValuelessNode {
         return name.equals(value);
     }
 
-    public String toPathString(Void value) {
-        return name;
+    @Override
+    public int classOrder() {
+        return 10;
+    }
+
+    @Override
+    public String toString() {
+        return "/" + name;
     }
 
     @Override
@@ -36,11 +45,21 @@ public class StaticNode implements ValuelessNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hashCode(name);
     }
 
     @Override
-    public String toString() {
-        return "/" + name;
+    public int compareTo(PathNode pathNode) {
+        if (!pathNode.getClass().equals(StaticNode.class)) {
+            int result = classOrder() - pathNode.classOrder();
+            if (result == 0) {
+                throw new IllegalStateException("Two path node implementation cannot have the same order value.");
+            }
+            return result;
+        } else {
+            StaticNode that = (StaticNode) pathNode;
+            return name.compareTo(that.name);
+        }
     }
+
 }

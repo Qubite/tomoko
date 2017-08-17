@@ -1,14 +1,11 @@
 package io.qubite.tomoko.type;
 
-import io.qubite.tomoko.json.OperationDto;
+import io.qubite.tomoko.patch.OperationDto;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by edhendil on 18.08.16.
- */
 public class Types {
 
     private Types() {

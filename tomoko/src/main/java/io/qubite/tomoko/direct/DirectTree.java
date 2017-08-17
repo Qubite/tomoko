@@ -1,8 +1,6 @@
 package io.qubite.tomoko.direct;
 
-import io.qubite.tomoko.PatcherException;
-import io.qubite.tomoko.json.JsonTree;
-import io.qubite.tomoko.type.ValueType;
+import io.qubite.tomoko.patch.ValueTree;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -10,9 +8,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by edhendil on 28.08.16.
+ * <p>
+ * Value tree implementation composed of path nodes and real objects on leaf nodes.
+ * </p>
+ * <p>
+ * Best for testing purposes when one want to avoid using string to object parsers.
+ * </p>
  */
-public class DirectTree implements JsonTree {
+public class DirectTree implements ValueTree {
 
     private final Map<String, DirectTree> children;
     private boolean valueSet;
@@ -28,6 +31,10 @@ public class DirectTree implements JsonTree {
         return new DirectTreeBuilder(DirectTree.empty());
     }
 
+    public static <V> DirectTree of(V value) {
+        return builder().setValue("", value).build();
+    }
+
     static DirectTree empty() {
         return new DirectTree(new HashMap<>(), false, null);
     }
@@ -37,7 +44,7 @@ public class DirectTree implements JsonTree {
     }
 
     @Override
-    public Iterator<Map.Entry<String, JsonTree>> getFieldIterator() {
+    public Iterator<Map.Entry<String, ValueTree>> getFieldIterator() {
         return new ChildIterator(children.entrySet().iterator());
     }
 
@@ -64,20 +71,6 @@ public class DirectTree implements JsonTree {
         return children.get(name);
     }
 
-    @Override
-    public <T> T getAs(ValueType<T> valueType) {
-        if (!isLeaf()) {
-            throw new PatcherException("No value present");
-        }
-        if (value == null) {
-            return null;
-        }
-        if (!valueType.getBaseClass().isInstance(value)) {
-            throw new PatcherException("Value valueType mismatch between registered handler and received operation. Expected: " + valueType);
-        }
-        return (T) value;
-    }
-
     public void addChild(String name, DirectTree node) {
         if (valueSet) {
             throw new IllegalStateException("Cannot addChild child. Value already set.");
@@ -93,11 +86,36 @@ public class DirectTree implements JsonTree {
         this.valueSet = true;
     }
 
+    public Object getValue() {
+        if (!isLeaf()) {
+            throw new IllegalStateException("Cannot get value from a non leaf node.");
+        }
+        return value;
+    }
+
     public void addAll(Map<String, DirectTree> children) {
         this.children.putAll(children);
     }
 
-    private static class ChildIterator implements Iterator<Map.Entry<String, JsonTree>> {
+    @Override
+    public String toString() {
+        if (isLeaf()) {
+            return value.toString();
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{");
+            for (Map.Entry<String, DirectTree> entry : children.entrySet()) {
+                builder.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(", ");
+            }
+            if (children.entrySet().size() > 0) {
+                builder.setLength(builder.length() - 2);
+            }
+            builder.append("}");
+            return builder.toString();
+        }
+    }
+
+    private static class ChildIterator implements Iterator<Map.Entry<String, ValueTree>> {
 
         private final Iterator<Map.Entry<String, DirectTree>> originalIterator;
 
@@ -111,7 +129,7 @@ public class DirectTree implements JsonTree {
         }
 
         @Override
-        public Map.Entry<String, JsonTree> next() {
+        public Map.Entry<String, ValueTree> next() {
             Map.Entry<String, DirectTree> next = originalIterator.next();
             return new AbstractMap.SimpleEntry<>(next.getKey(), next.getValue());
         }

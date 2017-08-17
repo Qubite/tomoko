@@ -1,0 +1,4 @@
+dataRoot: ./
+data: {
+    config: json(./config.json)
+}
