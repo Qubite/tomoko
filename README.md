@@ -14,7 +14,7 @@ Newest version can be found here.
 <dependency>
   <groupId>io.qubite.tomoko</groupId>
   <artifactId>tomoko-jackson</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@ Newest version can be found here.
 <dependency>
   <groupId>io.qubite.tomoko</groupId>
   <artifactId>tomoko-gson</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
